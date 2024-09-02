@@ -128,15 +128,12 @@
  100:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal.c **** #endif
  101:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal.c **** #if (HAL_USE_PWM == TRUE) || defined(__DOXYGEN__)
  102:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal.c ****   pwmInit();
-  30               		.loc 1 102 0
-  31 000c 0E94 0000 		call pwmInit
-  32               	.LVL2:
  103:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal.c **** #endif
  104:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal.c **** #if (HAL_USE_SERIAL == TRUE) || defined(__DOXYGEN__)
  105:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal.c ****   sdInit();
-  33               		.loc 1 105 0
-  34 0010 0E94 0000 		call sdInit
-  35               	.LVL3:
+  30               		.loc 1 105 0
+  31 000c 0E94 0000 		call sdInit
+  32               	.LVL2:
  106:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal.c **** #endif
  107:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal.c **** #if (HAL_USE_SDC == TRUE) || defined(__DOXYGEN__)
  108:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal.c ****   sdcInit();
@@ -181,9 +178,9 @@
  147:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal.c **** 
  148:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal.c ****   /* Board specific initialization.*/
  149:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal.c ****   boardInit();
-  36               		.loc 1 149 0
-  37 0014 0E94 0000 		call boardInit
-  38               	.LVL4:
+  33               		.loc 1 149 0
+  34 0010 0E94 0000 		call boardInit
+  35               	.LVL3:
  150:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal.c **** 
  151:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal.c **** /*
  152:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal.c ****  *  The ST driver is a special case, it is only initialized if the OSAL is
@@ -191,53 +188,50 @@
  154:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal.c ****  */
  155:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal.c **** #if OSAL_ST_MODE != OSAL_ST_MODE_NONE
  156:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal.c ****   stInit();
-  39               		.loc 1 156 0
-  40 0018 0C94 0000 		jmp stInit
-  41               	.LVL5:
-  42               		.cfi_endproc
-  43               	.LFE238:
-  45               		.text
-  46               	.Letext0:
-  47               		.file 2 "/usr/lib/gcc/avr/7.3.0/include/stddef.h"
-  48               		.file 3 "/usr/lib/avr/include/stdint.h"
-  49               		.file 4 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/compile
-  50               		.file 5 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chearly.h"
-  51               		.file 6 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chobjects.h"
-  52               		.file 7 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chrfcu.h"
-  53               		.file 8 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chdebug.h"
-  54               		.file 9 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chtime.h"
-  55               		.file 10 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chlists.h"
-  56               		.file 11 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore
-  57               		.file 12 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chsem.h"
-  58               		.file 13 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chmtx.h"
-  59               		.file 14 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chsys.h"
-  60               		.file 15 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h
-  61               		.file 16 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chevents.h"
-  62               		.file 17 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/oslib/include/chmemcore
-  63               		.file 18 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_queues.
-  64               		.file 19 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
-  65               		.file 20 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_pwm.h"
-  66               		.file 21 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
-  67               		.file 22 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_serial.
-  68               		.file 23 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
-  69               		.file 24 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/ATME
-  70               		.file 25 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/boards/ARDUINO_NANO
-  71               		.file 26 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_st.h"
-  72               		.file 27 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/osal/rt-nil/osal.h"
+  36               		.loc 1 156 0
+  37 0014 0C94 0000 		jmp stInit
+  38               	.LVL4:
+  39               		.cfi_endproc
+  40               	.LFE238:
+  42               		.text
+  43               	.Letext0:
+  44               		.file 2 "/usr/lib/gcc/avr/7.3.0/include/stddef.h"
+  45               		.file 3 "/usr/lib/avr/include/stdint.h"
+  46               		.file 4 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/compile
+  47               		.file 5 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chearly.h"
+  48               		.file 6 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chobjects.h"
+  49               		.file 7 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chrfcu.h"
+  50               		.file 8 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chdebug.h"
+  51               		.file 9 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chtime.h"
+  52               		.file 10 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chlists.h"
+  53               		.file 11 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore
+  54               		.file 12 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chsem.h"
+  55               		.file 13 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chmtx.h"
+  56               		.file 14 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chsys.h"
+  57               		.file 15 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h
+  58               		.file 16 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chevents.h"
+  59               		.file 17 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/oslib/include/chmemcore
+  60               		.file 18 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_queues.
+  61               		.file 19 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
+  62               		.file 20 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_serial.
+  63               		.file 21 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
+  64               		.file 22 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/ATME
+  65               		.file 23 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/boards/ARDUINO_NANO
+  66               		.file 24 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_st.h"
+  67               		.file 25 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/osal/rt-nil/osal.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 hal.c
-     /tmp/cc7lktHm.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/cc7lktHm.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/cc7lktHm.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/cc7lktHm.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/cc7lktHm.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/cc7lktHm.s:13     .text.halInit:0000000000000000 halInit
+     /tmp/ccyB1595.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccyB1595.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccyB1595.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccyB1595.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccyB1595.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccyB1595.s:13     .text.halInit:0000000000000000 halInit
 
 UNDEFINED SYMBOLS
 hal_lld_init
 pal_default_config
 _pal_lld_init
-pwmInit
 sdInit
 boardInit
 stInit

@@ -1745,23 +1745,23 @@
  559               		.file 21 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chinstances.
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 chsys.c
-     /tmp/cc7MoKF5.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/cc7MoKF5.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/cc7MoKF5.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/cc7MoKF5.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/cc7MoKF5.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/cc7MoKF5.s:13     .text.chSysWaitSystemState:0000000000000000 chSysWaitSystemState
+     /tmp/ccvWDIpr.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccvWDIpr.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccvWDIpr.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccvWDIpr.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccvWDIpr.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccvWDIpr.s:13     .text.chSysWaitSystemState:0000000000000000 chSysWaitSystemState
                             *COM*:0000000000000003 ch_system
-     /tmp/cc7MoKF5.s:38     .text.chSysInit:0000000000000000 chSysInit
-     /tmp/cc7MoKF5.s:529    .rodata.ch_core0_cfg:0000000000000000 ch_core0_cfg
+     /tmp/ccvWDIpr.s:38     .text.chSysInit:0000000000000000 chSysInit
+     /tmp/ccvWDIpr.s:529    .rodata.ch_core0_cfg:0000000000000000 ch_core0_cfg
                             *COM*:0000000000000043 ch0
-     /tmp/cc7MoKF5.s:111    .text.chSysHalt:0000000000000000 chSysHalt
-     /tmp/cc7MoKF5.s:145    .text.chSysGetIdleThreadX:0000000000000000 chSysGetIdleThreadX
-     /tmp/cc7MoKF5.s:165    .text.chSysIntegrityCheckI:0000000000000000 chSysIntegrityCheckI
-     /tmp/cc7MoKF5.s:413    .text.chSysTimerHandlerI:0000000000000000 chSysTimerHandlerI
-     /tmp/cc7MoKF5.s:430    .text.chSysGetStatusAndLockX:0000000000000000 chSysGetStatusAndLockX
-     /tmp/cc7MoKF5.s:476    .text.chSysRestoreStatusX:0000000000000000 chSysRestoreStatusX
-     /tmp/cc7MoKF5.s:536    .bss.ch_c0_idle_thread_wa:0000000000000000 ch_c0_idle_thread_wa
+     /tmp/ccvWDIpr.s:111    .text.chSysHalt:0000000000000000 chSysHalt
+     /tmp/ccvWDIpr.s:145    .text.chSysGetIdleThreadX:0000000000000000 chSysGetIdleThreadX
+     /tmp/ccvWDIpr.s:165    .text.chSysIntegrityCheckI:0000000000000000 chSysIntegrityCheckI
+     /tmp/ccvWDIpr.s:413    .text.chSysTimerHandlerI:0000000000000000 chSysTimerHandlerI
+     /tmp/ccvWDIpr.s:430    .text.chSysGetStatusAndLockX:0000000000000000 chSysGetStatusAndLockX
+     /tmp/ccvWDIpr.s:476    .text.chSysRestoreStatusX:0000000000000000 chSysRestoreStatusX
+     /tmp/ccvWDIpr.s:536    .bss.ch_c0_idle_thread_wa:0000000000000000 ch_c0_idle_thread_wa
 
 UNDEFINED SYMBOLS
 __core_init

@@ -1632,24 +1632,22 @@
  650               		.file 19 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_flash.h
  651               		.file 20 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_queues.
  652               		.file 21 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
- 653               		.file 22 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_pwm.h"
+ 653               		.file 22 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_serial.
  654               		.file 23 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
- 655               		.file 24 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_serial.
- 656               		.file 25 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
- 657               		.file 26 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chthreads.h"
+ 655               		.file 24 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chthreads.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 hal_flash.c
-     /tmp/ccfvupdW.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccfvupdW.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccfvupdW.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccfvupdW.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccfvupdW.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccfvupdW.s:13     .text.flashWaitErase:0000000000000000 flashWaitErase
-     /tmp/ccfvupdW.s:140    .text.flashGetSectorOffset:0000000000000000 flashGetSectorOffset
-     /tmp/ccfvupdW.s:230    .text.flashGetSectorSize:0000000000000000 flashGetSectorSize
-     /tmp/ccfvupdW.s:318    .text.flashGetOffsetSector:0000000000000000 flashGetOffsetSector
-     /tmp/ccfvupdW.s:503    .text.flashGetOffsetAddress:0000000000000000 flashGetOffsetAddress
-     /tmp/ccfvupdW.s:565    .text.flashGetAddressOffset:0000000000000000 flashGetAddressOffset
+     /tmp/ccD2665u.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccD2665u.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccD2665u.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccD2665u.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccD2665u.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccD2665u.s:13     .text.flashWaitErase:0000000000000000 flashWaitErase
+     /tmp/ccD2665u.s:140    .text.flashGetSectorOffset:0000000000000000 flashGetSectorOffset
+     /tmp/ccD2665u.s:230    .text.flashGetSectorSize:0000000000000000 flashGetSectorSize
+     /tmp/ccD2665u.s:318    .text.flashGetOffsetSector:0000000000000000 flashGetOffsetSector
+     /tmp/ccD2665u.s:503    .text.flashGetOffsetAddress:0000000000000000 flashGetOffsetAddress
+     /tmp/ccD2665u.s:565    .text.flashGetAddressOffset:0000000000000000 flashGetAddressOffset
 
 UNDEFINED SYMBOLS
 __muluhisi3

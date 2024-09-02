@@ -1260,19 +1260,17 @@
  204               		.file 19 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_queues.
  205               		.file 20 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_buffere
  206               		.file 21 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
- 207               		.file 22 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_pwm.h"
+ 207               		.file 22 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_serial.
  208               		.file 23 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
- 209               		.file 24 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_serial.
- 210               		.file 25 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 hal_buffered_serial.c
-     /tmp/ccWlpxrM.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccWlpxrM.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccWlpxrM.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccWlpxrM.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccWlpxrM.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccWlpxrM.s:13     .text.bsIncomingDataI:0000000000000000 bsIncomingDataI
-     /tmp/ccWlpxrM.s:114    .text.bsRequestDataI:0000000000000000 bsRequestDataI
+     /tmp/ccMut9Xy.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccMut9Xy.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccMut9Xy.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccMut9Xy.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccMut9Xy.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccMut9Xy.s:13     .text.bsIncomingDataI:0000000000000000 bsIncomingDataI
+     /tmp/ccMut9Xy.s:114    .text.bsRequestDataI:0000000000000000 bsRequestDataI
 
 UNDEFINED SYMBOLS
 iqPutI

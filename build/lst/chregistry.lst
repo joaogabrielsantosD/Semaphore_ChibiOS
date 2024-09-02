@@ -1244,16 +1244,16 @@
  524               		.file 17 "/usr/lib/avr/include/string.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 chregistry.c
-     /tmp/ccy7uTSm.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccy7uTSm.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccy7uTSm.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccy7uTSm.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccy7uTSm.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccy7uTSm.s:13     .text.chRegFirstThread:0000000000000000 chRegFirstThread
-     /tmp/ccy7uTSm.s:64     .text.chRegNextThread:0000000000000000 chRegNextThread
-     /tmp/ccy7uTSm.s:132    .text.chRegFindThreadByName:0000000000000000 chRegFindThreadByName
-     /tmp/ccy7uTSm.s:308    .text.chRegFindThreadByPointer:0000000000000000 chRegFindThreadByPointer
-     /tmp/ccy7uTSm.s:465    .rodata.ch_debug:0000000000000000 ch_debug
+     /tmp/ccZ6UWm2.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccZ6UWm2.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccZ6UWm2.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccZ6UWm2.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccZ6UWm2.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccZ6UWm2.s:13     .text.chRegFirstThread:0000000000000000 chRegFirstThread
+     /tmp/ccZ6UWm2.s:64     .text.chRegNextThread:0000000000000000 chRegNextThread
+     /tmp/ccZ6UWm2.s:132    .text.chRegFindThreadByName:0000000000000000 chRegFindThreadByName
+     /tmp/ccZ6UWm2.s:308    .text.chRegFindThreadByPointer:0000000000000000 chRegFindThreadByPointer
+     /tmp/ccZ6UWm2.s:465    .rodata.ch_debug:0000000000000000 ch_debug
 
 UNDEFINED SYMBOLS
 ch0

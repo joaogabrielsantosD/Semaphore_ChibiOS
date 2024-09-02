@@ -2747,37 +2747,35 @@
  828               		.file 18 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/oslib/include/chmemcore
  829               		.file 19 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_queues.
  830               		.file 20 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
- 831               		.file 21 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_pwm.h"
+ 831               		.file 21 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_serial.
  832               		.file 22 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
- 833               		.file 23 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_serial.
- 834               		.file 24 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
- 835               		.file 25 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chschd.h"
+ 833               		.file 23 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chschd.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 hal_serial.c
-     /tmp/ccDgGY19.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccDgGY19.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccDgGY19.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccDgGY19.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccDgGY19.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccDgGY19.s:12     .text._readt:0000000000000000 _readt
-     /tmp/ccDgGY19.s:32     .text._read:0000000000000000 _read
-     /tmp/ccDgGY19.s:53     .text._writet:0000000000000000 _writet
-     /tmp/ccDgGY19.s:72     .text._write:0000000000000000 _write
-     /tmp/ccDgGY19.s:93     .text._gett:0000000000000000 _gett
-     /tmp/ccDgGY19.s:112    .text._get:0000000000000000 _get
-     /tmp/ccDgGY19.s:133    .text._putt:0000000000000000 _putt
-     /tmp/ccDgGY19.s:152    .text._put:0000000000000000 _put
-     /tmp/ccDgGY19.s:173    .text._ctl:0000000000000000 _ctl
-     /tmp/ccDgGY19.s:197    .text.sdInit:0000000000000000 sdInit
-     /tmp/ccDgGY19.s:214    .text.sdObjectInit:0000000000000000 sdObjectInit
-     /tmp/ccDgGY19.s:802    .rodata.vmt:0000000000000000 vmt
-     /tmp/ccDgGY19.s:314    .text.sdStart:0000000000000000 sdStart
-     /tmp/ccDgGY19.s:383    .text.sdStop:0000000000000000 sdStop
-     /tmp/ccDgGY19.s:467    .text.sdIncomingDataI:0000000000000000 sdIncomingDataI
-     /tmp/ccDgGY19.s:566    .text.sdRequestDataI:0000000000000000 sdRequestDataI
-     /tmp/ccDgGY19.s:641    .text.sdPutWouldBlock:0000000000000000 sdPutWouldBlock
-     /tmp/ccDgGY19.s:701    .text.sdGetWouldBlock:0000000000000000 sdGetWouldBlock
-     /tmp/ccDgGY19.s:761    .text.sdControl:0000000000000000 sdControl
+     /tmp/cchBEFKw.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/cchBEFKw.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/cchBEFKw.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/cchBEFKw.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/cchBEFKw.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/cchBEFKw.s:12     .text._readt:0000000000000000 _readt
+     /tmp/cchBEFKw.s:32     .text._read:0000000000000000 _read
+     /tmp/cchBEFKw.s:53     .text._writet:0000000000000000 _writet
+     /tmp/cchBEFKw.s:72     .text._write:0000000000000000 _write
+     /tmp/cchBEFKw.s:93     .text._gett:0000000000000000 _gett
+     /tmp/cchBEFKw.s:112    .text._get:0000000000000000 _get
+     /tmp/cchBEFKw.s:133    .text._putt:0000000000000000 _putt
+     /tmp/cchBEFKw.s:152    .text._put:0000000000000000 _put
+     /tmp/cchBEFKw.s:173    .text._ctl:0000000000000000 _ctl
+     /tmp/cchBEFKw.s:197    .text.sdInit:0000000000000000 sdInit
+     /tmp/cchBEFKw.s:214    .text.sdObjectInit:0000000000000000 sdObjectInit
+     /tmp/cchBEFKw.s:802    .rodata.vmt:0000000000000000 vmt
+     /tmp/cchBEFKw.s:314    .text.sdStart:0000000000000000 sdStart
+     /tmp/cchBEFKw.s:383    .text.sdStop:0000000000000000 sdStop
+     /tmp/cchBEFKw.s:467    .text.sdIncomingDataI:0000000000000000 sdIncomingDataI
+     /tmp/cchBEFKw.s:566    .text.sdRequestDataI:0000000000000000 sdRequestDataI
+     /tmp/cchBEFKw.s:641    .text.sdPutWouldBlock:0000000000000000 sdPutWouldBlock
+     /tmp/cchBEFKw.s:701    .text.sdGetWouldBlock:0000000000000000 sdGetWouldBlock
+     /tmp/cchBEFKw.s:761    .text.sdControl:0000000000000000 sdControl
 
 UNDEFINED SYMBOLS
 iqReadTimeout

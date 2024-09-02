@@ -106,19 +106,17 @@
   60               		.file 17 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/oslib/include/chmemcore
   61               		.file 18 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_queues.
   62               		.file 19 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
-  63               		.file 20 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_pwm.h"
+  63               		.file 20 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_serial.
   64               		.file 21 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
-  65               		.file 22 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_serial.
-  66               		.file 23 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 board.c
-     /tmp/ccjeRxBl.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccjeRxBl.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccjeRxBl.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccjeRxBl.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccjeRxBl.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccjeRxBl.s:13     .text.boardInit:0000000000000000 boardInit
-     /tmp/ccjeRxBl.s:36     .rodata.pal_default_config:0000000000000000 pal_default_config
+     /tmp/ccad2Fyd.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccad2Fyd.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccad2Fyd.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccad2Fyd.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccad2Fyd.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccad2Fyd.s:13     .text.boardInit:0000000000000000 boardInit
+     /tmp/ccad2Fyd.s:36     .rodata.pal_default_config:0000000000000000 pal_default_config
 
 UNDEFINED SYMBOLS
 __do_copy_data

@@ -120,19 +120,17 @@
   45               		.file 17 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/oslib/include/chmemcore
   46               		.file 18 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_queues.
   47               		.file 19 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
-  48               		.file 20 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_pwm.h"
+  48               		.file 20 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_serial.
   49               		.file 21 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
-  50               		.file 22 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_serial.
-  51               		.file 23 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
-  52               		.file 24 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
+  50               		.file 22 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 hal_st.c
-     /tmp/ccWADLoE.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccWADLoE.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccWADLoE.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccWADLoE.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccWADLoE.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccWADLoE.s:13     .text.stInit:0000000000000000 stInit
+     /tmp/ccnkLwca.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccnkLwca.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccnkLwca.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccnkLwca.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccnkLwca.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccnkLwca.s:13     .text.stInit:0000000000000000 stInit
 
 UNDEFINED SYMBOLS
 st_lld_init

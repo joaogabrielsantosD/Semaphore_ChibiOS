@@ -1077,20 +1077,18 @@
  171               		.file 18 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/oslib/include/chmemcore
  172               		.file 19 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_queues.
  173               		.file 20 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
- 174               		.file 21 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_pwm.h"
+ 174               		.file 21 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_serial.
  175               		.file 22 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
- 176               		.file 23 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_serial.
- 177               		.file 24 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
- 178               		.file 25 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chschd.h"
+ 176               		.file 23 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chschd.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 hal_st_lld.c
-     /tmp/cccmd7Sb.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/cccmd7Sb.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/cccmd7Sb.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/cccmd7Sb.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/cccmd7Sb.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/cccmd7Sb.s:13     .text.__vector_14:0000000000000000 __vector_14
-     /tmp/cccmd7Sb.s:126    .text.st_lld_init:0000000000000000 st_lld_init
+     /tmp/cclHatRz.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/cclHatRz.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/cclHatRz.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/cclHatRz.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/cclHatRz.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/cclHatRz.s:13     .text.__vector_14:0000000000000000 __vector_14
+     /tmp/cclHatRz.s:126    .text.st_lld_init:0000000000000000 st_lld_init
 
 UNDEFINED SYMBOLS
 __avr_in_isr

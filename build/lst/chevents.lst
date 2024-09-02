@@ -3271,30 +3271,30 @@
  1573               		.file 18 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chschd.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 chevents.c
-     /tmp/ccsLXzJC.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccsLXzJC.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccsLXzJC.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccsLXzJC.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccsLXzJC.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccsLXzJC.s:13     .text.chEvtRegisterMaskWithFlagsI:0000000000000000 chEvtRegisterMaskWithFlagsI
-     /tmp/ccsLXzJC.s:70     .text.chEvtRegisterMaskWithFlags:0000000000000000 chEvtRegisterMaskWithFlags
-     /tmp/ccsLXzJC.s:158    .text.chEvtUnregister:0000000000000000 chEvtUnregister
-     /tmp/ccsLXzJC.s:245    .text.chEvtGetAndClearEventsI:0000000000000000 chEvtGetAndClearEventsI
-     /tmp/ccsLXzJC.s:280    .text.chEvtGetAndClearEvents:0000000000000000 chEvtGetAndClearEvents
-     /tmp/ccsLXzJC.s:347    .text.chEvtAddEvents:0000000000000000 chEvtAddEvents
-     /tmp/ccsLXzJC.s:405    .text.chEvtGetAndClearFlagsI:0000000000000000 chEvtGetAndClearFlagsI
-     /tmp/ccsLXzJC.s:433    .text.chEvtGetAndClearFlags:0000000000000000 chEvtGetAndClearFlags
-     /tmp/ccsLXzJC.s:487    .text.chEvtSignalI:0000000000000000 chEvtSignalI
-     /tmp/ccsLXzJC.s:542    .text.chEvtSignal:0000000000000000 chEvtSignal
-     /tmp/ccsLXzJC.s:592    .text.chEvtBroadcastFlagsI:0000000000000000 chEvtBroadcastFlagsI
-     /tmp/ccsLXzJC.s:681    .text.chEvtBroadcastFlags:0000000000000000 chEvtBroadcastFlags
-     /tmp/ccsLXzJC.s:731    .text.chEvtDispatch:0000000000000000 chEvtDispatch
-     /tmp/ccsLXzJC.s:875    .text.chEvtWaitOne:0000000000000000 chEvtWaitOne
-     /tmp/ccsLXzJC.s:972    .text.chEvtWaitAny:0000000000000000 chEvtWaitAny
-     /tmp/ccsLXzJC.s:1066   .text.chEvtWaitAll:0000000000000000 chEvtWaitAll
-     /tmp/ccsLXzJC.s:1158   .text.chEvtWaitOneTimeout:0000000000000000 chEvtWaitOneTimeout
-     /tmp/ccsLXzJC.s:1299   .text.chEvtWaitAnyTimeout:0000000000000000 chEvtWaitAnyTimeout
-     /tmp/ccsLXzJC.s:1435   .text.chEvtWaitAllTimeout:0000000000000000 chEvtWaitAllTimeout
+     /tmp/ccirPHoy.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccirPHoy.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccirPHoy.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccirPHoy.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccirPHoy.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccirPHoy.s:13     .text.chEvtRegisterMaskWithFlagsI:0000000000000000 chEvtRegisterMaskWithFlagsI
+     /tmp/ccirPHoy.s:70     .text.chEvtRegisterMaskWithFlags:0000000000000000 chEvtRegisterMaskWithFlags
+     /tmp/ccirPHoy.s:158    .text.chEvtUnregister:0000000000000000 chEvtUnregister
+     /tmp/ccirPHoy.s:245    .text.chEvtGetAndClearEventsI:0000000000000000 chEvtGetAndClearEventsI
+     /tmp/ccirPHoy.s:280    .text.chEvtGetAndClearEvents:0000000000000000 chEvtGetAndClearEvents
+     /tmp/ccirPHoy.s:347    .text.chEvtAddEvents:0000000000000000 chEvtAddEvents
+     /tmp/ccirPHoy.s:405    .text.chEvtGetAndClearFlagsI:0000000000000000 chEvtGetAndClearFlagsI
+     /tmp/ccirPHoy.s:433    .text.chEvtGetAndClearFlags:0000000000000000 chEvtGetAndClearFlags
+     /tmp/ccirPHoy.s:487    .text.chEvtSignalI:0000000000000000 chEvtSignalI
+     /tmp/ccirPHoy.s:542    .text.chEvtSignal:0000000000000000 chEvtSignal
+     /tmp/ccirPHoy.s:592    .text.chEvtBroadcastFlagsI:0000000000000000 chEvtBroadcastFlagsI
+     /tmp/ccirPHoy.s:681    .text.chEvtBroadcastFlags:0000000000000000 chEvtBroadcastFlags
+     /tmp/ccirPHoy.s:731    .text.chEvtDispatch:0000000000000000 chEvtDispatch
+     /tmp/ccirPHoy.s:875    .text.chEvtWaitOne:0000000000000000 chEvtWaitOne
+     /tmp/ccirPHoy.s:972    .text.chEvtWaitAny:0000000000000000 chEvtWaitAny
+     /tmp/ccirPHoy.s:1066   .text.chEvtWaitAll:0000000000000000 chEvtWaitAll
+     /tmp/ccirPHoy.s:1158   .text.chEvtWaitOneTimeout:0000000000000000 chEvtWaitOneTimeout
+     /tmp/ccirPHoy.s:1299   .text.chEvtWaitAnyTimeout:0000000000000000 chEvtWaitAnyTimeout
+     /tmp/ccirPHoy.s:1435   .text.chEvtWaitAllTimeout:0000000000000000 chEvtWaitAllTimeout
 
 UNDEFINED SYMBOLS
 ch0
