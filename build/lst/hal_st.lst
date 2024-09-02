@@ -1,0 +1,138 @@
+   1               		.file	"hal_st.c"
+   2               	__SP_H__ = 0x3e
+   3               	__SP_L__ = 0x3d
+   4               	__SREG__ = 0x3f
+   5               	__tmp_reg__ = 0
+   6               	__zero_reg__ = 1
+   7               		.text
+   8               	.Ltext0:
+   9               		.cfi_sections	.debug_frame
+  10               		.section	.text.stInit,"ax",@progbits
+  11               	.global	stInit
+  13               	stInit:
+  14               	.LFB238:
+  15               		.file 1 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c"
+   1:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c **** /*
+   2:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c ****     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
+   3:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c **** 
+   4:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c ****     Licensed under the Apache License, Version 2.0 (the "License");
+   5:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c ****     you may not use this file except in compliance with the License.
+   6:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c ****     You may obtain a copy of the License at
+   7:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c **** 
+   8:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c ****         http://www.apache.org/licenses/LICENSE-2.0
+   9:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c **** 
+  10:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c ****     Unless required by applicable law or agreed to in writing, software
+  11:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c ****     distributed under the License is distributed on an "AS IS" BASIS,
+  12:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c ****     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  13:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c ****     See the License for the specific language governing permissions and
+  14:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c ****     limitations under the License.
+  15:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c **** */
+  16:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c **** 
+  17:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c **** /**
+  18:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c ****  * @file    hal_st.c
+  19:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c ****  * @brief   ST Driver code.
+  20:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c ****  *
+  21:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c ****  * @addtogroup ST
+  22:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c ****  * @{
+  23:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c ****  */
+  24:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c **** 
+  25:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c **** #include "hal.h"
+  26:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c **** 
+  27:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c **** #if (OSAL_ST_MODE != OSAL_ST_MODE_NONE) || defined(__DOXYGEN__)
+  28:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c **** 
+  29:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c **** /*===========================================================================*/
+  30:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c **** /* Driver local definitions.                                                 */
+  31:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c **** /*===========================================================================*/
+  32:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c **** 
+  33:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c **** /*===========================================================================*/
+  34:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c **** /* Driver exported variables.                                                */
+  35:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c **** /*===========================================================================*/
+  36:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c **** 
+  37:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c **** /*===========================================================================*/
+  38:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c **** /* Driver local types.                                                       */
+  39:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c **** /*===========================================================================*/
+  40:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c **** 
+  41:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c **** /*===========================================================================*/
+  42:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c **** /* Driver local variables.                                                   */
+  43:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c **** /*===========================================================================*/
+  44:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c **** 
+  45:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c **** /**
+  46:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c ****  * @brief   Callback pointers for each alarm.
+  47:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c ****  * @note    If some alarms have static callbacks defined in the LLD then
+  48:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c ****  *          some of the pointers might be unused (never called through).
+  49:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c ****  */
+  50:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c **** #if (ST_LLD_NUM_ALARMS > 1) || defined(__DOXYGEN__)
+  51:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c **** st_callback_t st_callbacks[ST_LLD_NUM_ALARMS];
+  52:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c **** #endif
+  53:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c **** 
+  54:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c **** /*===========================================================================*/
+  55:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c **** /* Driver local functions.                                                   */
+  56:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c **** /*===========================================================================*/
+  57:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c **** 
+  58:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c **** /*===========================================================================*/
+  59:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c **** /* Driver exported functions.                                                */
+  60:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c **** /*===========================================================================*/
+  61:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c **** 
+  62:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c **** /**
+  63:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c ****  * @brief   ST Driver initialization.
+  64:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c ****  * @note    This function is implicitly invoked by @p halInit(), there is
+  65:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c ****  *          no need to explicitly initialize the driver.
+  66:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c ****  *
+  67:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c ****  * @init
+  68:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c ****  */
+  69:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c **** void stInit(void) {
+  16               		.loc 1 69 0
+  17               		.cfi_startproc
+  18               	/* prologue: function */
+  19               	/* frame size = 0 */
+  20               	/* stack size = 0 */
+  21               	.L__stack_usage = 0
+  70:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c **** #if ST_LLD_NUM_ALARMS > 1
+  71:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c ****   unsigned i;
+  72:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c **** 
+  73:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c ****   for (i = 0U; i < (unsigned)ST_LLD_NUM_ALARMS; i++) {
+  74:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c ****     st_callbacks[i] = NULL;
+  75:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c ****   }
+  76:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c **** #endif
+  77:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/src/hal_st.c ****   st_lld_init();
+  22               		.loc 1 77 0
+  23 0000 0C94 0000 		jmp st_lld_init
+  24               	.LVL0:
+  25               		.cfi_endproc
+  26               	.LFE238:
+  28               		.text
+  29               	.Letext0:
+  30               		.file 2 "/usr/lib/gcc/avr/7.3.0/include/stddef.h"
+  31               		.file 3 "/usr/lib/avr/include/stdint.h"
+  32               		.file 4 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/compile
+  33               		.file 5 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chearly.h"
+  34               		.file 6 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chobjects.h"
+  35               		.file 7 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chrfcu.h"
+  36               		.file 8 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chdebug.h"
+  37               		.file 9 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chtime.h"
+  38               		.file 10 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chlists.h"
+  39               		.file 11 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore
+  40               		.file 12 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chsem.h"
+  41               		.file 13 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chmtx.h"
+  42               		.file 14 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chsys.h"
+  43               		.file 15 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h
+  44               		.file 16 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chevents.h"
+  45               		.file 17 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/oslib/include/chmemcore
+  46               		.file 18 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_queues.
+  47               		.file 19 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
+  48               		.file 20 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_pwm.h"
+  49               		.file 21 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
+  50               		.file 22 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_serial.
+  51               		.file 23 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
+  52               		.file 24 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 hal_st.c
+     /tmp/ccWADLoE.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccWADLoE.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccWADLoE.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccWADLoE.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccWADLoE.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccWADLoE.s:13     .text.stInit:0000000000000000 stInit
+
+UNDEFINED SYMBOLS
+st_lld_init

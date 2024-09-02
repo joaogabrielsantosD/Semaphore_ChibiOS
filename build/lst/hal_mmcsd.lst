@@ -1,0 +1,41 @@
+   1               		.file	"hal_mmcsd.c"
+   2               	__SP_H__ = 0x3e
+   3               	__SP_L__ = 0x3d
+   4               	__SREG__ = 0x3f
+   5               	__tmp_reg__ = 0
+   6               	__zero_reg__ = 1
+   7               		.text
+   8               	.Ltext0:
+   9               		.cfi_sections	.debug_frame
+  10               	.Letext0:
+  11               		.file 1 "/usr/lib/gcc/avr/7.3.0/include/stddef.h"
+  12               		.file 2 "/usr/lib/avr/include/stdint.h"
+  13               		.file 3 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/compile
+  14               		.file 4 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chearly.h"
+  15               		.file 5 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chobjects.h"
+  16               		.file 6 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chrfcu.h"
+  17               		.file 7 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chdebug.h"
+  18               		.file 8 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chtime.h"
+  19               		.file 9 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chlists.h"
+  20               		.file 10 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore
+  21               		.file 11 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chsem.h"
+  22               		.file 12 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chmtx.h"
+  23               		.file 13 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chsys.h"
+  24               		.file 14 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h
+  25               		.file 15 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chevents.h"
+  26               		.file 16 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/oslib/include/chmemcore
+  27               		.file 17 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_queues.
+  28               		.file 18 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
+  29               		.file 19 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_pwm.h"
+  30               		.file 20 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
+  31               		.file 21 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_serial.
+  32               		.file 22 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 hal_mmcsd.c
+     /tmp/ccZrAYPs.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccZrAYPs.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccZrAYPs.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccZrAYPs.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccZrAYPs.s:6      *ABS*:0000000000000001 __zero_reg__
+
+NO UNDEFINED SYMBOLS

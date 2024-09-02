@@ -1,0 +1,2126 @@
+   1               		.file	"hal_pwm_lld.c"
+   2               	__SP_H__ = 0x3e
+   3               	__SP_L__ = 0x3d
+   4               	__SREG__ = 0x3f
+   5               	__tmp_reg__ = 0
+   6               	__zero_reg__ = 1
+   7               		.text
+   8               	.Ltext0:
+   9               		.cfi_sections	.debug_frame
+  10               		.section	.text.__vector_13,"ax",@progbits
+  11               	.global	__vector_13
+  13               	__vector_13:
+  14               	.LFB240:
+  15               		.file 1 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/T
+   1:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** /*
+   2:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
+   3:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+   4:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     Licensed under the Apache License, Version 2.0 (the "License");
+   5:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     you may not use this file except in compliance with the License.
+   6:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     You may obtain a copy of the License at
+   7:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+   8:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****         http://www.apache.org/licenses/LICENSE-2.0
+   9:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+  10:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     Unless required by applicable law or agreed to in writing, software
+  11:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     distributed under the License is distributed on an "AS IS" BASIS,
+  12:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  13:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     See the License for the specific language governing permissions and
+  14:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     limitations under the License.
+  15:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** */
+  16:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+  17:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** /*
+  18:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****    This driver is based on the work done by Matteo Serva available at
+  19:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****    http://github.com/matteoserva/ChibiOS-AVR
+  20:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** */
+  21:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+  22:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** /**
+  23:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @file    TIMv1/hal_pwm_lld.c
+  24:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @brief   AVR/MEGA PWM subsystem low level driver source.
+  25:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  *
+  26:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @addtogroup PWM
+  27:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @{
+  28:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  */
+  29:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+  30:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #include "hal.h"
+  31:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+  32:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #if HAL_USE_PWM || defined(__DOXYGEN__)
+  33:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+  34:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** /*==========================================================================*/
+  35:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** /* Driver local definitions.                                                */
+  36:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** /*==========================================================================*/
+  37:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+  38:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #define TIM1_CS_OFFSET CS10
+  39:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #define TIM1_WGM_OFFSET1 WGM10
+  40:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #define TIM1_WGM_OFFSET2 WGM12
+  41:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+  42:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** typedef struct {
+  43:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   volatile uint8_t *tccra;
+  44:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   volatile uint8_t *tccrb;
+  45:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   volatile uint8_t *ocrah;
+  46:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   volatile uint8_t *ocral;
+  47:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   volatile uint8_t *ocrbh;
+  48:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   volatile uint8_t *ocrbl;
+  49:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   volatile uint8_t *ocrch;
+  50:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   volatile uint8_t *ocrcl;
+  51:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   volatile uint8_t *tifr;
+  52:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   volatile uint8_t *timsk;
+  53:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   volatile uint16_t *icr;
+  54:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** } timer_registers_t;
+  55:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+  56:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** static timer_registers_t regs_table[] =
+  57:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** {
+  58:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #if AVR_PWM_USE_TIM1 || defined(__DOXYGEN__)
+  59:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #if defined(OCR1C)
+  60:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   {&TCCR1A, &TCCR1B, &OCR1AH, &OCR1AL, &OCR1BH, &OCR1BL, &OCR1CH, &OCR1CL,
+  61:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****    &TIFR1, &TIMSK1, &ICR1},
+  62:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #else
+  63:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   {&TCCR1A, &TCCR1B, &OCR1AH, &OCR1AL, &OCR1BH, &OCR1BL, NULL, NULL,
+  64:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****    &TIFR1, &TIMSK1, &ICR1},
+  65:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #endif
+  66:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #endif
+  67:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #if AVR_PWM_USE_TIM2 || defined(__DOXYGEN__)
+  68:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   {&TCCR2A, &TCCR2B, &OCR2A, &OCR2A, &OCR2B, &OCR2B, NULL, NULL,
+  69:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****    &TIFR2, &TIMSK2, NULL},
+  70:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #endif
+  71:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #if AVR_PWM_USE_TIM3 || defined(__DOXYGEN__)
+  72:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   {&TCCR3A, &TCCR3B, &OCR3AH, &OCR3AL, &OCR3BH, &OCR3BL, &OCR3CH, &OCR3CL,
+  73:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****    &TIFR3, &TIMSK3, &ICR3},
+  74:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #endif
+  75:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #if AVR_PWM_USE_TIM4 || defined(__DOXYGEN__)
+  76:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   {&TCCR4A, &TCCR4B, &OCR4AH, &OCR4AL, &OCR4CH, &OCR4CL, &OCR4CH, &OCR4CL,
+  77:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****    &TIFR4, &TIMSK4, &ICR4},
+  78:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #endif
+  79:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #if AVR_PWM_USE_TIM5 || defined(__DOXYGEN__)
+  80:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   {&TCCR5A, &TCCR5B, &OCR5AH, &OCR5AL, &OCR5BH, &OCR5BL, &OCR5CH, &OCR5CL,
+  81:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****    &TIFR5, &TIMSK5, &ICR5},
+  82:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #endif
+  83:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** };
+  84:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+  85:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** /*==========================================================================*/
+  86:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** /* Driver exported variables.                                               */
+  87:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** /*==========================================================================*/
+  88:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+  89:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** /** @brief PWM driver identifiers.*/
+  90:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #if AVR_PWM_USE_TIM1 || defined(__DOXYGEN__)
+  91:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** PWMDriver PWMD1;
+  92:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #endif
+  93:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #if AVR_PWM_USE_TIM2 || defined(__DOXYGEN__)
+  94:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** PWMDriver PWMD2;
+  95:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #endif
+  96:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #if AVR_PWM_USE_TIM3 || defined(__DOXYGEN__)
+  97:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** PWMDriver PWMD3;
+  98:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #endif
+  99:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #if AVR_PWM_USE_TIM4 || defined(__DOXYGEN__)
+ 100:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** PWMDriver PWMD4;
+ 101:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #endif
+ 102:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #if AVR_PWM_USE_TIM5 || defined(__DOXYGEN__)
+ 103:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** PWMDriver PWMD5;
+ 104:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #endif
+ 105:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 106:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** /*==========================================================================*/
+ 107:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** /* Driver local variables.                                                  */
+ 108:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** /*==========================================================================*/
+ 109:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 110:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** /*==========================================================================*/
+ 111:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** /* Driver local functions.                                                  */
+ 112:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** /*==========================================================================*/
+ 113:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 114:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** static void config_channel(volatile uint8_t *tccra,
+ 115:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****                            uint8_t com1,
+ 116:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****                            uint8_t com0,
+ 117:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****                            pwmmode_t mode) {
+ 118:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 119:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   *tccra &= ~((1 << com1) | (1 << com0));
+ 120:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   if (mode == PWM_OUTPUT_ACTIVE_HIGH)
+ 121:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     *tccra |= ((1 << com1) | (0 << com0)); /* Non inverting mode. */
+ 122:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   else if (mode == PWM_OUTPUT_ACTIVE_LOW)
+ 123:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     *tccra |= (1 << com1) | (1 << com0);   /* Inverting mode.     */
+ 124:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** }
+ 125:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 126:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** static uint8_t timer_index(PWMDriver *pwmp) {
+ 127:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 128:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   uint8_t index = 0;
+ 129:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 130:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #if AVR_PWM_USE_TIM1 || defined(__DOXYGEN__)
+ 131:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   if (pwmp == &PWMD1) return index;
+ 132:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   else index++;
+ 133:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #endif
+ 134:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #if AVR_PWM_USE_TIM2 || defined(__DOXYGEN__)
+ 135:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   if (pwmp == &PWMD2) return index;
+ 136:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   else index++;
+ 137:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #endif
+ 138:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #if AVR_PWM_USE_TIM3 || defined(__DOXYGEN__)
+ 139:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   if (pwmp == &PWMD3) return index;
+ 140:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   else index++;
+ 141:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #endif
+ 142:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #if AVR_PWM_USE_TIM4 || defined(__DOXYGEN__)
+ 143:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   if (pwmp == &PWMD4) return index;
+ 144:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   else index++;
+ 145:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #endif
+ 146:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #if AVR_PWM_USE_TIM5 || defined(__DOXYGEN__)
+ 147:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   if (pwmp == &PWMD5) return index;
+ 148:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   else index++;
+ 149:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #endif
+ 150:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 151:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   /* This is an error! */
+ 152:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   return index;
+ 153:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** }
+ 154:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 155:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** /*==========================================================================*/
+ 156:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** /* Driver interrupt handlers.                                               */
+ 157:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** /*==========================================================================*/
+ 158:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 159:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** /*
+ 160:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * Interrupt for compare1&2 and clock overflow. pwmd1 & pwmd2.
+ 161:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  */
+ 162:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #if AVR_PWM_USE_TIM1 || defined(__DOXYGEN__)
+ 163:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** OSAL_IRQ_HANDLER(TIMER1_OVF_vect) {
+  16               		.loc 1 163 0
+  17               		.cfi_startproc
+  18 0000 1F92      		push r1
+  19               	.LCFI0:
+  20               		.cfi_def_cfa_offset 3
+  21               		.cfi_offset 1, -2
+  22 0002 0F92      		push r0
+  23               	.LCFI1:
+  24               		.cfi_def_cfa_offset 4
+  25               		.cfi_offset 0, -3
+  26 0004 0FB6      		in r0,__SREG__
+  27 0006 0F92      		push r0
+  28 0008 1124      		clr __zero_reg__
+  29 000a 2F93      		push r18
+  30               	.LCFI2:
+  31               		.cfi_def_cfa_offset 5
+  32               		.cfi_offset 18, -4
+  33 000c 3F93      		push r19
+  34               	.LCFI3:
+  35               		.cfi_def_cfa_offset 6
+  36               		.cfi_offset 19, -5
+  37 000e 4F93      		push r20
+  38               	.LCFI4:
+  39               		.cfi_def_cfa_offset 7
+  40               		.cfi_offset 20, -6
+  41 0010 5F93      		push r21
+  42               	.LCFI5:
+  43               		.cfi_def_cfa_offset 8
+  44               		.cfi_offset 21, -7
+  45 0012 6F93      		push r22
+  46               	.LCFI6:
+  47               		.cfi_def_cfa_offset 9
+  48               		.cfi_offset 22, -8
+  49 0014 7F93      		push r23
+  50               	.LCFI7:
+  51               		.cfi_def_cfa_offset 10
+  52               		.cfi_offset 23, -9
+  53 0016 8F93      		push r24
+  54               	.LCFI8:
+  55               		.cfi_def_cfa_offset 11
+  56               		.cfi_offset 24, -10
+  57 0018 9F93      		push r25
+  58               	.LCFI9:
+  59               		.cfi_def_cfa_offset 12
+  60               		.cfi_offset 25, -11
+  61 001a AF93      		push r26
+  62               	.LCFI10:
+  63               		.cfi_def_cfa_offset 13
+  64               		.cfi_offset 26, -12
+  65 001c BF93      		push r27
+  66               	.LCFI11:
+  67               		.cfi_def_cfa_offset 14
+  68               		.cfi_offset 27, -13
+  69 001e EF93      		push r30
+  70               	.LCFI12:
+  71               		.cfi_def_cfa_offset 15
+  72               		.cfi_offset 30, -14
+  73 0020 FF93      		push r31
+  74               	.LCFI13:
+  75               		.cfi_def_cfa_offset 16
+  76               		.cfi_offset 31, -15
+  77               	/* prologue: Signal */
+  78               	/* frame size = 0 */
+  79               	/* stack size = 15 */
+  80               	.L__stack_usage = 15
+ 164:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 165:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   OSAL_IRQ_PROLOGUE();
+  81               		.loc 1 165 0
+  82 0022 81E0      		ldi r24,lo8(1)
+  83 0024 8093 0000 		sts __avr_in_isr,r24
+ 166:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   PWMD1.config->callback(&PWMD1);
+  84               		.loc 1 166 0
+  85 0028 E091 0000 		lds r30,PWMD1+1
+  86 002c F091 0000 		lds r31,PWMD1+1+1
+  87 0030 0680      		ldd __tmp_reg__,Z+6
+  88 0032 F781      		ldd r31,Z+7
+  89 0034 E02D      		mov r30,__tmp_reg__
+  90 0036 80E0      		ldi r24,lo8(PWMD1)
+  91 0038 90E0      		ldi r25,hi8(PWMD1)
+  92 003a 0995      		icall
+  93               	.LVL0:
+ 167:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   OSAL_IRQ_EPILOGUE();
+  94               		.loc 1 167 0
+  95 003c 1092 0000 		sts __avr_in_isr,__zero_reg__
+  96 0040 0E94 0000 		call chSchIsPreemptionRequired
+  97               	.LVL1:
+  98 0044 8111      		cpse r24,__zero_reg__
+  99               		.loc 1 167 0 is_stmt 0 discriminator 1
+ 100 0046 0E94 0000 		call chSchDoPreemption
+ 101               	.LVL2:
+ 102               	.L1:
+ 103               	/* epilogue start */
+ 168:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** }
+ 104               		.loc 1 168 0 is_stmt 1
+ 105 004a FF91      		pop r31
+ 106 004c EF91      		pop r30
+ 107 004e BF91      		pop r27
+ 108 0050 AF91      		pop r26
+ 109 0052 9F91      		pop r25
+ 110 0054 8F91      		pop r24
+ 111 0056 7F91      		pop r23
+ 112 0058 6F91      		pop r22
+ 113 005a 5F91      		pop r21
+ 114 005c 4F91      		pop r20
+ 115 005e 3F91      		pop r19
+ 116 0060 2F91      		pop r18
+ 117 0062 0F90      		pop r0
+ 118 0064 0FBE      		out __SREG__,r0
+ 119 0066 0F90      		pop r0
+ 120 0068 1F90      		pop r1
+ 121 006a 1895      		reti
+ 122               		.cfi_endproc
+ 123               	.LFE240:
+ 125               		.section	.text.__vector_11,"ax",@progbits
+ 126               	.global	__vector_11
+ 128               	__vector_11:
+ 129               	.LFB241:
+ 169:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 170:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** OSAL_IRQ_HANDLER(TIMER1_COMPA_vect) {
+ 130               		.loc 1 170 0
+ 131               		.cfi_startproc
+ 132 0000 1F92      		push r1
+ 133               	.LCFI14:
+ 134               		.cfi_def_cfa_offset 3
+ 135               		.cfi_offset 1, -2
+ 136 0002 0F92      		push r0
+ 137               	.LCFI15:
+ 138               		.cfi_def_cfa_offset 4
+ 139               		.cfi_offset 0, -3
+ 140 0004 0FB6      		in r0,__SREG__
+ 141 0006 0F92      		push r0
+ 142 0008 1124      		clr __zero_reg__
+ 143 000a 2F93      		push r18
+ 144               	.LCFI16:
+ 145               		.cfi_def_cfa_offset 5
+ 146               		.cfi_offset 18, -4
+ 147 000c 3F93      		push r19
+ 148               	.LCFI17:
+ 149               		.cfi_def_cfa_offset 6
+ 150               		.cfi_offset 19, -5
+ 151 000e 4F93      		push r20
+ 152               	.LCFI18:
+ 153               		.cfi_def_cfa_offset 7
+ 154               		.cfi_offset 20, -6
+ 155 0010 5F93      		push r21
+ 156               	.LCFI19:
+ 157               		.cfi_def_cfa_offset 8
+ 158               		.cfi_offset 21, -7
+ 159 0012 6F93      		push r22
+ 160               	.LCFI20:
+ 161               		.cfi_def_cfa_offset 9
+ 162               		.cfi_offset 22, -8
+ 163 0014 7F93      		push r23
+ 164               	.LCFI21:
+ 165               		.cfi_def_cfa_offset 10
+ 166               		.cfi_offset 23, -9
+ 167 0016 8F93      		push r24
+ 168               	.LCFI22:
+ 169               		.cfi_def_cfa_offset 11
+ 170               		.cfi_offset 24, -10
+ 171 0018 9F93      		push r25
+ 172               	.LCFI23:
+ 173               		.cfi_def_cfa_offset 12
+ 174               		.cfi_offset 25, -11
+ 175 001a AF93      		push r26
+ 176               	.LCFI24:
+ 177               		.cfi_def_cfa_offset 13
+ 178               		.cfi_offset 26, -12
+ 179 001c BF93      		push r27
+ 180               	.LCFI25:
+ 181               		.cfi_def_cfa_offset 14
+ 182               		.cfi_offset 27, -13
+ 183 001e EF93      		push r30
+ 184               	.LCFI26:
+ 185               		.cfi_def_cfa_offset 15
+ 186               		.cfi_offset 30, -14
+ 187 0020 FF93      		push r31
+ 188               	.LCFI27:
+ 189               		.cfi_def_cfa_offset 16
+ 190               		.cfi_offset 31, -15
+ 191               	/* prologue: Signal */
+ 192               	/* frame size = 0 */
+ 193               	/* stack size = 15 */
+ 194               	.L__stack_usage = 15
+ 171:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 172:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   OSAL_IRQ_PROLOGUE();
+ 195               		.loc 1 172 0
+ 196 0022 81E0      		ldi r24,lo8(1)
+ 197 0024 8093 0000 		sts __avr_in_isr,r24
+ 173:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   PWMD1.config->channels[0].callback(&PWMD1);
+ 198               		.loc 1 173 0
+ 199 0028 E091 0000 		lds r30,PWMD1+1
+ 200 002c F091 0000 		lds r31,PWMD1+1+1
+ 201 0030 0184      		ldd __tmp_reg__,Z+9
+ 202 0032 F285      		ldd r31,Z+10
+ 203 0034 E02D      		mov r30,__tmp_reg__
+ 204 0036 80E0      		ldi r24,lo8(PWMD1)
+ 205 0038 90E0      		ldi r25,hi8(PWMD1)
+ 206 003a 0995      		icall
+ 207               	.LVL3:
+ 174:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   OSAL_IRQ_EPILOGUE();
+ 208               		.loc 1 174 0
+ 209 003c 1092 0000 		sts __avr_in_isr,__zero_reg__
+ 210 0040 0E94 0000 		call chSchIsPreemptionRequired
+ 211               	.LVL4:
+ 212 0044 8111      		cpse r24,__zero_reg__
+ 213               		.loc 1 174 0 is_stmt 0 discriminator 1
+ 214 0046 0E94 0000 		call chSchDoPreemption
+ 215               	.LVL5:
+ 216               	.L7:
+ 217               	/* epilogue start */
+ 175:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** }
+ 218               		.loc 1 175 0 is_stmt 1
+ 219 004a FF91      		pop r31
+ 220 004c EF91      		pop r30
+ 221 004e BF91      		pop r27
+ 222 0050 AF91      		pop r26
+ 223 0052 9F91      		pop r25
+ 224 0054 8F91      		pop r24
+ 225 0056 7F91      		pop r23
+ 226 0058 6F91      		pop r22
+ 227 005a 5F91      		pop r21
+ 228 005c 4F91      		pop r20
+ 229 005e 3F91      		pop r19
+ 230 0060 2F91      		pop r18
+ 231 0062 0F90      		pop r0
+ 232 0064 0FBE      		out __SREG__,r0
+ 233 0066 0F90      		pop r0
+ 234 0068 1F90      		pop r1
+ 235 006a 1895      		reti
+ 236               		.cfi_endproc
+ 237               	.LFE241:
+ 239               		.section	.text.__vector_12,"ax",@progbits
+ 240               	.global	__vector_12
+ 242               	__vector_12:
+ 243               	.LFB242:
+ 176:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 177:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** OSAL_IRQ_HANDLER(TIMER1_COMPB_vect) {
+ 244               		.loc 1 177 0
+ 245               		.cfi_startproc
+ 246 0000 1F92      		push r1
+ 247               	.LCFI28:
+ 248               		.cfi_def_cfa_offset 3
+ 249               		.cfi_offset 1, -2
+ 250 0002 0F92      		push r0
+ 251               	.LCFI29:
+ 252               		.cfi_def_cfa_offset 4
+ 253               		.cfi_offset 0, -3
+ 254 0004 0FB6      		in r0,__SREG__
+ 255 0006 0F92      		push r0
+ 256 0008 1124      		clr __zero_reg__
+ 257 000a 2F93      		push r18
+ 258               	.LCFI30:
+ 259               		.cfi_def_cfa_offset 5
+ 260               		.cfi_offset 18, -4
+ 261 000c 3F93      		push r19
+ 262               	.LCFI31:
+ 263               		.cfi_def_cfa_offset 6
+ 264               		.cfi_offset 19, -5
+ 265 000e 4F93      		push r20
+ 266               	.LCFI32:
+ 267               		.cfi_def_cfa_offset 7
+ 268               		.cfi_offset 20, -6
+ 269 0010 5F93      		push r21
+ 270               	.LCFI33:
+ 271               		.cfi_def_cfa_offset 8
+ 272               		.cfi_offset 21, -7
+ 273 0012 6F93      		push r22
+ 274               	.LCFI34:
+ 275               		.cfi_def_cfa_offset 9
+ 276               		.cfi_offset 22, -8
+ 277 0014 7F93      		push r23
+ 278               	.LCFI35:
+ 279               		.cfi_def_cfa_offset 10
+ 280               		.cfi_offset 23, -9
+ 281 0016 8F93      		push r24
+ 282               	.LCFI36:
+ 283               		.cfi_def_cfa_offset 11
+ 284               		.cfi_offset 24, -10
+ 285 0018 9F93      		push r25
+ 286               	.LCFI37:
+ 287               		.cfi_def_cfa_offset 12
+ 288               		.cfi_offset 25, -11
+ 289 001a AF93      		push r26
+ 290               	.LCFI38:
+ 291               		.cfi_def_cfa_offset 13
+ 292               		.cfi_offset 26, -12
+ 293 001c BF93      		push r27
+ 294               	.LCFI39:
+ 295               		.cfi_def_cfa_offset 14
+ 296               		.cfi_offset 27, -13
+ 297 001e EF93      		push r30
+ 298               	.LCFI40:
+ 299               		.cfi_def_cfa_offset 15
+ 300               		.cfi_offset 30, -14
+ 301 0020 FF93      		push r31
+ 302               	.LCFI41:
+ 303               		.cfi_def_cfa_offset 16
+ 304               		.cfi_offset 31, -15
+ 305               	/* prologue: Signal */
+ 306               	/* frame size = 0 */
+ 307               	/* stack size = 15 */
+ 308               	.L__stack_usage = 15
+ 178:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 179:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   OSAL_IRQ_PROLOGUE();
+ 309               		.loc 1 179 0
+ 310 0022 81E0      		ldi r24,lo8(1)
+ 311 0024 8093 0000 		sts __avr_in_isr,r24
+ 180:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   PWMD1.config->channels[1].callback(&PWMD1);
+ 312               		.loc 1 180 0
+ 313 0028 E091 0000 		lds r30,PWMD1+1
+ 314 002c F091 0000 		lds r31,PWMD1+1+1
+ 315 0030 0484      		ldd __tmp_reg__,Z+12
+ 316 0032 F585      		ldd r31,Z+13
+ 317 0034 E02D      		mov r30,__tmp_reg__
+ 318 0036 80E0      		ldi r24,lo8(PWMD1)
+ 319 0038 90E0      		ldi r25,hi8(PWMD1)
+ 320 003a 0995      		icall
+ 321               	.LVL6:
+ 181:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   OSAL_IRQ_EPILOGUE();
+ 322               		.loc 1 181 0
+ 323 003c 1092 0000 		sts __avr_in_isr,__zero_reg__
+ 324 0040 0E94 0000 		call chSchIsPreemptionRequired
+ 325               	.LVL7:
+ 326 0044 8111      		cpse r24,__zero_reg__
+ 327               		.loc 1 181 0 is_stmt 0 discriminator 1
+ 328 0046 0E94 0000 		call chSchDoPreemption
+ 329               	.LVL8:
+ 330               	.L12:
+ 331               	/* epilogue start */
+ 182:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** }
+ 332               		.loc 1 182 0 is_stmt 1
+ 333 004a FF91      		pop r31
+ 334 004c EF91      		pop r30
+ 335 004e BF91      		pop r27
+ 336 0050 AF91      		pop r26
+ 337 0052 9F91      		pop r25
+ 338 0054 8F91      		pop r24
+ 339 0056 7F91      		pop r23
+ 340 0058 6F91      		pop r22
+ 341 005a 5F91      		pop r21
+ 342 005c 4F91      		pop r20
+ 343 005e 3F91      		pop r19
+ 344 0060 2F91      		pop r18
+ 345 0062 0F90      		pop r0
+ 346 0064 0FBE      		out __SREG__,r0
+ 347 0066 0F90      		pop r0
+ 348 0068 1F90      		pop r1
+ 349 006a 1895      		reti
+ 350               		.cfi_endproc
+ 351               	.LFE242:
+ 353               		.section	.text.pwm_lld_init,"ax",@progbits
+ 354               	.global	pwm_lld_init
+ 356               	pwm_lld_init:
+ 357               	.LFB243:
+ 183:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #if PWM_CHANNELS > 2
+ 184:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** OSAL_IRQ_HANDLER(TIMER1_COMPC_vect) {
+ 185:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 186:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   OSAL_IRQ_PROLOGUE();
+ 187:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   PWMD1.config->channels[2].callback(&PWMD1);
+ 188:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   OSAL_IRQ_EPILOGUE();
+ 189:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** }
+ 190:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #endif
+ 191:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #endif
+ 192:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 193:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #if AVR_PWM_USE_TIM2 || defined(__DOXYGEN__)
+ 194:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** OSAL_IRQ_HANDLER(TIMER2_OVF_vect) {
+ 195:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 196:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   OSAL_IRQ_PROLOGUE();
+ 197:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   PWMD2.config->callback(&PWMD2);
+ 198:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   OSAL_IRQ_EPILOGUE();
+ 199:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** }
+ 200:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 201:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** OSAL_IRQ_HANDLER(TIMER2_COMPA_vect) {
+ 202:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 203:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   OSAL_IRQ_PROLOGUE();
+ 204:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   PWMD2.config->channels[0].callback(&PWMD2);
+ 205:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   OSAL_IRQ_EPILOGUE();
+ 206:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** }
+ 207:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 208:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** OSAL_IRQ_HANDLER(TIMER2_COMPB_vect) {
+ 209:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 210:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   OSAL_IRQ_PROLOGUE();
+ 211:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   PWMD2.config->channels[1].callback(&PWMD2);
+ 212:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   OSAL_IRQ_EPILOGUE();
+ 213:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** }
+ 214:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #endif
+ 215:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 216:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #if AVR_PWM_USE_TIM3 || defined(__DOXYGEN__)
+ 217:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** OSAL_IRQ_HANDLER(TIMER3_OVF_vect) {
+ 218:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 219:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   OSAL_IRQ_PROLOGUE();
+ 220:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   PWMD3.config->callback(&PWMD3);
+ 221:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   OSAL_IRQ_EPILOGUE();
+ 222:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** }
+ 223:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 224:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** OSAL_IRQ_HANDLER(TIMER3_COMPA_vect) {
+ 225:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 226:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   OSAL_IRQ_PROLOGUE();
+ 227:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   PWMD3.config->channels[0].callback(&PWMD3);
+ 228:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   OSAL_IRQ_EPILOGUE();
+ 229:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** }
+ 230:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 231:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** OSAL_IRQ_HANDLER(TIMER3_COMPB_vect) {
+ 232:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 233:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   OSAL_IRQ_PROLOGUE();
+ 234:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   PWMD3.config->channels[1].callback(&PWMD3);
+ 235:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   OSAL_IRQ_EPILOGUE();
+ 236:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** }
+ 237:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 238:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** OSAL_IRQ_HANDLER(TIMER3_COMPC_vect) {
+ 239:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 240:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   OSAL_IRQ_PROLOGUE();
+ 241:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   PWMD3.config->channels[2].callback(&PWMD3);
+ 242:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   OSAL_IRQ_EPILOGUE();
+ 243:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** }
+ 244:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #endif
+ 245:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 246:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #if AVR_PWM_USE_TIM4 || defined(__DOXYGEN__)
+ 247:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** OSAL_IRQ_HANDLER(TIMER4_OVF_vect) {
+ 248:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 249:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   OSAL_IRQ_PROLOGUE();
+ 250:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   PWMD4.config->callback(&PWMD4);
+ 251:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   OSAL_IRQ_EPILOGUE();
+ 252:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** }
+ 253:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 254:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** OSAL_IRQ_HANDLER(TIMER4_COMPA_vect) {
+ 255:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 256:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   OSAL_IRQ_PROLOGUE();
+ 257:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   PWMD4.config->channels[0].callback(&PWMD4);
+ 258:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   OSAL_IRQ_EPILOGUE();
+ 259:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** }
+ 260:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 261:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** OSAL_IRQ_HANDLER(TIMER4_COMPB_vect) {
+ 262:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 263:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   OSAL_IRQ_PROLOGUE();
+ 264:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   PWMD4.config->channels[1].callback(&PWMD4);
+ 265:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   OSAL_IRQ_EPILOGUE();
+ 266:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** }
+ 267:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 268:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** OSAL_IRQ_HANDLER(TIMER4_COMPC_vect) {
+ 269:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 270:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   OSAL_IRQ_PROLOGUE();
+ 271:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   PWMD4.config->channels[2].callback(&PWMD4);
+ 272:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   OSAL_IRQ_EPILOGUE();
+ 273:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** }
+ 274:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #endif
+ 275:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 276:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #if AVR_PWM_USE_TIM5 || defined(__DOXYGEN__)
+ 277:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** OSAL_IRQ_HANDLER(TIMER5_OVF_vect) {
+ 278:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 279:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   OSAL_IRQ_PROLOGUE();
+ 280:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   PWMD5.config->callback(&PWMD5);
+ 281:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   OSAL_IRQ_EPILOGUE();
+ 282:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** }
+ 283:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 284:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** OSAL_IRQ_HANDLER(TIMER5_COMPA_vect) {
+ 285:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 286:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   OSAL_IRQ_PROLOGUE();
+ 287:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   PWMD5.config->channels[0].callback(&PWMD5);
+ 288:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   OSAL_IRQ_EPILOGUE();
+ 289:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** }
+ 290:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 291:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** OSAL_IRQ_HANDLER(TIMER5_COMPB_vect) {
+ 292:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 293:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   OSAL_IRQ_PROLOGUE();
+ 294:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   PWMD5.config->channels[1].callback(&PWMD5);
+ 295:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   OSAL_IRQ_EPILOGUE();
+ 296:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** }
+ 297:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 298:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** OSAL_IRQ_HANDLER(TIMER5_COMPC_vect) {
+ 299:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 300:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   OSAL_IRQ_PROLOGUE();
+ 301:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   PWMD5.config->channels[2].callback(&PWMD5);
+ 302:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   OSAL_IRQ_EPILOGUE();
+ 303:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** }
+ 304:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #endif
+ 305:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 306:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** /*==========================================================================*/
+ 307:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** /* Driver exported functions.                                               */
+ 308:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** /*==========================================================================*/
+ 309:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 310:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** /**
+ 311:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @brief   Low level PWM driver initialization.
+ 312:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  *
+ 313:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @notapi
+ 314:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  */
+ 315:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** void pwm_lld_init(void) {
+ 358               		.loc 1 315 0
+ 359               		.cfi_startproc
+ 360               	/* prologue: function */
+ 361               	/* frame size = 0 */
+ 362               	/* stack size = 0 */
+ 363               	.L__stack_usage = 0
+ 316:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 317:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #if AVR_PWM_USE_TIM1 || defined(__DOXYGEN__)
+ 318:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   pwmObjectInit(&PWMD1);
+ 364               		.loc 1 318 0
+ 365 0000 80E0      		ldi r24,lo8(PWMD1)
+ 366 0002 90E0      		ldi r25,hi8(PWMD1)
+ 367 0004 0E94 0000 		call pwmObjectInit
+ 368               	.LVL9:
+ 319:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   PWMD1.channels = PWM_CHANNELS;
+ 369               		.loc 1 319 0
+ 370 0008 82E0      		ldi r24,lo8(2)
+ 371 000a 8093 0000 		sts PWMD1+6,r24
+ 372               	/* epilogue start */
+ 320:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #endif
+ 321:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 322:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #if AVR_PWM_USE_TIM2 || defined(__DOXYGEN__)
+ 323:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   pwmObjectInit(&PWMD2);
+ 324:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   PWMD2.channels = PWM_CHANNELS;
+ 325:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #endif
+ 326:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 327:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #if AVR_PWM_USE_TIM3 || defined(__DOXYGEN__)
+ 328:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   pwmObjectInit(&PWMD3);
+ 329:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   PWMD3.channels = PWM_CHANNELS;
+ 330:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #endif
+ 331:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 332:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #if AVR_PWM_USE_TIM4 || defined(__DOXYGEN__)
+ 333:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   pwmObjectInit(&PWMD4);
+ 334:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   PWMD4.channels = PWM_CHANNELS;
+ 335:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #endif
+ 336:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 337:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #if AVR_PWM_USE_TIM5 || defined(__DOXYGEN__)
+ 338:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   pwmObjectInit(&PWMD5);
+ 339:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   PWMD5.channels = PWM_CHANNELS;
+ 340:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #endif
+ 341:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** }
+ 373               		.loc 1 341 0
+ 374 000e 0895      		ret
+ 375               		.cfi_endproc
+ 376               	.LFE243:
+ 378               		.section	.rodata
+ 379               	.LC0:
+ 380 0000 00        		.byte	0
+ 381 0001 03        		.byte	3
+ 382 0002 06        		.byte	6
+ 383 0003 08        		.byte	8
+ 384 0004 0A        		.byte	10
+ 385               		.section	.text.pwm_lld_start,"ax",@progbits
+ 386               	.global	pwm_lld_start
+ 388               	pwm_lld_start:
+ 389               	.LFB244:
+ 342:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 343:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** /**
+ 344:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @brief   Configures and activates the PWM peripheral.
+ 345:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @note    We do not use the period value in Timer2 in order to
+ 346:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  *          be able to use both PWM channels.
+ 347:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  *
+ 348:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @param[in] pwmp      pointer to the @p PWMDriver object
+ 349:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  *
+ 350:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @notapi
+ 351:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  */
+ 352:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** void pwm_lld_start(PWMDriver *pwmp) {
+ 390               		.loc 1 352 0
+ 391               		.cfi_startproc
+ 392               	.LVL10:
+ 393 0000 8F92      		push r8
+ 394               	.LCFI42:
+ 395               		.cfi_def_cfa_offset 3
+ 396               		.cfi_offset 8, -2
+ 397 0002 9F92      		push r9
+ 398               	.LCFI43:
+ 399               		.cfi_def_cfa_offset 4
+ 400               		.cfi_offset 9, -3
+ 401 0004 AF92      		push r10
+ 402               	.LCFI44:
+ 403               		.cfi_def_cfa_offset 5
+ 404               		.cfi_offset 10, -4
+ 405 0006 BF92      		push r11
+ 406               	.LCFI45:
+ 407               		.cfi_def_cfa_offset 6
+ 408               		.cfi_offset 11, -5
+ 409 0008 CF92      		push r12
+ 410               	.LCFI46:
+ 411               		.cfi_def_cfa_offset 7
+ 412               		.cfi_offset 12, -6
+ 413 000a DF92      		push r13
+ 414               	.LCFI47:
+ 415               		.cfi_def_cfa_offset 8
+ 416               		.cfi_offset 13, -7
+ 417 000c EF92      		push r14
+ 418               	.LCFI48:
+ 419               		.cfi_def_cfa_offset 9
+ 420               		.cfi_offset 14, -8
+ 421 000e FF92      		push r15
+ 422               	.LCFI49:
+ 423               		.cfi_def_cfa_offset 10
+ 424               		.cfi_offset 15, -9
+ 425 0010 CF93      		push r28
+ 426               	.LCFI50:
+ 427               		.cfi_def_cfa_offset 11
+ 428               		.cfi_offset 28, -10
+ 429 0012 DF93      		push r29
+ 430               	.LCFI51:
+ 431               		.cfi_def_cfa_offset 12
+ 432               		.cfi_offset 29, -11
+ 433 0014 00D0      		rcall .
+ 434 0016 00D0      		rcall .
+ 435 0018 1F92      		push __zero_reg__
+ 436               	.LCFI52:
+ 437               		.cfi_def_cfa_offset 17
+ 438 001a CDB7      		in r28,__SP_L__
+ 439 001c DEB7      		in r29,__SP_H__
+ 440               	.LCFI53:
+ 441               		.cfi_def_cfa_register 28
+ 442               	/* prologue: function */
+ 443               	/* frame size = 5 */
+ 444               	/* stack size = 15 */
+ 445               	.L__stack_usage = 15
+ 446 001e 9C01      		movw r18,r24
+ 353:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 354:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   if (pwmp->state == PWM_STOP) {
+ 447               		.loc 1 354 0
+ 448 0020 DC01      		movw r26,r24
+ 449 0022 8C91      		ld r24,X
+ 450               	.LVL11:
+ 451 0024 8130      		cpi r24,lo8(1)
+ 452 0026 01F0      		breq .L29
+ 453               	.L18:
+ 454               	/* epilogue start */
+ 355:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     uint8_t cs_value, wgm_value;
+ 356:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 357:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #if AVR_PWM_USE_TIM2 || defined(__DOXYGEN__)
+ 358:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     if (pwmp == &PWMD2) {
+ 359:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****       /* For now only fast pwm is supported. */
+ 360:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****       wgm_value = 0x3;
+ 361:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****       cs_value = 1;
+ 362:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 363:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****       /* Period is fixed for timer2. */
+ 364:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****       PWMD2.period = 0xFF;
+ 365:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 366:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****       /* A prescaler value can only be a suitable power of 2 (1, 8, 32,
+ 367:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****          64, 128 256 or 1024), so we choose the one that makes F_CPU
+ 368:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****          divided by it equal to the given frequency (fallback value is
+ 369:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****          1, to keep compatibility with old code. */
+ 370:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****       const uint8_t log_ratio_timer2[] = {0, 3, 5, 6, 7, 8, 10};
+ 371:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****       uint8_t n;
+ 372:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****       for (n = 0; n < sizeof(log_ratio_timer2)/sizeof(uint8_t); n++) {
+ 373:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****         if (pwmp->config->frequency == (F_CPU >> log_ratio_timer2[n])) {
+ 374:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****               cs_value = n + 1;
+ 375:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****               break;
+ 376:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****             }
+ 377:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****       }
+ 378:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 379:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****       TCCR2A = (wgm_value & 0x3) << TIM1_WGM_OFFSET1;
+ 380:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****       TCCR2B = ((cs_value << TIM1_CS_OFFSET) |
+ 381:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****                 ((wgm_value >> 2) << TIM1_WGM_OFFSET2));
+ 382:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****       if (pwmp->config->callback != NULL)
+ 383:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****         TIMSK2 |= (1 << TOIE2);
+ 384:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****       return;
+ 385:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     }
+ 386:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #endif
+ 387:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 388:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     /* For now only fast pwm is supported. */
+ 389:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     wgm_value = 0xE;
+ 390:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     cs_value = 0x5;
+ 391:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 392:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     /* A prescaler value can only be a suitable power of 2 (1, 8, 64,
+ 393:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****        256 or 1024), so we choose the one that makes F_CPU divided by
+ 394:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****        it equal to the given frequency (fallback value is 1024, to
+ 395:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****        keep compatibility with old code. */
+ 396:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     const uint8_t log_ratio_timer1[] = {0, 3, 6, 8, 10};
+ 397:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     uint8_t n;
+ 398:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     for (n = 0; n < sizeof(log_ratio_timer1)/sizeof(uint8_t); n++) {
+ 399:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****       if (pwmp->config->frequency == (F_CPU >> log_ratio_timer1[n])) {
+ 400:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****         cs_value = n + 1;
+ 401:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****         break;
+ 402:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****       }
+ 403:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     }
+ 404:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 405:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     uint8_t i = timer_index(pwmp);
+ 406:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 407:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     *regs_table[i].icr = pwmp->period;
+ 408:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     *regs_table[i].tccra = (wgm_value & 0x3) << TIM1_WGM_OFFSET1;
+ 409:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     *regs_table[i].tccrb = ((cs_value << TIM1_CS_OFFSET) |
+ 410:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****                             ((wgm_value >> 2) << TIM1_WGM_OFFSET2));
+ 411:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     if (pwmp->config->callback != NULL)
+ 412:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****       *regs_table[i].timsk = (1 << TOIE1);
+ 413:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   }
+ 414:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** }
+ 455               		.loc 1 414 0
+ 456 0028 0F90      		pop __tmp_reg__
+ 457 002a 0F90      		pop __tmp_reg__
+ 458 002c 0F90      		pop __tmp_reg__
+ 459 002e 0F90      		pop __tmp_reg__
+ 460 0030 0F90      		pop __tmp_reg__
+ 461 0032 DF91      		pop r29
+ 462 0034 CF91      		pop r28
+ 463 0036 FF90      		pop r15
+ 464 0038 EF90      		pop r14
+ 465 003a DF90      		pop r13
+ 466 003c CF90      		pop r12
+ 467 003e BF90      		pop r11
+ 468 0040 AF90      		pop r10
+ 469 0042 9F90      		pop r9
+ 470 0044 8F90      		pop r8
+ 471 0046 0895      		ret
+ 472               	.L29:
+ 473               	.LVL12:
+ 474               	.LBB25:
+ 396:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     uint8_t n;
+ 475               		.loc 1 396 0
+ 476 0048 85E0      		ldi r24,lo8(5)
+ 477 004a E0E0      		ldi r30,lo8(.LC0)
+ 478 004c F0E0      		ldi r31,hi8(.LC0)
+ 479 004e DE01      		movw r26,r28
+ 480 0050 1196      		adiw r26,1
+ 481               		0:
+ 482 0052 0190      		ld r0,Z+
+ 483 0054 0D92      		st X+,r0
+ 484 0056 8A95      		dec r24
+ 485 0058 01F4      		brne 0b
+ 486               	.LVL13:
+ 399:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****         cs_value = n + 1;
+ 487               		.loc 1 399 0
+ 488 005a D901      		movw r26,r18
+ 489 005c 1196      		adiw r26,1
+ 490 005e ED91      		ld r30,X+
+ 491 0060 FC91      		ld r31,X
+ 492 0062 8080      		ld r8,Z
+ 493 0064 9180      		ldd r9,Z+1
+ 494 0066 A280      		ldd r10,Z+2
+ 495 0068 B380      		ldd r11,Z+3
+ 496 006a FE01      		movw r30,r28
+ 497 006c 3196      		adiw r30,1
+ 398:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****       if (pwmp->config->frequency == (F_CPU >> log_ratio_timer1[n])) {
+ 498               		.loc 1 398 0
+ 499 006e 90E0      		ldi r25,0
+ 399:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****         cs_value = n + 1;
+ 500               		.loc 1 399 0
+ 501 0070 C12C      		mov r12,__zero_reg__
+ 502 0072 84E2      		ldi r24,lo8(36)
+ 503 0074 D82E      		mov r13,r24
+ 504 0076 84EF      		ldi r24,lo8(-12)
+ 505 0078 E82E      		mov r14,r24
+ 506 007a F12C      		mov r15,__zero_reg__
+ 507               	.LVL14:
+ 508               	.L22:
+ 509 007c 8191      		ld r24,Z+
+ 510 007e 9F5F      		subi r25,lo8(-(1))
+ 511               	.LVL15:
+ 512 0080 B701      		movw r22,r14
+ 513 0082 A601      		movw r20,r12
+ 514 0084 00C0      		rjmp 2f
+ 515               		1:
+ 516 0086 7695      		lsr r23
+ 517 0088 6795      		ror r22
+ 518 008a 5795      		ror r21
+ 519 008c 4795      		ror r20
+ 520               		2:
+ 521 008e 8A95      		dec r24
+ 522 0090 02F4      		brpl 1b
+ 523 0092 8416      		cp r8,r20
+ 524 0094 9506      		cpc r9,r21
+ 525 0096 A606      		cpc r10,r22
+ 526 0098 B706      		cpc r11,r23
+ 527 009a 01F0      		breq .L30
+ 528               	.LVL16:
+ 398:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****       if (pwmp->config->frequency == (F_CPU >> log_ratio_timer1[n])) {
+ 529               		.loc 1 398 0 discriminator 2
+ 530 009c 9530      		cpi r25,lo8(5)
+ 531 009e 01F4      		brne .L22
+ 532 00a0 9DE1      		ldi r25,lo8(29)
+ 533               	.LVL17:
+ 534               	.L21:
+ 535               	.LBB26:
+ 536               	.LBB27:
+ 131:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   else index++;
+ 537               		.loc 1 131 0
+ 538 00a2 41E0      		ldi r20,lo8(1)
+ 539 00a4 50E0      		ldi r21,0
+ 540 00a6 B0E0      		ldi r27,hi8(PWMD1)
+ 541 00a8 2030      		cpi r18,lo8(PWMD1)
+ 542 00aa 3B07      		cpc r19,r27
+ 543 00ac 01F0      		breq .L31
+ 544               	.L23:
+ 545               	.LBE27:
+ 546               	.LBE26:
+ 407:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     *regs_table[i].tccra = (wgm_value & 0x3) << TIM1_WGM_OFFSET1;
+ 547               		.loc 1 407 0
+ 548 00ae F901      		movw r30,r18
+ 549 00b0 6381      		ldd r22,Z+3
+ 550 00b2 7481      		ldd r23,Z+4
+ 551 00b4 7093 8700 		sts 134+1,r23
+ 552 00b8 6093 8600 		sts 134,r22
+ 408:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     *regs_table[i].tccrb = ((cs_value << TIM1_CS_OFFSET) |
+ 553               		.loc 1 408 0
+ 554 00bc 86E1      		ldi r24,lo8(22)
+ 555 00be 849F      		mul r24,r20
+ 556 00c0 F001      		movw r30,r0
+ 557 00c2 859F      		mul r24,r21
+ 558 00c4 F00D      		add r31,r0
+ 559 00c6 1124      		clr __zero_reg__
+ 560 00c8 E050      		subi r30,lo8(-(regs_table))
+ 561 00ca F040      		sbci r31,hi8(-(regs_table))
+ 562 00cc A081      		ld r26,Z
+ 563 00ce B181      		ldd r27,Z+1
+ 564 00d0 82E0      		ldi r24,lo8(2)
+ 565 00d2 8C93      		st X,r24
+ 409:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****                             ((wgm_value >> 2) << TIM1_WGM_OFFSET2));
+ 566               		.loc 1 409 0
+ 567 00d4 A281      		ldd r26,Z+2
+ 568 00d6 B381      		ldd r27,Z+3
+ 569 00d8 9C93      		st X,r25
+ 411:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****       *regs_table[i].timsk = (1 << TOIE1);
+ 570               		.loc 1 411 0
+ 571 00da D901      		movw r26,r18
+ 572 00dc 1196      		adiw r26,1
+ 573 00de 8D91      		ld r24,X+
+ 574 00e0 9C91      		ld r25,X
+ 575 00e2 DC01      		movw r26,r24
+ 576 00e4 1696      		adiw r26,6
+ 577 00e6 8D91      		ld r24,X+
+ 578 00e8 9C91      		ld r25,X
+ 579 00ea 892B      		or r24,r25
+ 580 00ec 01F4      		brne .+2
+ 581 00ee 00C0      		rjmp .L18
+ 412:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   }
+ 582               		.loc 1 412 0
+ 583 00f0 0288      		ldd __tmp_reg__,Z+18
+ 584 00f2 F389      		ldd r31,Z+19
+ 585 00f4 E02D      		mov r30,__tmp_reg__
+ 586 00f6 81E0      		ldi r24,lo8(1)
+ 587 00f8 8083      		st Z,r24
+ 588               	.LBE25:
+ 589               		.loc 1 414 0
+ 590 00fa 00C0      		rjmp .L18
+ 591               	.L31:
+ 592               	.LBB30:
+ 593               	.LBB29:
+ 594               	.LBB28:
+ 131:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   else index++;
+ 595               		.loc 1 131 0
+ 596 00fc 50E0      		ldi r21,0
+ 597 00fe 40E0      		ldi r20,0
+ 598 0100 00C0      		rjmp .L23
+ 599               	.LVL18:
+ 600               	.L30:
+ 601 0102 9861      		ori r25,lo8(24)
+ 602               	.LVL19:
+ 603               	.LBE28:
+ 604               	.LBE29:
+ 401:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****       }
+ 605               		.loc 1 401 0
+ 606 0104 00C0      		rjmp .L21
+ 607               	.LBE30:
+ 608               		.cfi_endproc
+ 609               	.LFE244:
+ 611               		.section	.text.pwm_lld_stop,"ax",@progbits
+ 612               	.global	pwm_lld_stop
+ 614               	pwm_lld_stop:
+ 615               	.LFB245:
+ 415:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 416:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** /**
+ 417:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @brief   Deactivates the PWM peripheral.
+ 418:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  *
+ 419:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @param[in] pwmp      pointer to the @p PWMDriver object
+ 420:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  *
+ 421:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @notapi
+ 422:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  */
+ 423:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** void pwm_lld_stop(PWMDriver *pwmp) {
+ 616               		.loc 1 423 0
+ 617               		.cfi_startproc
+ 618               	.LVL20:
+ 619               	/* prologue: function */
+ 620               	/* frame size = 0 */
+ 621               	/* stack size = 0 */
+ 622               	.L__stack_usage = 0
+ 623               	.LBB31:
+ 624               	.LBB32:
+ 131:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   else index++;
+ 625               		.loc 1 131 0
+ 626 0000 21E0      		ldi r18,lo8(1)
+ 627 0002 30E0      		ldi r19,0
+ 628 0004 8050      		subi r24,lo8(PWMD1)
+ 629 0006 9040      		sbci r25,hi8(PWMD1)
+ 630 0008 01F0      		breq .L34
+ 631               	.L33:
+ 632               	.LBE32:
+ 633               	.LBE31:
+ 424:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 425:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #if AVR_PWM_USE_TIM2 || defined(__DOXYGEN__)
+ 426:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   if (pwmp == &PWMD2) {
+ 427:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     TCCR2A = 0;
+ 428:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     TCCR2B = 0;
+ 429:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     TIMSK2 = 0;
+ 430:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     return;
+ 431:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   }
+ 432:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #endif
+ 433:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   uint8_t i = timer_index(pwmp);
+ 434:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   *regs_table[i].tccra = 0;
+ 634               		.loc 1 434 0
+ 635 000a 86E1      		ldi r24,lo8(22)
+ 636               	.LVL21:
+ 637 000c 829F      		mul r24,r18
+ 638 000e F001      		movw r30,r0
+ 639 0010 839F      		mul r24,r19
+ 640 0012 F00D      		add r31,r0
+ 641 0014 1124      		clr __zero_reg__
+ 642 0016 E050      		subi r30,lo8(-(regs_table))
+ 643 0018 F040      		sbci r31,hi8(-(regs_table))
+ 644 001a A081      		ld r26,Z
+ 645 001c B181      		ldd r27,Z+1
+ 646 001e 1C92      		st X,__zero_reg__
+ 435:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   *regs_table[i].tccrb = 0;
+ 647               		.loc 1 435 0
+ 648 0020 A281      		ldd r26,Z+2
+ 649 0022 B381      		ldd r27,Z+3
+ 650 0024 1C92      		st X,__zero_reg__
+ 436:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   *regs_table[i].timsk = 0;
+ 651               		.loc 1 436 0
+ 652 0026 0288      		ldd __tmp_reg__,Z+18
+ 653 0028 F389      		ldd r31,Z+19
+ 654 002a E02D      		mov r30,__tmp_reg__
+ 655 002c 1082      		st Z,__zero_reg__
+ 656               	/* epilogue start */
+ 437:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** }
+ 657               		.loc 1 437 0
+ 658 002e 0895      		ret
+ 659               	.LVL22:
+ 660               	.L34:
+ 661               	.LBB34:
+ 662               	.LBB33:
+ 131:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   else index++;
+ 663               		.loc 1 131 0
+ 664 0030 30E0      		ldi r19,0
+ 665 0032 20E0      		ldi r18,0
+ 666 0034 00C0      		rjmp .L33
+ 667               	.LBE33:
+ 668               	.LBE34:
+ 669               		.cfi_endproc
+ 670               	.LFE245:
+ 672               		.section	.text.pwm_lld_change_period,"ax",@progbits
+ 673               	.global	pwm_lld_change_period
+ 675               	pwm_lld_change_period:
+ 676               	.LFB246:
+ 438:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 439:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** /**
+ 440:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @brief   Changes the period the PWM peripheral.
+ 441:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @details This function changes the period of a PWM unit that has already
+ 442:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  *          been activated using @p pwmStart().
+ 443:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @pre     The PWM unit must have been activated using @p pwmStart().
+ 444:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @post    The PWM unit period is changed to the new value.
+ 445:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @note    The function has effect at the next cycle start.
+ 446:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @note    If a period is specified that is shorter than the pulse width
+ 447:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  *          programmed in one of the channels then the behavior is not
+ 448:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  *          guaranteed.
+ 449:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  *
+ 450:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @param[in] pwmp      pointer to a @p PWMDriver object
+ 451:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @param[in] period    new cycle time in ticks
+ 452:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  *
+ 453:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @notapi
+ 454:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  */
+ 455:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** void pwm_lld_change_period(PWMDriver *pwmp, pwmcnt_t period) {
+ 677               		.loc 1 455 0
+ 678               		.cfi_startproc
+ 679               	.LVL23:
+ 680               	/* prologue: function */
+ 681               	/* frame size = 0 */
+ 682               	/* stack size = 0 */
+ 683               	.L__stack_usage = 0
+ 456:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 457:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #if AVR_PWM_USE_TIM2 || defined(__DOXYGEN__)
+ 458:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   /* Can't change period in timer2. */
+ 459:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   if (pwmp == &PWMD2) {
+ 460:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     PWMD2.period = 0xFF;
+ 461:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     return;
+ 462:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   }
+ 463:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #endif
+ 464:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   uint8_t i = timer_index(pwmp);
+ 465:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   *regs_table[i].icr = period;
+ 684               		.loc 1 465 0
+ 685 0000 7093 8700 		sts 134+1,r23
+ 686 0004 6093 8600 		sts 134,r22
+ 687               	/* epilogue start */
+ 466:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** }
+ 688               		.loc 1 466 0
+ 689 0008 0895      		ret
+ 690               		.cfi_endproc
+ 691               	.LFE246:
+ 693               		.section	.text.pwm_lld_enable_channel,"ax",@progbits
+ 694               	.global	pwm_lld_enable_channel
+ 696               	pwm_lld_enable_channel:
+ 697               	.LFB247:
+ 467:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 468:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** /**
+ 469:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @brief   Enables a PWM channel.
+ 470:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @pre     The PWM unit must have been activated using @p pwmStart().
+ 471:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @post    The channel is active using the specified configuration.
+ 472:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @note    Depending on the hardware implementation this function has
+ 473:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  *          effect starting on the next cycle (recommended implementation)
+ 474:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  *          or immediately (fallback implementation).
+ 475:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  *
+ 476:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @param[in] pwmp      pointer to a @p PWMDriver object
+ 477:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @param[in] channel   PWM channel identifier (0...PWM_CHANNELS-1)
+ 478:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @param[in] width     PWM pulse width as clock pulses number
+ 479:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  *
+ 480:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @notapi
+ 481:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  */
+ 482:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** void pwm_lld_enable_channel(PWMDriver *pwmp,
+ 483:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****                             pwmchannel_t channel,
+ 484:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****                             pwmcnt_t width) {
+ 698               		.loc 1 484 0
+ 699               		.cfi_startproc
+ 700               	.LVL24:
+ 701 0000 AF92      		push r10
+ 702               	.LCFI54:
+ 703               		.cfi_def_cfa_offset 3
+ 704               		.cfi_offset 10, -2
+ 705 0002 BF92      		push r11
+ 706               	.LCFI55:
+ 707               		.cfi_def_cfa_offset 4
+ 708               		.cfi_offset 11, -3
+ 709 0004 CF92      		push r12
+ 710               	.LCFI56:
+ 711               		.cfi_def_cfa_offset 5
+ 712               		.cfi_offset 12, -4
+ 713 0006 DF92      		push r13
+ 714               	.LCFI57:
+ 715               		.cfi_def_cfa_offset 6
+ 716               		.cfi_offset 13, -5
+ 717 0008 EF92      		push r14
+ 718               	.LCFI58:
+ 719               		.cfi_def_cfa_offset 7
+ 720               		.cfi_offset 14, -6
+ 721 000a FF92      		push r15
+ 722               	.LCFI59:
+ 723               		.cfi_def_cfa_offset 8
+ 724               		.cfi_offset 15, -7
+ 725 000c 0F93      		push r16
+ 726               	.LCFI60:
+ 727               		.cfi_def_cfa_offset 9
+ 728               		.cfi_offset 16, -8
+ 729 000e 1F93      		push r17
+ 730               	.LCFI61:
+ 731               		.cfi_def_cfa_offset 10
+ 732               		.cfi_offset 17, -9
+ 733 0010 CF93      		push r28
+ 734               	.LCFI62:
+ 735               		.cfi_def_cfa_offset 11
+ 736               		.cfi_offset 28, -10
+ 737 0012 DF93      		push r29
+ 738               	.LCFI63:
+ 739               		.cfi_def_cfa_offset 12
+ 740               		.cfi_offset 29, -11
+ 741               	/* prologue: function */
+ 742               	/* frame size = 0 */
+ 743               	/* stack size = 10 */
+ 744               	.L__stack_usage = 10
+ 745               	.LVL25:
+ 485:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 486:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   uint16_t val = width;
+ 487:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 488:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #if AVR_PWM_USE_TIM2 || defined(__DOXYGEN__)
+ 489:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   if (pwmp == &PWMD2) {
+ 490:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     config_channel(&TCCR2A,
+ 491:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****                    7 - 2*channel,
+ 492:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****                    6 - 2*channel,
+ 493:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****                    pwmp->config->channels[channel].mode);
+ 494:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     /* Timer 2 is 8 bit. */
+ 495:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     if (val > 0xFF)
+ 496:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****       val = 0xFF;
+ 497:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     switch (channel) {
+ 498:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     case 0: OCR2A = val; break;
+ 499:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     case 1: OCR2B = val; break;
+ 500:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     }
+ 501:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     TIFR2 = 1 << (OCF2A + channel);
+ 502:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     if (pwmp->config->channels[channel].callback)
+ 503:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****       TIMSK2 |= (1 << (OCIE2A + channel));
+ 504:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     return;
+ 505:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   }
+ 506:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** #endif
+ 507:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 508:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   uint8_t i = timer_index(pwmp);
+ 509:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   config_channel(regs_table[i].tccra,
+ 746               		.loc 1 509 0
+ 747 0014 E62F      		mov r30,r22
+ 748 0016 F0E0      		ldi r31,0
+ 749 0018 DC01      		movw r26,r24
+ 750 001a 1196      		adiw r26,1
+ 751 001c CD91      		ld r28,X+
+ 752 001e DC91      		ld r29,X
+ 753 0020 DF01      		movw r26,r30
+ 754 0022 AA0F      		lsl r26
+ 755 0024 BB1F      		rol r27
+ 756 0026 9D01      		movw r18,r26
+ 757 0028 2E0F      		add r18,r30
+ 758 002a 3F1F      		adc r19,r31
+ 759 002c C20F      		add r28,r18
+ 760 002e D31F      		adc r29,r19
+ 761 0030 B884      		ldd r11,Y+8
+ 762               	.LBB35:
+ 763               	.LBB36:
+ 131:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   else index++;
+ 764               		.loc 1 131 0
+ 765 0032 01E0      		ldi r16,lo8(1)
+ 766 0034 10E0      		ldi r17,0
+ 767 0036 C0E0      		ldi r28,hi8(PWMD1)
+ 768 0038 8030      		cpi r24,lo8(PWMD1)
+ 769 003a 9C07      		cpc r25,r28
+ 770 003c 01F4      		brne .+2
+ 771 003e 00C0      		rjmp .L49
+ 772               	.L37:
+ 773               	.LBE36:
+ 774               	.LBE35:
+ 775               		.loc 1 509 0
+ 776 0040 26E1      		ldi r18,lo8(22)
+ 777 0042 209F      		mul r18,r16
+ 778 0044 E001      		movw r28,r0
+ 779 0046 219F      		mul r18,r17
+ 780 0048 D00D      		add r29,r0
+ 781 004a 1124      		clr __zero_reg__
+ 782 004c C050      		subi r28,lo8(-(regs_table))
+ 783 004e D040      		sbci r29,hi8(-(regs_table))
+ 784 0050 0990      		ld __tmp_reg__,Y+
+ 785 0052 D881      		ld r29,Y
+ 786 0054 C02D      		mov r28,__tmp_reg__
+ 787               	.LVL26:
+ 788               	.LBB38:
+ 789               	.LBB39:
+ 119:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   if (mode == PWM_OUTPUT_ACTIVE_HIGH)
+ 790               		.loc 1 119 0
+ 791 0056 A880      		ld r10,Y
+ 792               	.LBE39:
+ 793               	.LBE38:
+ 794               		.loc 1 509 0
+ 795 0058 262F      		mov r18,r22
+ 796 005a 220F      		lsl r18
+ 797 005c 77E0      		ldi r23,lo8(7)
+ 798 005e 721B      		sub r23,r18
+ 799               	.LVL27:
+ 800               	.LBB44:
+ 801               	.LBB40:
+ 119:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   if (mode == PWM_OUTPUT_ACTIVE_HIGH)
+ 802               		.loc 1 119 0
+ 803 0060 21E0      		ldi r18,lo8(1)
+ 804 0062 30E0      		ldi r19,0
+ 805 0064 7901      		movw r14,r18
+ 806 0066 00C0      		rjmp 2f
+ 807               		1:
+ 808 0068 EE0C      		lsl r14
+ 809               		2:
+ 810 006a 7A95      		dec r23
+ 811 006c 02F4      		brpl 1b
+ 812               	.LBE40:
+ 813               	.LBE44:
+ 510:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****                  7 - 2*channel,
+ 511:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****                  6 - 2*channel,
+ 814               		.loc 1 511 0
+ 815 006e 73E0      		ldi r23,lo8(3)
+ 816 0070 C72E      		mov r12,r23
+ 817 0072 D12C      		mov r13,__zero_reg__
+ 818               	.LVL28:
+ 819 0074 CE1A      		sub r12,r30
+ 820 0076 DF0A      		sbc r13,r31
+ 509:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****                  7 - 2*channel,
+ 821               		.loc 1 509 0
+ 822 0078 CC0C      		lsl r12
+ 823               	.LBB45:
+ 824               	.LBB41:
+ 119:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   if (mode == PWM_OUTPUT_ACTIVE_HIGH)
+ 825               		.loc 1 119 0
+ 826 007a 00C0      		rjmp 2f
+ 827               		1:
+ 828 007c 220F      		lsl r18
+ 829               		2:
+ 830 007e CA94      		dec r12
+ 831 0080 02F4      		brpl 1b
+ 832 0082 2E29      		or r18,r14
+ 833 0084 322F      		mov r19,r18
+ 834 0086 3095      		com r19
+ 835 0088 3A21      		and r19,r10
+ 836 008a 3883      		st Y,r19
+ 120:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     *tccra |= ((1 << com1) | (0 << com0)); /* Non inverting mode. */
+ 837               		.loc 1 120 0
+ 838 008c 31E0      		ldi r19,lo8(1)
+ 839 008e B316      		cp r11,r19
+ 840 0090 01F4      		brne .+2
+ 841 0092 00C0      		rjmp .L50
+ 122:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     *tccra |= (1 << com1) | (1 << com0);   /* Inverting mode.     */
+ 842               		.loc 1 122 0
+ 843 0094 32E0      		ldi r19,lo8(2)
+ 844 0096 B316      		cp r11,r19
+ 845 0098 01F4      		brne .+2
+ 846 009a 00C0      		rjmp .L51
+ 847               	.L39:
+ 848               	.LVL29:
+ 849               	.LBE41:
+ 850               	.LBE45:
+ 512:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****                  pwmp->config->channels[channel].mode);
+ 513:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   volatile uint8_t *ocrh, *ocrl;
+ 514:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   switch (channel) {
+ 851               		.loc 1 514 0
+ 852 009c 6130      		cpi r22,lo8(1)
+ 853 009e 01F4      		brne .+2
+ 854 00a0 00C0      		rjmp .L41
+ 855               	.L52:
+ 856 00a2 6230      		cpi r22,lo8(2)
+ 857 00a4 01F4      		brne .+2
+ 858 00a6 00C0      		rjmp .L42
+ 515:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   case 1:
+ 516:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     ocrh = regs_table[i].ocrbh;
+ 517:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     ocrl = regs_table[i].ocrbl;
+ 518:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     break;
+ 519:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   case 2:
+ 520:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     ocrh = regs_table[i].ocrch;
+ 521:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     ocrl = regs_table[i].ocrcl;
+ 522:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     break;
+ 523:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   default:
+ 524:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     ocrh = regs_table[i].ocrah;
+ 859               		.loc 1 524 0
+ 860 00a8 26E1      		ldi r18,lo8(22)
+ 861 00aa 209F      		mul r18,r16
+ 862 00ac E001      		movw r28,r0
+ 863 00ae 219F      		mul r18,r17
+ 864 00b0 D00D      		add r29,r0
+ 865 00b2 1124      		clr __zero_reg__
+ 866 00b4 C050      		subi r28,lo8(-(regs_table))
+ 867 00b6 D040      		sbci r29,hi8(-(regs_table))
+ 868 00b8 2C81      		ldd r18,Y+4
+ 869 00ba 3D81      		ldd r19,Y+5
+ 870               	.LVL30:
+ 525:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     ocrl = regs_table[i].ocral;
+ 871               		.loc 1 525 0
+ 872 00bc 6E81      		ldd r22,Y+6
+ 873 00be 7F81      		ldd r23,Y+7
+ 874               	.LVL31:
+ 875               	.L43:
+ 526:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   }
+ 527:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   *ocrh = val >> 8;
+ 876               		.loc 1 527 0
+ 877 00c0 E901      		movw r28,r18
+ 878 00c2 5883      		st Y,r21
+ 528:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   *ocrl = val & 0xFF;
+ 879               		.loc 1 528 0
+ 880 00c4 EB01      		movw r28,r22
+ 881 00c6 4883      		st Y,r20
+ 529:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   *regs_table[i].tifr = (1 << (channel + 1));
+ 882               		.loc 1 529 0
+ 883 00c8 AF01      		movw r20,r30
+ 884               	.LVL32:
+ 885 00ca 4F5F      		subi r20,-1
+ 886 00cc 5F4F      		sbci r21,-1
+ 887 00ce 21E0      		ldi r18,lo8(1)
+ 888 00d0 30E0      		ldi r19,0
+ 889               	.LVL33:
+ 890 00d2 00C0      		rjmp 2f
+ 891               		1:
+ 892 00d4 220F      		lsl r18
+ 893               		2:
+ 894 00d6 4A95      		dec r20
+ 895 00d8 02F4      		brpl 1b
+ 896 00da 46E1      		ldi r20,lo8(22)
+ 897 00dc 409F      		mul r20,r16
+ 898 00de E001      		movw r28,r0
+ 899 00e0 419F      		mul r20,r17
+ 900 00e2 D00D      		add r29,r0
+ 901 00e4 1124      		clr __zero_reg__
+ 902 00e6 BE01      		movw r22,r28
+ 903               	.LVL34:
+ 904 00e8 6050      		subi r22,lo8(-(regs_table))
+ 905 00ea 7040      		sbci r23,hi8(-(regs_table))
+ 906 00ec EB01      		movw r28,r22
+ 907 00ee 4889      		ldd r20,Y+16
+ 908 00f0 5989      		ldd r21,Y+17
+ 909 00f2 EA01      		movw r28,r20
+ 910 00f4 2883      		st Y,r18
+ 530:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   if (pwmp->config->channels[channel].callback != NULL)
+ 911               		.loc 1 530 0
+ 912 00f6 EC01      		movw r28,r24
+ 913 00f8 8981      		ldd r24,Y+1
+ 914 00fa 9A81      		ldd r25,Y+2
+ 915               	.LVL35:
+ 916 00fc EA0F      		add r30,r26
+ 917 00fe FB1F      		adc r31,r27
+ 918               	.LVL36:
+ 919 0100 E80F      		add r30,r24
+ 920 0102 F91F      		adc r31,r25
+ 921 0104 8185      		ldd r24,Z+9
+ 922 0106 9285      		ldd r25,Z+10
+ 923 0108 892B      		or r24,r25
+ 924 010a 01F0      		breq .L36
+ 531:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     *regs_table[i].timsk |= (1 << (channel + 1));
+ 925               		.loc 1 531 0
+ 926 010c DB01      		movw r26,r22
+ 927 010e 5296      		adiw r26,18
+ 928 0110 ED91      		ld r30,X+
+ 929 0112 FC91      		ld r31,X
+ 930 0114 8081      		ld r24,Z
+ 931 0116 282B      		or r18,r24
+ 932 0118 2083      		st Z,r18
+ 933               	.L36:
+ 934               	/* epilogue start */
+ 532:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** }
+ 935               		.loc 1 532 0
+ 936 011a DF91      		pop r29
+ 937 011c CF91      		pop r28
+ 938               	.LVL37:
+ 939 011e 1F91      		pop r17
+ 940 0120 0F91      		pop r16
+ 941 0122 FF90      		pop r15
+ 942 0124 EF90      		pop r14
+ 943 0126 DF90      		pop r13
+ 944 0128 CF90      		pop r12
+ 945 012a BF90      		pop r11
+ 946 012c AF90      		pop r10
+ 947 012e 0895      		ret
+ 948               	.LVL38:
+ 949               	.L42:
+ 520:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     ocrl = regs_table[i].ocrcl;
+ 950               		.loc 1 520 0
+ 951 0130 26E1      		ldi r18,lo8(22)
+ 952 0132 209F      		mul r18,r16
+ 953 0134 E001      		movw r28,r0
+ 954 0136 219F      		mul r18,r17
+ 955 0138 D00D      		add r29,r0
+ 956 013a 1124      		clr __zero_reg__
+ 957 013c C050      		subi r28,lo8(-(regs_table))
+ 958 013e D040      		sbci r29,hi8(-(regs_table))
+ 959 0140 2C85      		ldd r18,Y+12
+ 960 0142 3D85      		ldd r19,Y+13
+ 961               	.LVL39:
+ 521:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     break;
+ 962               		.loc 1 521 0
+ 963 0144 6E85      		ldd r22,Y+14
+ 964 0146 7F85      		ldd r23,Y+15
+ 965               	.LVL40:
+ 522:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   default:
+ 966               		.loc 1 522 0
+ 967 0148 00C0      		rjmp .L43
+ 968               	.LVL41:
+ 969               	.L51:
+ 970               	.LBB46:
+ 971               	.LBB42:
+ 123:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** }
+ 972               		.loc 1 123 0
+ 973 014a 3881      		ld r19,Y
+ 974 014c 232B      		or r18,r19
+ 975 014e 2883      		st Y,r18
+ 976               	.LVL42:
+ 977               	.LBE42:
+ 978               	.LBE46:
+ 514:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   case 1:
+ 979               		.loc 1 514 0
+ 980 0150 6130      		cpi r22,lo8(1)
+ 981 0152 01F0      		breq .+2
+ 982 0154 00C0      		rjmp .L52
+ 983               	.L41:
+ 516:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     ocrl = regs_table[i].ocrbl;
+ 984               		.loc 1 516 0
+ 985 0156 26E1      		ldi r18,lo8(22)
+ 986 0158 209F      		mul r18,r16
+ 987 015a E001      		movw r28,r0
+ 988 015c 219F      		mul r18,r17
+ 989 015e D00D      		add r29,r0
+ 990 0160 1124      		clr __zero_reg__
+ 991 0162 C050      		subi r28,lo8(-(regs_table))
+ 992 0164 D040      		sbci r29,hi8(-(regs_table))
+ 993 0166 2885      		ldd r18,Y+8
+ 994 0168 3985      		ldd r19,Y+9
+ 995               	.LVL43:
+ 517:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****     break;
+ 996               		.loc 1 517 0
+ 997 016a 6A85      		ldd r22,Y+10
+ 998 016c 7B85      		ldd r23,Y+11
+ 999               	.LVL44:
+ 518:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   case 2:
+ 1000               		.loc 1 518 0
+ 1001 016e 00C0      		rjmp .L43
+ 1002               	.LVL45:
+ 1003               	.L50:
+ 1004               	.LBB47:
+ 1005               	.LBB43:
+ 121:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   else if (mode == PWM_OUTPUT_ACTIVE_LOW)
+ 1006               		.loc 1 121 0
+ 1007 0170 2881      		ld r18,Y
+ 1008 0172 E22A      		or r14,r18
+ 1009 0174 E882      		st Y,r14
+ 1010 0176 00C0      		rjmp .L39
+ 1011               	.LVL46:
+ 1012               	.L49:
+ 1013               	.LBE43:
+ 1014               	.LBE47:
+ 1015               	.LBB48:
+ 1016               	.LBB37:
+ 131:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   else index++;
+ 1017               		.loc 1 131 0
+ 1018 0178 10E0      		ldi r17,0
+ 1019 017a 00E0      		ldi r16,0
+ 1020 017c 00C0      		rjmp .L37
+ 1021               	.LBE37:
+ 1022               	.LBE48:
+ 1023               		.cfi_endproc
+ 1024               	.LFE247:
+ 1026               		.section	.text.pwm_lld_disable_channel,"ax",@progbits
+ 1027               	.global	pwm_lld_disable_channel
+ 1029               	pwm_lld_disable_channel:
+ 1030               	.LFB248:
+ 533:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 534:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** /**
+ 535:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @brief   Disables a PWM channel.
+ 536:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @pre     The PWM unit must have been activated using @p pwmStart().
+ 537:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @post    The channel is disabled and its output line returned to the
+ 538:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  *          idle state.
+ 539:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @note    Depending on the hardware implementation this function has
+ 540:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  *          effect starting on the next cycle (recommended implementation)
+ 541:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  *          or immediately (fallback implementation).
+ 542:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  *
+ 543:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @param[in] pwmp      pointer to a @p PWMDriver object
+ 544:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @param[in] channel   PWM channel identifier (0...PWM_CHANNELS-1)
+ 545:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  *
+ 546:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @notapi
+ 547:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  */
+ 548:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** void pwm_lld_disable_channel(PWMDriver *pwmp, pwmchannel_t channel) {
+ 1031               		.loc 1 548 0
+ 1032               		.cfi_startproc
+ 1033               	.LVL47:
+ 1034 0000 0F93      		push r16
+ 1035               	.LCFI64:
+ 1036               		.cfi_def_cfa_offset 3
+ 1037               		.cfi_offset 16, -2
+ 1038 0002 1F93      		push r17
+ 1039               	.LCFI65:
+ 1040               		.cfi_def_cfa_offset 4
+ 1041               		.cfi_offset 17, -3
+ 1042 0004 CF93      		push r28
+ 1043               	.LCFI66:
+ 1044               		.cfi_def_cfa_offset 5
+ 1045               		.cfi_offset 28, -4
+ 1046 0006 DF93      		push r29
+ 1047               	.LCFI67:
+ 1048               		.cfi_def_cfa_offset 6
+ 1049               		.cfi_offset 29, -5
+ 1050               	/* prologue: function */
+ 1051               	/* frame size = 0 */
+ 1052               	/* stack size = 4 */
+ 1053               	.L__stack_usage = 4
+ 1054               	.LVL48:
+ 549:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 550:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   uint8_t i = timer_index(pwmp);
+ 551:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   config_channel(regs_table[i].tccra,
+ 552:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****                  7 - 2*channel,
+ 553:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****                  6 - 2*channel,
+ 1055               		.loc 1 553 0
+ 1056 0008 E62F      		mov r30,r22
+ 1057 000a F0E0      		ldi r31,0
+ 1058               	.LBB49:
+ 1059               	.LBB50:
+ 131:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   else index++;
+ 1060               		.loc 1 131 0
+ 1061 000c 21E0      		ldi r18,lo8(1)
+ 1062 000e 30E0      		ldi r19,0
+ 1063 0010 8050      		subi r24,lo8(PWMD1)
+ 1064 0012 9040      		sbci r25,hi8(PWMD1)
+ 1065 0014 01F0      		breq .L55
+ 1066               	.L54:
+ 1067               	.LBE50:
+ 1068               	.LBE49:
+ 551:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****                  7 - 2*channel,
+ 1069               		.loc 1 551 0
+ 1070 0016 86E1      		ldi r24,lo8(22)
+ 1071               	.LVL49:
+ 1072 0018 829F      		mul r24,r18
+ 1073 001a D001      		movw r26,r0
+ 1074 001c 839F      		mul r24,r19
+ 1075 001e B00D      		add r27,r0
+ 1076 0020 1124      		clr __zero_reg__
+ 1077 0022 A050      		subi r26,lo8(-(regs_table))
+ 1078 0024 B040      		sbci r27,hi8(-(regs_table))
+ 1079 0026 CD91      		ld r28,X+
+ 1080 0028 DC91      		ld r29,X
+ 1081 002a 1197      		sbiw r26,1
+ 1082               	.LVL50:
+ 1083               	.LBB52:
+ 1084               	.LBB53:
+ 119:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   if (mode == PWM_OUTPUT_ACTIVE_HIGH)
+ 1085               		.loc 1 119 0
+ 1086 002c 7881      		ld r23,Y
+ 1087               	.LBE53:
+ 1088               	.LBE52:
+ 551:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****                  7 - 2*channel,
+ 1089               		.loc 1 551 0
+ 1090 002e 660F      		lsl r22
+ 1091               	.LVL51:
+ 1092 0030 37E0      		ldi r19,lo8(7)
+ 1093 0032 361B      		sub r19,r22
+ 1094               	.LVL52:
+ 1095               	.LBB56:
+ 1096               	.LBB54:
+ 119:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   if (mode == PWM_OUTPUT_ACTIVE_HIGH)
+ 1097               		.loc 1 119 0
+ 1098 0034 81E0      		ldi r24,lo8(1)
+ 1099 0036 90E0      		ldi r25,0
+ 1100 0038 AC01      		movw r20,r24
+ 1101 003a 00C0      		rjmp 2f
+ 1102               		1:
+ 1103 003c 440F      		lsl r20
+ 1104 003e 551F      		rol r21
+ 1105               		2:
+ 1106 0040 3A95      		dec r19
+ 1107 0042 02F4      		brpl 1b
+ 1108 0044 9A01      		movw r18,r20
+ 1109               	.LBE54:
+ 1110               	.LBE56:
+ 1111               		.loc 1 553 0
+ 1112 0046 43E0      		ldi r20,lo8(3)
+ 1113 0048 50E0      		ldi r21,0
+ 1114 004a 4E1B      		sub r20,r30
+ 1115 004c 5F0B      		sbc r21,r31
+ 551:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****                  7 - 2*channel,
+ 1116               		.loc 1 551 0
+ 1117 004e 440F      		lsl r20
+ 1118               	.LBB57:
+ 1119               	.LBB55:
+ 119:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   if (mode == PWM_OUTPUT_ACTIVE_HIGH)
+ 1120               		.loc 1 119 0
+ 1121 0050 8C01      		movw r16,r24
+ 1122 0052 00C0      		rjmp 2f
+ 1123               		1:
+ 1124 0054 000F      		lsl r16
+ 1125 0056 111F      		rol r17
+ 1126               		2:
+ 1127 0058 4A95      		dec r20
+ 1128 005a 02F4      		brpl 1b
+ 1129 005c 202B      		or r18,r16
+ 1130 005e 2095      		com r18
+ 1131 0060 2723      		and r18,r23
+ 1132 0062 2883      		st Y,r18
+ 1133               	.LVL53:
+ 1134               	.LBE55:
+ 1135               	.LBE57:
+ 554:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****                  PWM_OUTPUT_DISABLED);
+ 555:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   *regs_table[i].timsk &= ~(1 << (channel + 1));
+ 1136               		.loc 1 555 0
+ 1137 0064 5296      		adiw r26,18
+ 1138 0066 0D90      		ld __tmp_reg__,X+
+ 1139 0068 BC91      		ld r27,X
+ 1140 006a A02D      		mov r26,__tmp_reg__
+ 1141 006c 2C91      		ld r18,X
+ 1142 006e 3196      		adiw r30,1
+ 1143               	.LVL54:
+ 1144 0070 00C0      		rjmp 2f
+ 1145               		1:
+ 1146 0072 880F      		lsl r24
+ 1147               		2:
+ 1148 0074 EA95      		dec r30
+ 1149 0076 02F4      		brpl 1b
+ 1150 0078 8095      		com r24
+ 1151 007a 8223      		and r24,r18
+ 1152 007c 8C93      		st X,r24
+ 1153               	/* epilogue start */
+ 556:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** }
+ 1154               		.loc 1 556 0
+ 1155 007e DF91      		pop r29
+ 1156 0080 CF91      		pop r28
+ 1157 0082 1F91      		pop r17
+ 1158 0084 0F91      		pop r16
+ 1159 0086 0895      		ret
+ 1160               	.LVL55:
+ 1161               	.L55:
+ 1162               	.LBB58:
+ 1163               	.LBB51:
+ 131:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   else index++;
+ 1164               		.loc 1 131 0
+ 1165 0088 30E0      		ldi r19,0
+ 1166 008a 20E0      		ldi r18,0
+ 1167 008c 00C0      		rjmp .L54
+ 1168               	.LBE51:
+ 1169               	.LBE58:
+ 1170               		.cfi_endproc
+ 1171               	.LFE248:
+ 1173               		.section	.text.pwm_lld_enable_periodic_notification,"ax",@progbits
+ 1174               	.global	pwm_lld_enable_periodic_notification
+ 1176               	pwm_lld_enable_periodic_notification:
+ 1177               	.LFB249:
+ 557:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 558:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** /**
+ 559:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @brief   Enables the periodic activation edge notification.
+ 560:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @pre     The PWM unit must have been activated using @p pwmStart().
+ 561:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @note    If the notification is already enabled then the call has no effect.
+ 562:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  *
+ 563:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @param[in] pwmp      pointer to a @p PWMDriver object
+ 564:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  *
+ 565:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @notapi
+ 566:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  */
+ 567:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** void pwm_lld_enable_periodic_notification(PWMDriver *pwmp) {
+ 1178               		.loc 1 567 0
+ 1179               		.cfi_startproc
+ 1180               	.LVL56:
+ 1181               	/* prologue: function */
+ 1182               	/* frame size = 0 */
+ 1183               	/* stack size = 0 */
+ 1184               	.L__stack_usage = 0
+ 1185               	.LBB59:
+ 1186               	.LBB60:
+ 131:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   else index++;
+ 1187               		.loc 1 131 0
+ 1188 0000 21E0      		ldi r18,lo8(1)
+ 1189 0002 30E0      		ldi r19,0
+ 1190 0004 8050      		subi r24,lo8(PWMD1)
+ 1191 0006 9040      		sbci r25,hi8(PWMD1)
+ 1192 0008 01F0      		breq .L58
+ 1193               	.L57:
+ 1194               	.LBE60:
+ 1195               	.LBE59:
+ 568:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 569:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   uint8_t i = timer_index(pwmp);
+ 570:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   *regs_table[i].timsk |= (1 << TOIE1);
+ 1196               		.loc 1 570 0
+ 1197 000a 86E1      		ldi r24,lo8(22)
+ 1198               	.LVL57:
+ 1199 000c 829F      		mul r24,r18
+ 1200 000e F001      		movw r30,r0
+ 1201 0010 839F      		mul r24,r19
+ 1202 0012 F00D      		add r31,r0
+ 1203 0014 1124      		clr __zero_reg__
+ 1204 0016 E050      		subi r30,lo8(-(regs_table))
+ 1205 0018 F040      		sbci r31,hi8(-(regs_table))
+ 1206 001a 0288      		ldd __tmp_reg__,Z+18
+ 1207 001c F389      		ldd r31,Z+19
+ 1208 001e E02D      		mov r30,__tmp_reg__
+ 1209 0020 8081      		ld r24,Z
+ 1210 0022 8160      		ori r24,lo8(1)
+ 1211 0024 8083      		st Z,r24
+ 1212               	/* epilogue start */
+ 571:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** }
+ 1213               		.loc 1 571 0
+ 1214 0026 0895      		ret
+ 1215               	.LVL58:
+ 1216               	.L58:
+ 1217               	.LBB62:
+ 1218               	.LBB61:
+ 131:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   else index++;
+ 1219               		.loc 1 131 0
+ 1220 0028 30E0      		ldi r19,0
+ 1221 002a 20E0      		ldi r18,0
+ 1222 002c 00C0      		rjmp .L57
+ 1223               	.LBE61:
+ 1224               	.LBE62:
+ 1225               		.cfi_endproc
+ 1226               	.LFE249:
+ 1228               		.section	.text.pwm_lld_disable_periodic_notification,"ax",@progbits
+ 1229               	.global	pwm_lld_disable_periodic_notification
+ 1231               	pwm_lld_disable_periodic_notification:
+ 1232               	.LFB250:
+ 572:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 573:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** /**
+ 574:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @brief   Disables the periodic activation edge notification.
+ 575:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @pre     The PWM unit must have been activated using @p pwmStart().
+ 576:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @note    If the notification is already disabled then the call has no effect.
+ 577:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  *
+ 578:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @param[in] pwmp      pointer to a @p PWMDriver object
+ 579:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  *
+ 580:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @notapi
+ 581:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  */
+ 582:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** void pwm_lld_disable_periodic_notification(PWMDriver *pwmp) {
+ 1233               		.loc 1 582 0
+ 1234               		.cfi_startproc
+ 1235               	.LVL59:
+ 1236               	/* prologue: function */
+ 1237               	/* frame size = 0 */
+ 1238               	/* stack size = 0 */
+ 1239               	.L__stack_usage = 0
+ 1240               	.LBB63:
+ 1241               	.LBB64:
+ 131:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   else index++;
+ 1242               		.loc 1 131 0
+ 1243 0000 21E0      		ldi r18,lo8(1)
+ 1244 0002 30E0      		ldi r19,0
+ 1245 0004 8050      		subi r24,lo8(PWMD1)
+ 1246 0006 9040      		sbci r25,hi8(PWMD1)
+ 1247 0008 01F0      		breq .L61
+ 1248               	.L60:
+ 1249               	.LBE64:
+ 1250               	.LBE63:
+ 583:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 584:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   uint8_t i = timer_index(pwmp);
+ 585:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   *regs_table[i].timsk &= ~(1 << TOIE1);
+ 1251               		.loc 1 585 0
+ 1252 000a 86E1      		ldi r24,lo8(22)
+ 1253               	.LVL60:
+ 1254 000c 829F      		mul r24,r18
+ 1255 000e F001      		movw r30,r0
+ 1256 0010 839F      		mul r24,r19
+ 1257 0012 F00D      		add r31,r0
+ 1258 0014 1124      		clr __zero_reg__
+ 1259 0016 E050      		subi r30,lo8(-(regs_table))
+ 1260 0018 F040      		sbci r31,hi8(-(regs_table))
+ 1261 001a 0288      		ldd __tmp_reg__,Z+18
+ 1262 001c F389      		ldd r31,Z+19
+ 1263 001e E02D      		mov r30,__tmp_reg__
+ 1264 0020 8081      		ld r24,Z
+ 1265 0022 8E7F      		andi r24,lo8(-2)
+ 1266 0024 8083      		st Z,r24
+ 1267               	/* epilogue start */
+ 586:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** }
+ 1268               		.loc 1 586 0
+ 1269 0026 0895      		ret
+ 1270               	.LVL61:
+ 1271               	.L61:
+ 1272               	.LBB66:
+ 1273               	.LBB65:
+ 131:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   else index++;
+ 1274               		.loc 1 131 0
+ 1275 0028 30E0      		ldi r19,0
+ 1276 002a 20E0      		ldi r18,0
+ 1277 002c 00C0      		rjmp .L60
+ 1278               	.LBE65:
+ 1279               	.LBE66:
+ 1280               		.cfi_endproc
+ 1281               	.LFE250:
+ 1283               		.section	.text.pwm_lld_enable_channel_notification,"ax",@progbits
+ 1284               	.global	pwm_lld_enable_channel_notification
+ 1286               	pwm_lld_enable_channel_notification:
+ 1287               	.LFB251:
+ 587:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 588:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** /**
+ 589:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @brief   Enables a channel de-activation edge notification.
+ 590:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @pre     The PWM unit must have been activated using @p pwmStart().
+ 591:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @pre     The channel must have been activated using @p pwmEnableChannel().
+ 592:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @note    If the notification is already enabled then the call has no effect.
+ 593:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  *
+ 594:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @param[in] pwmp      pointer to a @p PWMDriver object
+ 595:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @param[in] channel   PWM channel identifier (0...channels-1)
+ 596:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  *
+ 597:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @notapi
+ 598:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  */
+ 599:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** void pwm_lld_enable_channel_notification(PWMDriver *pwmp,
+ 600:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****                                          pwmchannel_t channel) {
+ 1288               		.loc 1 600 0
+ 1289               		.cfi_startproc
+ 1290               	.LVL62:
+ 1291               	/* prologue: function */
+ 1292               	/* frame size = 0 */
+ 1293               	/* stack size = 0 */
+ 1294               	.L__stack_usage = 0
+ 1295               	.LBB67:
+ 1296               	.LBB68:
+ 131:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   else index++;
+ 1297               		.loc 1 131 0
+ 1298 0000 21E0      		ldi r18,lo8(1)
+ 1299 0002 30E0      		ldi r19,0
+ 1300 0004 8050      		subi r24,lo8(PWMD1)
+ 1301 0006 9040      		sbci r25,hi8(PWMD1)
+ 1302 0008 01F0      		breq .L64
+ 1303               	.L63:
+ 1304               	.LBE68:
+ 1305               	.LBE67:
+ 601:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 602:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   uint8_t i = timer_index(pwmp);
+ 603:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   *regs_table[i].timsk |= (1 << (channel + 1));
+ 1306               		.loc 1 603 0
+ 1307 000a 86E1      		ldi r24,lo8(22)
+ 1308               	.LVL63:
+ 1309 000c 829F      		mul r24,r18
+ 1310 000e F001      		movw r30,r0
+ 1311 0010 839F      		mul r24,r19
+ 1312 0012 F00D      		add r31,r0
+ 1313 0014 1124      		clr __zero_reg__
+ 1314 0016 E050      		subi r30,lo8(-(regs_table))
+ 1315 0018 F040      		sbci r31,hi8(-(regs_table))
+ 1316 001a 0288      		ldd __tmp_reg__,Z+18
+ 1317 001c F389      		ldd r31,Z+19
+ 1318 001e E02D      		mov r30,__tmp_reg__
+ 1319 0020 8081      		ld r24,Z
+ 1320 0022 6F5F      		subi r22,lo8(-(1))
+ 1321               	.LVL64:
+ 1322 0024 21E0      		ldi r18,lo8(1)
+ 1323 0026 30E0      		ldi r19,0
+ 1324 0028 00C0      		rjmp 2f
+ 1325               		1:
+ 1326 002a 220F      		lsl r18
+ 1327               		2:
+ 1328 002c 6A95      		dec r22
+ 1329 002e 02F4      		brpl 1b
+ 1330 0030 822B      		or r24,r18
+ 1331 0032 8083      		st Z,r24
+ 1332               	/* epilogue start */
+ 604:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** }
+ 1333               		.loc 1 604 0
+ 1334 0034 0895      		ret
+ 1335               	.LVL65:
+ 1336               	.L64:
+ 1337               	.LBB70:
+ 1338               	.LBB69:
+ 131:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   else index++;
+ 1339               		.loc 1 131 0
+ 1340 0036 30E0      		ldi r19,0
+ 1341 0038 20E0      		ldi r18,0
+ 1342 003a 00C0      		rjmp .L63
+ 1343               	.LBE69:
+ 1344               	.LBE70:
+ 1345               		.cfi_endproc
+ 1346               	.LFE251:
+ 1348               		.section	.text.pwm_lld_disable_channel_notification,"ax",@progbits
+ 1349               	.global	pwm_lld_disable_channel_notification
+ 1351               	pwm_lld_disable_channel_notification:
+ 1352               	.LFB252:
+ 605:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 606:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** /**
+ 607:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @brief   Disables a channel de-activation edge notification.
+ 608:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @pre     The PWM unit must have been activated using @p pwmStart().
+ 609:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @pre     The channel must have been activated using @p pwmEnableChannel().
+ 610:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @note    If the notification is already disabled then the call has no effect.
+ 611:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  *
+ 612:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @param[in] pwmp      pointer to a @p PWMDriver object
+ 613:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @param[in] channel   PWM channel identifier (0...channels-1)
+ 614:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  *
+ 615:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  * @notapi
+ 616:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****  */
+ 617:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** void pwm_lld_disable_channel_notification(PWMDriver *pwmp,
+ 618:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****                                           pwmchannel_t channel) {
+ 1353               		.loc 1 618 0
+ 1354               		.cfi_startproc
+ 1355               	.LVL66:
+ 1356               	/* prologue: function */
+ 1357               	/* frame size = 0 */
+ 1358               	/* stack size = 0 */
+ 1359               	.L__stack_usage = 0
+ 1360               	.LBB71:
+ 1361               	.LBB72:
+ 131:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   else index++;
+ 1362               		.loc 1 131 0
+ 1363 0000 21E0      		ldi r18,lo8(1)
+ 1364 0002 30E0      		ldi r19,0
+ 1365 0004 8050      		subi r24,lo8(PWMD1)
+ 1366 0006 9040      		sbci r25,hi8(PWMD1)
+ 1367 0008 01F0      		breq .L67
+ 1368               	.L66:
+ 1369               	.LBE72:
+ 1370               	.LBE71:
+ 619:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** 
+ 620:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   uint8_t i = timer_index(pwmp);
+ 621:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   *regs_table[i].timsk &= ~(1 << (channel + 1));
+ 1371               		.loc 1 621 0
+ 1372 000a 86E1      		ldi r24,lo8(22)
+ 1373               	.LVL67:
+ 1374 000c 829F      		mul r24,r18
+ 1375 000e F001      		movw r30,r0
+ 1376 0010 839F      		mul r24,r19
+ 1377 0012 F00D      		add r31,r0
+ 1378 0014 1124      		clr __zero_reg__
+ 1379 0016 E050      		subi r30,lo8(-(regs_table))
+ 1380 0018 F040      		sbci r31,hi8(-(regs_table))
+ 1381 001a 0288      		ldd __tmp_reg__,Z+18
+ 1382 001c F389      		ldd r31,Z+19
+ 1383 001e E02D      		mov r30,__tmp_reg__
+ 1384 0020 2081      		ld r18,Z
+ 1385 0022 6F5F      		subi r22,lo8(-(1))
+ 1386               	.LVL68:
+ 1387 0024 81E0      		ldi r24,lo8(1)
+ 1388 0026 90E0      		ldi r25,0
+ 1389 0028 00C0      		rjmp 2f
+ 1390               		1:
+ 1391 002a 880F      		lsl r24
+ 1392               		2:
+ 1393 002c 6A95      		dec r22
+ 1394 002e 02F4      		brpl 1b
+ 1395 0030 8095      		com r24
+ 1396 0032 8223      		and r24,r18
+ 1397 0034 8083      		st Z,r24
+ 1398               	/* epilogue start */
+ 622:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c **** }
+ 1399               		.loc 1 622 0
+ 1400 0036 0895      		ret
+ 1401               	.LVL69:
+ 1402               	.L67:
+ 1403               	.LBB74:
+ 1404               	.LBB73:
+ 131:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.c ****   else index++;
+ 1405               		.loc 1 131 0
+ 1406 0038 30E0      		ldi r19,0
+ 1407 003a 20E0      		ldi r18,0
+ 1408 003c 00C0      		rjmp .L66
+ 1409               	.LBE73:
+ 1410               	.LBE74:
+ 1411               		.cfi_endproc
+ 1412               	.LFE252:
+ 1414               		.comm	PWMD1,7,1
+ 1415               		.section	.rodata.regs_table,"a",@progbits
+ 1418               	regs_table:
+ 1419 0000 8000      		.word	128
+ 1420 0002 8100      		.word	129
+ 1421 0004 8900      		.word	137
+ 1422 0006 8800      		.word	136
+ 1423 0008 8B00      		.word	139
+ 1424 000a 8A00      		.word	138
+ 1425 000c 0000      		.word	0
+ 1426 000e 0000      		.word	0
+ 1427 0010 3600      		.word	54
+ 1428 0012 6F00      		.word	111
+ 1429 0014 8600      		.word	134
+ 1430               		.text
+ 1431               	.Letext0:
+ 1432               		.file 2 "/usr/lib/gcc/avr/7.3.0/include/stddef.h"
+ 1433               		.file 3 "/usr/lib/avr/include/stdint.h"
+ 1434               		.file 4 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/compile
+ 1435               		.file 5 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chearly.h"
+ 1436               		.file 6 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chobjects.h"
+ 1437               		.file 7 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chrfcu.h"
+ 1438               		.file 8 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chdebug.h"
+ 1439               		.file 9 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chtime.h"
+ 1440               		.file 10 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chlists.h"
+ 1441               		.file 11 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore
+ 1442               		.file 12 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chsem.h"
+ 1443               		.file 13 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chmtx.h"
+ 1444               		.file 14 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chsys.h"
+ 1445               		.file 15 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h
+ 1446               		.file 16 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chevents.h"
+ 1447               		.file 17 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/oslib/include/chmemcore
+ 1448               		.file 18 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_queues.
+ 1449               		.file 19 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
+ 1450               		.file 20 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_pwm.h"
+ 1451               		.file 21 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
+ 1452               		.file 22 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_serial.
+ 1453               		.file 23 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
+ 1454               		.file 24 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chschd.h"
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 hal_pwm_lld.c
+     /tmp/cclTL9Bn.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/cclTL9Bn.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/cclTL9Bn.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/cclTL9Bn.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/cclTL9Bn.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/cclTL9Bn.s:13     .text.__vector_13:0000000000000000 __vector_13
+                            *COM*:0000000000000007 PWMD1
+     /tmp/cclTL9Bn.s:128    .text.__vector_11:0000000000000000 __vector_11
+     /tmp/cclTL9Bn.s:242    .text.__vector_12:0000000000000000 __vector_12
+     /tmp/cclTL9Bn.s:356    .text.pwm_lld_init:0000000000000000 pwm_lld_init
+     /tmp/cclTL9Bn.s:388    .text.pwm_lld_start:0000000000000000 pwm_lld_start
+     /tmp/cclTL9Bn.s:1418   .rodata.regs_table:0000000000000000 regs_table
+     /tmp/cclTL9Bn.s:614    .text.pwm_lld_stop:0000000000000000 pwm_lld_stop
+     /tmp/cclTL9Bn.s:675    .text.pwm_lld_change_period:0000000000000000 pwm_lld_change_period
+     /tmp/cclTL9Bn.s:696    .text.pwm_lld_enable_channel:0000000000000000 pwm_lld_enable_channel
+     /tmp/cclTL9Bn.s:1029   .text.pwm_lld_disable_channel:0000000000000000 pwm_lld_disable_channel
+     /tmp/cclTL9Bn.s:1176   .text.pwm_lld_enable_periodic_notification:0000000000000000 pwm_lld_enable_periodic_notification
+     /tmp/cclTL9Bn.s:1231   .text.pwm_lld_disable_periodic_notification:0000000000000000 pwm_lld_disable_periodic_notification
+     /tmp/cclTL9Bn.s:1286   .text.pwm_lld_enable_channel_notification:0000000000000000 pwm_lld_enable_channel_notification
+     /tmp/cclTL9Bn.s:1351   .text.pwm_lld_disable_channel_notification:0000000000000000 pwm_lld_disable_channel_notification
+
+UNDEFINED SYMBOLS
+__avr_in_isr
+chSchIsPreemptionRequired
+chSchDoPreemption
+pwmObjectInit
+__do_copy_data
+__do_clear_bss

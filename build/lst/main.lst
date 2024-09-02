@@ -1,0 +1,273 @@
+   1               		.file	"main.c"
+   2               	__SP_H__ = 0x3e
+   3               	__SP_L__ = 0x3d
+   4               	__SREG__ = 0x3f
+   5               	__tmp_reg__ = 0
+   6               	__zero_reg__ = 1
+   7               		.text
+   8               	.Ltext0:
+   9               		.cfi_sections	.debug_frame
+  10               		.section	.text.teste,"ax",@progbits
+  11               	.global	teste
+  13               	teste:
+  14               	.LFB238:
+  15               		.file 1 "main.c"
+   1:main.c        **** /*
+   2:main.c        ****     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
+   3:main.c        **** 
+   4:main.c        ****     Licensed under the Apache License, Version 2.0 (the "License");
+   5:main.c        ****     you may not use this file except in compliance with the License.
+   6:main.c        ****     You may obtain a copy of the License at
+   7:main.c        **** 
+   8:main.c        ****         http://www.apache.org/licenses/LICENSE-2.0
+   9:main.c        **** 
+  10:main.c        ****     Unless required by applicable law or agreed to in writing, software
+  11:main.c        ****     distributed under the License is distributed on an "AS IS" BASIS,
+  12:main.c        ****     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  13:main.c        ****     See the License for the specific language governing permissions and
+  14:main.c        ****     limitations under the   License.
+  15:main.c        **** */
+  16:main.c        **** 
+  17:main.c        **** #include "ch.h"
+  18:main.c        **** #include "hal.h"
+  19:main.c        **** 
+  20:main.c        **** #define FREQUENCY 16000000 / 255  
+  21:main.c        **** #define PERIOD    255
+  22:main.c        **** 
+  23:main.c        **** volatile int count = 0;
+  24:main.c        **** 
+  25:main.c        **** pwmcallback_t teste(PWMDriver *pwmp)
+  26:main.c        **** {
+  16               		.loc 1 26 0
+  17               		.cfi_startproc
+  18               	.LVL0:
+  19               	/* prologue: function */
+  20               	/* frame size = 0 */
+  21               	/* stack size = 0 */
+  22               	.L__stack_usage = 0
+  27:main.c        ****   palTogglePort(IOPORT2, PORTB_LED1);
+  23               		.loc 1 27 0
+  24 0000 85B1      		in r24,0x5
+  25               	.LVL1:
+  26 0002 95E0      		ldi r25,lo8(5)
+  27 0004 8927      		eor r24,r25
+  28 0006 85B9      		out 0x5,r24
+  29               	/* epilogue start */
+  28:main.c        **** }
+  30               		.loc 1 28 0
+  31 0008 0895      		ret
+  32               		.cfi_endproc
+  33               	.LFE238:
+  35               		.section	.rodata
+  36               	.LC1:
+  37 0000 19        		.byte	25
+  38 0001 F5        		.byte	-11
+  39 0002 00        		.byte	0
+  40 0003 00        		.byte	0
+  41 0004 FF00      		.word	255
+  42 0006 0000      		.word	gs(teste)
+  43 0008 01        		.byte	1
+  44 0009 0000      		.word	0
+  45 000b 00        		.byte	0
+  46 000c 0000      		.word	0
+  47               		.section	.text.startup.main,"ax",@progbits
+  48               	.global	main
+  50               	main:
+  51               	.LFB239:
+  29:main.c        **** 
+  30:main.c        **** //gptcallback_t gpt_t(GPTDriver *gptp)
+  31:main.c        **** //{
+  32:main.c        **** //
+  33:main.c        **** //}
+  34:main.c        **** 
+  35:main.c        **** /*
+  36:main.c        ****  * LED blinker thread, times are in milliseconds.
+  37:main.c        ****  */
+  38:main.c        **** //static THD_WORKING_AREA(waThread1, 32);
+  39:main.c        **** //static THD_FUNCTION(Thread1, arg) 
+  40:main.c        **** //{
+  41:main.c        **** //
+  42:main.c        **** //  (void)arg;
+  43:main.c        **** //  chRegSetThreadName("Blinker");
+  44:main.c        **** //  while (true) {
+  45:main.c        **** //    palTogglePad(IOPORT2, PORTB_LED1);
+  46:main.c        **** //    chThdSleepMilliseconds(100);
+  47:main.c        **** //  }
+  48:main.c        **** //}
+  49:main.c        **** 
+  50:main.c        **** /*
+  51:main.c        ****  * Application entry point.
+  52:main.c        ****  */
+  53:main.c        **** int main(void) 
+  54:main.c        **** {
+  52               		.loc 1 54 0
+  53               		.cfi_startproc
+  54 0000 CF93      		push r28
+  55               	.LCFI0:
+  56               		.cfi_def_cfa_offset 3
+  57               		.cfi_offset 28, -2
+  58 0002 DF93      		push r29
+  59               	.LCFI1:
+  60               		.cfi_def_cfa_offset 4
+  61               		.cfi_offset 29, -3
+  62 0004 CDB7      		in r28,__SP_L__
+  63 0006 DEB7      		in r29,__SP_H__
+  64               	.LCFI2:
+  65               		.cfi_def_cfa_register 28
+  66 0008 2E97      		sbiw r28,14
+  67               	.LCFI3:
+  68               		.cfi_def_cfa_offset 18
+  69 000a 0FB6      		in __tmp_reg__,__SREG__
+  70 000c F894      		cli
+  71 000e DEBF      		out __SP_H__,r29
+  72 0010 0FBE      		out __SREG__,__tmp_reg__
+  73 0012 CDBF      		out __SP_L__,r28
+  74               	/* prologue: function */
+  75               	/* frame size = 14 */
+  76               	/* stack size = 16 */
+  77               	.L__stack_usage = 16
+  55:main.c        ****   /*
+  56:main.c        ****    * System initializations.
+  57:main.c        ****    * - HAL initialization, this also initializes the configured device drivers
+  58:main.c        ****    *   and performs the board-specific initializations.
+  59:main.c        ****    * - Kernel initialization, the main() function becomes a thread and the
+  60:main.c        ****    *   RTOS is active.
+  61:main.c        ****    */
+  62:main.c        ****   halInit();
+  78               		.loc 1 62 0
+  79 0014 0E94 0000 		call halInit
+  80               	.LVL2:
+  63:main.c        ****   chSysInit();
+  81               		.loc 1 63 0
+  82 0018 0E94 0000 		call chSysInit
+  83               	.LVL3:
+  64:main.c        **** 
+  65:main.c        ****   PWMConfig DrivePWMConfig = 
+  84               		.loc 1 65 0
+  85 001c 8EE0      		ldi r24,lo8(14)
+  86 001e E0E0      		ldi r30,lo8(.LC1)
+  87 0020 F0E0      		ldi r31,hi8(.LC1)
+  88 0022 DE01      		movw r26,r28
+  89 0024 1196      		adiw r26,1
+  90               		0:
+  91 0026 0190      		ld r0,Z+
+  92 0028 0D92      		st X+,r0
+  93 002a 8A95      		dec r24
+  94 002c 01F4      		brne 0b
+  66:main.c        ****   {
+  67:main.c        ****     .frequency = FREQUENCY,
+  68:main.c        ****     .period    = PERIOD,
+  69:main.c        ****     .callback  = teste,
+  70:main.c        ****     .channels  = {{PWM_OUTPUT_ACTIVE_HIGH, 0}, {PWM_OUTPUT_DISABLED, 0}}
+  71:main.c        ****   };
+  72:main.c        **** 
+  73:main.c        ****   //GPTConfig gpt =
+  74:main.c        ****   //{
+  75:main.c        ****   //  .callback = NULL,
+  76:main.c        ****   //  .frequency = 1
+  77:main.c        ****   //};
+  78:main.c        **** 
+  79:main.c        ****   //gptStart(&GPTD1, &gpt);
+  80:main.c        **** 
+  81:main.c        ****   /*
+  82:main.c        ****    * Activates the serial driver 1 using the driver default configuration.
+  83:main.c        ****    */
+  84:main.c        ****   //sdStart(&SD1, &DriveSerial);
+  85:main.c        **** 
+  86:main.c        ****   /*
+  87:main.c        ****    * Starts the LED blinker thread.
+  88:main.c        ****    */
+  89:main.c        ****   //chThdCreateStatic(waThread1, sizeof(waThread1), NORMALPRIO, Thread1, NULL);
+  90:main.c        **** 
+  91:main.c        ****   //chnWrite(&SD1, (const uint8_t *)"Hello World!\r\n", 14);
+  92:main.c        **** 
+  93:main.c        ****   //gptStartContinuous(&GPTD1, 10);
+  94:main.c        **** 
+  95:main.c        ****   pwmStart(&PWMD1, &DrivePWMConfig);
+  95               		.loc 1 95 0
+  96 002e BE01      		movw r22,r28
+  97 0030 6F5F      		subi r22,-1
+  98 0032 7F4F      		sbci r23,-1
+  99 0034 80E0      		ldi r24,lo8(PWMD1)
+ 100 0036 90E0      		ldi r25,hi8(PWMD1)
+ 101 0038 0E94 0000 		call pwmStart
+ 102               	.LVL4:
+  96:main.c        ****   pwmEnableChannel(&PWMD1, 0, 50);
+ 103               		.loc 1 96 0
+ 104 003c 42E3      		ldi r20,lo8(50)
+ 105 003e 50E0      		ldi r21,0
+ 106 0040 60E0      		ldi r22,0
+ 107 0042 80E0      		ldi r24,lo8(PWMD1)
+ 108 0044 90E0      		ldi r25,hi8(PWMD1)
+ 109 0046 0E94 0000 		call pwmEnableChannel
+ 110               	.LVL5:
+ 111               	.L4:
+  97:main.c        ****   
+  98:main.c        ****   while (true) 
+  99:main.c        ****   {
+ 100:main.c        ****     if (count == 1000)
+ 112               		.loc 1 100 0
+ 113 004a 8091 0000 		lds r24,count
+ 114 004e 9091 0000 		lds r25,count+1
+ 115 0052 883E      		cpi r24,-24
+ 116 0054 9340      		sbci r25,3
+ 117 0056 01F4      		brne .L4
+ 101:main.c        ****     {
+ 102:main.c        ****       pwmStop(&PWMD1);
+ 118               		.loc 1 102 0
+ 119 0058 80E0      		ldi r24,lo8(PWMD1)
+ 120 005a 90E0      		ldi r25,hi8(PWMD1)
+ 121 005c 0E94 0000 		call pwmStop
+ 122               	.LVL6:
+ 123 0060 00C0      		rjmp .L4
+ 124               		.cfi_endproc
+ 125               	.LFE239:
+ 127               	.global	count
+ 128               		.section	.bss.count,"aw",@nobits
+ 131               	count:
+ 132 0000 0000      		.zero	2
+ 133               		.text
+ 134               	.Letext0:
+ 135               		.file 2 "/usr/lib/gcc/avr/7.3.0/include/stddef.h"
+ 136               		.file 3 "/usr/lib/avr/include/stdint.h"
+ 137               		.file 4 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/compile
+ 138               		.file 5 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chearly.h"
+ 139               		.file 6 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chobjects.h"
+ 140               		.file 7 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chrfcu.h"
+ 141               		.file 8 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chdebug.h"
+ 142               		.file 9 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chtime.h"
+ 143               		.file 10 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chlists.h"
+ 144               		.file 11 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore
+ 145               		.file 12 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chsem.h"
+ 146               		.file 13 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chmtx.h"
+ 147               		.file 14 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chsys.h"
+ 148               		.file 15 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h
+ 149               		.file 16 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chevents.h"
+ 150               		.file 17 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/oslib/include/chmemcore
+ 151               		.file 18 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_queues.
+ 152               		.file 19 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
+ 153               		.file 20 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_pwm.h"
+ 154               		.file 21 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
+ 155               		.file 22 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_serial.
+ 156               		.file 23 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
+ 157               		.file 24 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal.h"
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 main.c
+     /tmp/ccbX2dvk.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccbX2dvk.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccbX2dvk.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccbX2dvk.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccbX2dvk.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccbX2dvk.s:13     .text.teste:0000000000000000 teste
+     /tmp/ccbX2dvk.s:50     .text.startup.main:0000000000000000 main
+     /tmp/ccbX2dvk.s:131    .bss.count:0000000000000000 count
+
+UNDEFINED SYMBOLS
+halInit
+chSysInit
+PWMD1
+pwmStart
+pwmEnableChannel
+pwmStop
+__do_copy_data
+__do_clear_bss

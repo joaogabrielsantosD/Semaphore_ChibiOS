@@ -1,0 +1,33 @@
+{
+    "files.associations": {
+        "hal.h": "c",
+        "hal_gpt.h": "c",
+        "hal_dac.h": "c",
+        "hal_rtc.h": "c",
+        "hal_mac.h": "c",
+        "hal_i2c.h": "c",
+        "hal_crypto.h": "c",
+        "hal_can.h": "c",
+        "osal.h": "c",
+        "halconf.h": "c",
+        "board.h": "c",
+        "ccportab.h": "c",
+        "ch.h": "c",
+        "chearly.h": "c",
+        "chtime.h": "c",
+        "chdebug.h": "c",
+        "chrfcu.h": "c",
+        "chport.h": "c",
+        "chschd.h": "c",
+        "chregistry.h": "c",
+        "chmsg.h": "c",
+        "chthreads.h": "c",
+        "chsem.h": "c",
+        "chlib.h": "c",
+        "chcore.h": "c",
+        "hal_pwm_lld.h": "c",
+        "*.inc": "c",
+        "mcuconf.h": "c"
+    },
+    "C_Cpp.errorSquiggles": "disabled"
+}
