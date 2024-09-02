@@ -17,41 +17,15 @@
 #include "ch.h"
 #include "hal.h"
 
-#define FREQUENCY 16000000 / 255  
-#define PERIOD    255
-
-volatile int count = 0;
-
-pwmcallback_t teste(PWMDriver *pwmp)
-{
-  palTogglePort(IOPORT2, PORTB_LED1);
-}
-
-//gptcallback_t gpt_t(GPTDriver *gptp)
-//{
-//
-//}
-
-/*
- * LED blinker thread, times are in milliseconds.
- */
-//static THD_WORKING_AREA(waThread1, 32);
-//static THD_FUNCTION(Thread1, arg) 
-//{
-//
-//  (void)arg;
-//  chRegSetThreadName("Blinker");
-//  while (true) {
-//    palTogglePad(IOPORT2, PORTB_LED1);
-//    chThdSleepMilliseconds(100);
-//  }
-//}
-
 /*
  * Application entry point.
  */
 int main(void) 
 {
+  char msg[] = "Hello World\r\n";
+
+  SerialConfig Serial_Configuration = {.sc_brr = UBRR2x(9600), .sc_bits_per_char = USART_CHAR_SIZE_8};
+
   /*
    * System initializations.
    * - HAL initialization, this also initializes the configured device drivers
@@ -62,45 +36,12 @@ int main(void)
   halInit();
   chSysInit();
 
-  PWMConfig DrivePWMConfig = 
-  {
-    .frequency = FREQUENCY,
-    .period    = PERIOD,
-    .callback  = teste,
-    .channels  = {{PWM_OUTPUT_ACTIVE_HIGH, 0}, {PWM_OUTPUT_DISABLED, 0}}
-  };
-
-  //GPTConfig gpt =
-  //{
-  //  .callback = NULL,
-  //  .frequency = 1
-  //};
-
-  //gptStart(&GPTD1, &gpt);
-
-  /*
-   * Activates the serial driver 1 using the driver default configuration.
-   */
-  //sdStart(&SD1, &DriveSerial);
-
-  /*
-   * Starts the LED blinker thread.
-   */
-  //chThdCreateStatic(waThread1, sizeof(waThread1), NORMALPRIO, Thread1, NULL);
-
-  //chnWrite(&SD1, (const uint8_t *)"Hello World!\r\n", 14);
-
-  //gptStartContinuous(&GPTD1, 10);
-
-  pwmStart(&PWMD1, &DrivePWMConfig);
-  pwmEnableChannel(&PWMD1, 0, 50);
+  sdStart(&SD1, &Serial_Configuration);
   
   while (true) 
   {
-    if (count == 1000)
-    {
-      pwmStop(&PWMD1);
-    }
-    //chThdSleepMilliseconds(1000);
+    palTogglePad(IOPORT2, PORTB_LED1);
+    sdWrite(&SD1, msg, sizeof(msg));
+    chThdSleepMilliseconds(1000);
   }
 }
