@@ -17,14 +17,62 @@
 #include "ch.h"
 #include "hal.h"
 
+/* 
+  * Thread Write Event 
+*/
+static THD_WORKING_AREA(wa_WriteEvent, 128);
+static THD_FUNCTION(Write_Save_Event, arg)
+{
+  chRegSetThreadName("Save/Write Event");
+  while (1)
+  {
+    for (int i = 0; i < 10; i++) 
+    {
+      palTogglePad(IOPORT2, PORTB_LED1);
+      chThdSleepMilliseconds(100);
+    }
+  }
+}
+
+/* 
+  * Thread Read Event
+*/
+static THD_WORKING_AREA(wa_ReadEvent, 128);
+static THD_FUNCTION(Read_Collect_Event, arg)
+{
+  char msg[] = "Lendo eventos\r\n";
+
+  chRegSetThreadName("Read/Collect Event");
+  while (1)
+  {
+    sdWrite(&SD1, msg, sizeof(msg));
+    chThdSleepMilliseconds(1);
+  }
+}
+
+/* 
+  * Thread Process Event 
+*/
+static THD_WORKING_AREA(wa_ProcessEvent, 128);
+static THD_FUNCTION(ProcessEvent, arg)
+{
+  char msg[] = "Maquina de estado\r\n";
+
+  chRegSetThreadName("Process Event");
+  while (1)
+  {
+    sdWrite(&SD1, msg, sizeof(msg));
+    chThdSleepMilliseconds(100);
+  }
+}
+
 /*
  * Application entry point.
  */
 int main(void) 
 {
-  char msg[] = "Hello World\r\n";
-
-  SerialConfig Serial_Configuration = {.sc_brr = UBRR2x(9600), .sc_bits_per_char = USART_CHAR_SIZE_8};
+  thread_t *thd0 = 0, *thd1 = 0, *thd2 = 0;
+  SerialConfig Serial_Configuration = {.sc_brr = UBRR2x(115200), .sc_bits_per_char = USART_CHAR_SIZE_8};
 
   /*
    * System initializations.
@@ -36,12 +84,15 @@ int main(void)
   halInit();
   chSysInit();
 
+
   sdStart(&SD1, &Serial_Configuration);
   
+  thd0 = chThdCreateStatic(wa_WriteEvent, sizeof(wa_WriteEvent), NORMALPRIO, Write_Save_Event, NULL);
+  thd1 = chThdCreateStatic(wa_ReadEvent, sizeof(wa_ReadEvent), NORMALPRIO, Read_Collect_Event, NULL);
+  thd2 = chThdCreateStatic(wa_ProcessEvent, sizeof(wa_ProcessEvent), NORMALPRIO, ProcessEvent, NULL);
+
   while (true) 
   {
-    palTogglePad(IOPORT2, PORTB_LED1);
-    sdWrite(&SD1, msg, sizeof(msg));
-    chThdSleepMilliseconds(1000);
+    chThdSleepMilliseconds(1);
   }
 }
