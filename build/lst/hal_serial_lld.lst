@@ -1881,18 +1881,18 @@
  505               		.file 23 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chschd.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 hal_serial_lld.c
-     /tmp/ccAc3oRH.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccAc3oRH.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccAc3oRH.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccAc3oRH.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccAc3oRH.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccAc3oRH.s:12     .text.notify1:0000000000000000 notify1
-     /tmp/ccAc3oRH.s:38     .text.__vector_18:0000000000000000 __vector_18
+     /tmp/ccPGwPUW.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccPGwPUW.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccPGwPUW.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccPGwPUW.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccPGwPUW.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccPGwPUW.s:12     .text.notify1:0000000000000000 notify1
+     /tmp/ccPGwPUW.s:38     .text.__vector_18:0000000000000000 __vector_18
                             *COM*:0000000000000049 SD1
-     /tmp/ccAc3oRH.s:194    .text.__vector_19:0000000000000000 __vector_19
-     /tmp/ccAc3oRH.s:318    .text.sd_lld_init:0000000000000000 sd_lld_init
-     /tmp/ccAc3oRH.s:341    .text.sd_lld_start:0000000000000000 sd_lld_start
-     /tmp/ccAc3oRH.s:449    .text.sd_lld_stop:0000000000000000 sd_lld_stop
+     /tmp/ccPGwPUW.s:194    .text.__vector_19:0000000000000000 __vector_19
+     /tmp/ccPGwPUW.s:318    .text.sd_lld_init:0000000000000000 sd_lld_init
+     /tmp/ccPGwPUW.s:341    .text.sd_lld_start:0000000000000000 sd_lld_start
+     /tmp/ccPGwPUW.s:449    .text.sd_lld_stop:0000000000000000 sd_lld_stop
 
 UNDEFINED SYMBOLS
 __avr_in_isr

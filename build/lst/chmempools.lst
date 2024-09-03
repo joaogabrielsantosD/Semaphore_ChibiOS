@@ -1886,23 +1886,23 @@
  781               		.file 18 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chschd.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 chmempools.c
-     /tmp/ccmlb4CA.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccmlb4CA.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccmlb4CA.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccmlb4CA.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccmlb4CA.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccmlb4CA.s:12     .text.chPoolAllocI.part.0:0000000000000000 chPoolAllocI.part.0
-     /tmp/ccmlb4CA.s:54     .text.chPoolObjectInitAligned:0000000000000000 chPoolObjectInitAligned
-     /tmp/ccmlb4CA.s:85     .text.chPoolLoadArray:0000000000000000 chPoolLoadArray
-     /tmp/ccmlb4CA.s:175    .text.chPoolAllocI:0000000000000000 chPoolAllocI
-     /tmp/ccmlb4CA.s:213    .text.chPoolAlloc:0000000000000000 chPoolAlloc
-     /tmp/ccmlb4CA.s:307    .text.chPoolFreeI:0000000000000000 chPoolFreeI
-     /tmp/ccmlb4CA.s:336    .text.chPoolFree:0000000000000000 chPoolFree
-     /tmp/ccmlb4CA.s:397    .text.chGuardedPoolObjectInitAligned:0000000000000000 chGuardedPoolObjectInitAligned
-     /tmp/ccmlb4CA.s:435    .text.chGuardedPoolLoadArray:0000000000000000 chGuardedPoolLoadArray
-     /tmp/ccmlb4CA.s:569    .text.chGuardedPoolAllocTimeoutS:0000000000000000 chGuardedPoolAllocTimeoutS
-     /tmp/ccmlb4CA.s:650    .text.chGuardedPoolAllocTimeout:0000000000000000 chGuardedPoolAllocTimeout
-     /tmp/ccmlb4CA.s:697    .text.chGuardedPoolFree:0000000000000000 chGuardedPoolFree
+     /tmp/ccrFlfBf.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccrFlfBf.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccrFlfBf.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccrFlfBf.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccrFlfBf.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccrFlfBf.s:12     .text.chPoolAllocI.part.0:0000000000000000 chPoolAllocI.part.0
+     /tmp/ccrFlfBf.s:54     .text.chPoolObjectInitAligned:0000000000000000 chPoolObjectInitAligned
+     /tmp/ccrFlfBf.s:85     .text.chPoolLoadArray:0000000000000000 chPoolLoadArray
+     /tmp/ccrFlfBf.s:175    .text.chPoolAllocI:0000000000000000 chPoolAllocI
+     /tmp/ccrFlfBf.s:213    .text.chPoolAlloc:0000000000000000 chPoolAlloc
+     /tmp/ccrFlfBf.s:307    .text.chPoolFreeI:0000000000000000 chPoolFreeI
+     /tmp/ccrFlfBf.s:336    .text.chPoolFree:0000000000000000 chPoolFree
+     /tmp/ccrFlfBf.s:397    .text.chGuardedPoolObjectInitAligned:0000000000000000 chGuardedPoolObjectInitAligned
+     /tmp/ccrFlfBf.s:435    .text.chGuardedPoolLoadArray:0000000000000000 chGuardedPoolLoadArray
+     /tmp/ccrFlfBf.s:569    .text.chGuardedPoolAllocTimeoutS:0000000000000000 chGuardedPoolAllocTimeoutS
+     /tmp/ccrFlfBf.s:650    .text.chGuardedPoolAllocTimeout:0000000000000000 chGuardedPoolAllocTimeout
+     /tmp/ccrFlfBf.s:697    .text.chGuardedPoolFree:0000000000000000 chGuardedPoolFree
 
 UNDEFINED SYMBOLS
 chSemObjectInit

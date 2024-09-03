@@ -2776,22 +2776,22 @@
  1231               		.file 17 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chschd.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 chsem.c
-     /tmp/ccAdGfyw.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccAdGfyw.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccAdGfyw.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccAdGfyw.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccAdGfyw.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccAdGfyw.s:13     .text.chSemObjectInit:0000000000000000 chSemObjectInit
-     /tmp/ccAdGfyw.s:48     .text.chSemResetWithMessage:0000000000000000 chSemResetWithMessage
-     /tmp/ccAdGfyw.s:169    .text.chSemResetWithMessageI:0000000000000000 chSemResetWithMessageI
-     /tmp/ccAdGfyw.s:254    .text.chSemWait:0000000000000000 chSemWait
-     /tmp/ccAdGfyw.s:395    .text.chSemWaitS:0000000000000000 chSemWaitS
-     /tmp/ccAdGfyw.s:486    .text.chSemWaitTimeout:0000000000000000 chSemWaitTimeout
-     /tmp/ccAdGfyw.s:650    .text.chSemWaitTimeoutS:0000000000000000 chSemWaitTimeoutS
-     /tmp/ccAdGfyw.s:764    .text.chSemSignal:0000000000000000 chSemSignal
-     /tmp/ccAdGfyw.s:871    .text.chSemSignalI:0000000000000000 chSemSignalI
-     /tmp/ccAdGfyw.s:942    .text.chSemAddCounterI:0000000000000000 chSemAddCounterI
-     /tmp/ccAdGfyw.s:1031   .text.chSemSignalWait:0000000000000000 chSemSignalWait
+     /tmp/ccMDv35F.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccMDv35F.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccMDv35F.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccMDv35F.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccMDv35F.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccMDv35F.s:13     .text.chSemObjectInit:0000000000000000 chSemObjectInit
+     /tmp/ccMDv35F.s:48     .text.chSemResetWithMessage:0000000000000000 chSemResetWithMessage
+     /tmp/ccMDv35F.s:169    .text.chSemResetWithMessageI:0000000000000000 chSemResetWithMessageI
+     /tmp/ccMDv35F.s:254    .text.chSemWait:0000000000000000 chSemWait
+     /tmp/ccMDv35F.s:395    .text.chSemWaitS:0000000000000000 chSemWaitS
+     /tmp/ccMDv35F.s:486    .text.chSemWaitTimeout:0000000000000000 chSemWaitTimeout
+     /tmp/ccMDv35F.s:650    .text.chSemWaitTimeoutS:0000000000000000 chSemWaitTimeoutS
+     /tmp/ccMDv35F.s:764    .text.chSemSignal:0000000000000000 chSemSignal
+     /tmp/ccMDv35F.s:871    .text.chSemSignalI:0000000000000000 chSemSignalI
+     /tmp/ccMDv35F.s:942    .text.chSemAddCounterI:0000000000000000 chSemAddCounterI
+     /tmp/ccMDv35F.s:1031   .text.chSemSignalWait:0000000000000000 chSemSignalWait
 
 UNDEFINED SYMBOLS
 chSchReadyI

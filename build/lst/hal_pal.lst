@@ -261,14 +261,14 @@
  150               		.file 22 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 hal_pal.c
-     /tmp/cchynkCz.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/cchynkCz.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/cchynkCz.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/cchynkCz.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/cchynkCz.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/cchynkCz.s:13     .text.palReadBus:0000000000000000 palReadBus
-     /tmp/cchynkCz.s:49     .text.palWriteBus:0000000000000000 palWriteBus
-     /tmp/cchynkCz.s:98     .text.palSetBusMode:0000000000000000 palSetBusMode
+     /tmp/ccmYRDO7.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccmYRDO7.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccmYRDO7.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccmYRDO7.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccmYRDO7.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccmYRDO7.s:13     .text.palReadBus:0000000000000000 palReadBus
+     /tmp/ccmYRDO7.s:49     .text.palWriteBus:0000000000000000 palWriteBus
+     /tmp/ccmYRDO7.s:98     .text.palSetBusMode:0000000000000000 palSetBusMode
 
 UNDEFINED SYMBOLS
 _pal_lld_setgroupmode

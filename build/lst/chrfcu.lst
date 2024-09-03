@@ -238,13 +238,13 @@
  148               		.file 15 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/oslib/include/chmemcore
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 chrfcu.c
-     /tmp/ccDYo8eK.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccDYo8eK.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccDYo8eK.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccDYo8eK.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccDYo8eK.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccDYo8eK.s:13     .text.chRFCUCollectFaultsI:0000000000000000 chRFCUCollectFaultsI
-     /tmp/ccDYo8eK.s:59     .text.chRFCUGetAndClearFaultsI:0000000000000000 chRFCUGetAndClearFaultsI
+     /tmp/ccCmSVdR.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccCmSVdR.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccCmSVdR.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccCmSVdR.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccCmSVdR.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccCmSVdR.s:13     .text.chRFCUCollectFaultsI:0000000000000000 chRFCUCollectFaultsI
+     /tmp/ccCmSVdR.s:59     .text.chRFCUGetAndClearFaultsI:0000000000000000 chRFCUGetAndClearFaultsI
 
 UNDEFINED SYMBOLS
 ch0

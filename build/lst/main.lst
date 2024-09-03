@@ -7,17 +7,17 @@
    7               		.text
    8               	.Ltext0:
    9               		.cfi_sections	.debug_frame
-  10               		.section	.rodata.main.str1.1,"aMS",@progbits,1
+  10               		.section	.rodata.Write_Save_Event.str1.1,"aMS",@progbits,1
   11               	.LC0:
-  12 0000 4865 6C6C 		.string	"Hello World\r\n"
-  12      6F20 576F 
-  12      726C 640D 
-  12      0A00 
-  13               		.section	.text.startup.main,"ax",@progbits
-  14               	.global	main
-  16               	main:
-  17               	.LFB238:
-  18               		.file 1 "main.c"
+  12 0000 5361 7665 		.string	"Save/Write Event"
+  12      2F57 7269 
+  12      7465 2045 
+  12      7665 6E74 
+  12      00
+  13               		.section	.text.Write_Save_Event,"ax",@progbits
+  15               	Write_Save_Event:
+  16               	.LFB238:
+  17               		.file 1 "main.c"
    1:main.c        **** /*
    2:main.c        ****     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
    3:main.c        **** 
@@ -37,155 +37,636 @@
   17:main.c        **** #include "ch.h"
   18:main.c        **** #include "hal.h"
   19:main.c        **** 
-  20:main.c        **** /*
-  21:main.c        ****  * Application entry point.
-  22:main.c        ****  */
-  23:main.c        **** int main(void) 
-  24:main.c        **** {
-  19               		.loc 1 24 0
-  20               		.cfi_startproc
-  21 0000 CF93      		push r28
-  22               	.LCFI0:
-  23               		.cfi_def_cfa_offset 3
-  24               		.cfi_offset 28, -2
-  25 0002 DF93      		push r29
-  26               	.LCFI1:
-  27               		.cfi_def_cfa_offset 4
-  28               		.cfi_offset 29, -3
-  29 0004 CDB7      		in r28,__SP_L__
-  30 0006 DEB7      		in r29,__SP_H__
-  31               	.LCFI2:
-  32               		.cfi_def_cfa_register 28
-  33 0008 6197      		sbiw r28,17
-  34               	.LCFI3:
-  35               		.cfi_def_cfa_offset 21
-  36 000a 0FB6      		in __tmp_reg__,__SREG__
-  37 000c F894      		cli
-  38 000e DEBF      		out __SP_H__,r29
-  39 0010 0FBE      		out __SREG__,__tmp_reg__
-  40 0012 CDBF      		out __SP_L__,r28
-  41               	/* prologue: function */
-  42               	/* frame size = 17 */
-  43               	/* stack size = 19 */
-  44               	.L__stack_usage = 19
-  25:main.c        ****   char msg[] = "Hello World\r\n";
-  45               		.loc 1 25 0
-  46 0014 8EE0      		ldi r24,lo8(14)
-  47 0016 E0E0      		ldi r30,lo8(.LC0)
-  48 0018 F0E0      		ldi r31,hi8(.LC0)
-  49 001a DE01      		movw r26,r28
-  50 001c 1196      		adiw r26,1
-  51               		0:
-  52 001e 0190      		ld r0,Z+
-  53 0020 0D92      		st X+,r0
-  54 0022 8A95      		dec r24
-  55 0024 01F4      		brne 0b
-  26:main.c        **** 
-  27:main.c        ****   SerialConfig Serial_Configuration = {.sc_brr = UBRR2x(9600), .sc_bits_per_char = USART_CHAR_SIZE_
-  56               		.loc 1 27 0
-  57 0026 8FEC      		ldi r24,lo8(-49)
-  58 0028 90E0      		ldi r25,0
-  59 002a 988B      		std Y+16,r25
-  60 002c 8F87      		std Y+15,r24
-  61 002e 83E0      		ldi r24,lo8(3)
-  62 0030 898B      		std Y+17,r24
-  28:main.c        **** 
-  29:main.c        ****   /*
-  30:main.c        ****    * System initializations.
-  31:main.c        ****    * - HAL initialization, this also initializes the configured device drivers
-  32:main.c        ****    *   and performs the board-specific initializations.
-  33:main.c        ****    * - Kernel initialization, the main() function becomes a thread and the
-  34:main.c        ****    *   RTOS is active.
-  35:main.c        ****    */
-  36:main.c        ****   halInit();
-  63               		.loc 1 36 0
-  64 0032 0E94 0000 		call halInit
-  65               	.LVL0:
-  37:main.c        ****   chSysInit();
-  66               		.loc 1 37 0
-  67 0036 0E94 0000 		call chSysInit
-  68               	.LVL1:
-  38:main.c        **** 
-  39:main.c        ****   sdStart(&SD1, &Serial_Configuration);
-  69               		.loc 1 39 0
-  70 003a BE01      		movw r22,r28
-  71 003c 615F      		subi r22,-15
-  72 003e 7F4F      		sbci r23,-1
-  73 0040 80E0      		ldi r24,lo8(SD1)
-  74 0042 90E0      		ldi r25,hi8(SD1)
-  75 0044 0E94 0000 		call sdStart
-  76               	.LVL2:
-  40:main.c        ****   
-  41:main.c        ****   while (true) 
-  42:main.c        ****   {
-  43:main.c        ****     palTogglePad(IOPORT2, PORTB_LED1);
-  77               		.loc 1 43 0
-  78 0048 10E2      		ldi r17,lo8(32)
-  79               	.L2:
-  80               		.loc 1 43 0 is_stmt 0 discriminator 1
-  81 004a 85B1      		in r24,0x5
-  82 004c 8127      		eor r24,r17
-  83 004e 85B9      		out 0x5,r24
-  44:main.c        ****     sdWrite(&SD1, msg, sizeof(msg));
-  84               		.loc 1 44 0 is_stmt 1 discriminator 1
-  85 0050 2FEF      		ldi r18,lo8(-1)
-  86 0052 3FEF      		ldi r19,lo8(-1)
-  87 0054 4EE0      		ldi r20,lo8(14)
-  88 0056 50E0      		ldi r21,0
-  89 0058 BE01      		movw r22,r28
-  90 005a 6F5F      		subi r22,-1
-  91 005c 7F4F      		sbci r23,-1
-  92 005e 80E0      		ldi r24,lo8(SD1+23)
-  93 0060 90E0      		ldi r25,hi8(SD1+23)
-  94 0062 0E94 0000 		call oqWriteTimeout
-  95               	.LVL3:
-  45:main.c        ****     chThdSleepMilliseconds(1000);
-  96               		.loc 1 45 0 discriminator 1
-  97 0066 88E0      		ldi r24,lo8(8)
-  98 0068 9DE3      		ldi r25,lo8(61)
-  99 006a 0E94 0000 		call chThdSleep
- 100               	.LVL4:
- 101 006e 00C0      		rjmp .L2
- 102               		.cfi_endproc
- 103               	.LFE238:
- 105               		.text
- 106               	.Letext0:
- 107               		.file 2 "/usr/lib/gcc/avr/7.3.0/include/stddef.h"
- 108               		.file 3 "/usr/lib/avr/include/stdint.h"
- 109               		.file 4 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/compile
- 110               		.file 5 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chearly.h"
- 111               		.file 6 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chobjects.h"
- 112               		.file 7 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chrfcu.h"
- 113               		.file 8 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chdebug.h"
- 114               		.file 9 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chtime.h"
- 115               		.file 10 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chlists.h"
- 116               		.file 11 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore
- 117               		.file 12 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chsem.h"
- 118               		.file 13 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chmtx.h"
- 119               		.file 14 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chsys.h"
- 120               		.file 15 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h
- 121               		.file 16 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chevents.h"
- 122               		.file 17 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/oslib/include/chmemcore
- 123               		.file 18 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_queues.
- 124               		.file 19 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
- 125               		.file 20 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_serial.
- 126               		.file 21 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
- 127               		.file 22 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal.h"
- 128               		.file 23 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chthreads.h"
+  20:main.c        **** /* 
+  21:main.c        ****   * Thread Write Event 
+  22:main.c        **** */
+  23:main.c        **** static THD_WORKING_AREA(wa_WriteEvent, 128);
+  24:main.c        **** static THD_FUNCTION(Write_Save_Event, arg)
+  25:main.c        **** {
+  18               		.loc 1 25 0
+  19               		.cfi_startproc
+  20               	.LVL0:
+  21               	/* prologue: function */
+  22               	/* frame size = 0 */
+  23               	/* stack size = 0 */
+  24               	.L__stack_usage = 0
+  25               	.LBB9:
+  26               	.LBB10:
+  27               		.file 2 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h"
+   1:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** /*
+   2:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****     ChibiOS - Copyright (C) 2006,2007,2008,2009,2010,2011,2012,2013,2014,
+   3:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****               2015,2016,2017,2018,2019,2020,2021 Giovanni Di Sirio.
+   4:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** 
+   5:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****     This file is part of ChibiOS.
+   6:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** 
+   7:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****     ChibiOS is free software; you can redistribute it and/or modify
+   8:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****     it under the terms of the GNU General Public License as published by
+   9:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****     the Free Software Foundation version 3 of the License.
+  10:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** 
+  11:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****     ChibiOS is distributed in the hope that it will be useful,
+  12:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  13:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  14:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****     GNU General Public License for more details.
+  15:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** 
+  16:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****     You should have received a copy of the GNU General Public License
+  17:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  18:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** */
+  19:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** 
+  20:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** /**
+  21:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****  * @file    rt/include/chregistry.h
+  22:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****  * @brief   Threads registry macros and structures.
+  23:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****  *
+  24:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****  * @addtogroup registry
+  25:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****  * @{
+  26:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****  */
+  27:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** 
+  28:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** #ifndef CHREGISTRY_H
+  29:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** #define CHREGISTRY_H
+  30:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** 
+  31:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** #if (CH_CFG_USE_REGISTRY == TRUE) || defined(__DOXYGEN__)
+  32:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** 
+  33:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** /*===========================================================================*/
+  34:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** /* Module constants.                                                         */
+  35:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** /*===========================================================================*/
+  36:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** 
+  37:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** /*===========================================================================*/
+  38:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** /* Module pre-compile time settings.                                         */
+  39:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** /*===========================================================================*/
+  40:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** 
+  41:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** /*===========================================================================*/
+  42:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** /* Derived constants and error checks.                                       */
+  43:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** /*===========================================================================*/
+  44:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** 
+  45:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** /*===========================================================================*/
+  46:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** /* Module data structures and types.                                         */
+  47:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** /*===========================================================================*/
+  48:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** 
+  49:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** /**
+  50:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****  * @brief   ChibiOS/RT memory signature record.
+  51:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****  */
+  52:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** typedef struct {
+  53:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****   char      identifier[4];          /**< @brief Always set to "main".       */
+  54:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****   uint8_t   zero;                   /**< @brief Must be zero.               */
+  55:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****   uint8_t   size;                   /**< @brief Size of this structure.     */
+  56:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****   uint16_t  version;                /**< @brief Encoded ChibiOS/RT version. */
+  57:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****   uint8_t   ptrsize;                /**< @brief Size of a pointer.          */
+  58:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****   uint8_t   timesize;               /**< @brief Size of a @p systime_t.     */
+  59:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****   uint8_t   threadsize;             /**< @brief Size of a @p thread_t.      */
+  60:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****   uint8_t   off_prio;               /**< @brief Offset of @p prio field.    */
+  61:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****   uint8_t   off_ctx;                /**< @brief Offset of @p ctx field.     */
+  62:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****   uint8_t   off_newer;              /**< @brief Offset of @p newer field.   */
+  63:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****   uint8_t   off_older;              /**< @brief Offset of @p older field.   */
+  64:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****   uint8_t   off_name;               /**< @brief Offset of @p name field.    */
+  65:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****   uint8_t   off_stklimit;           /**< @brief Offset of @p stklimit field.*/
+  66:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****   uint8_t   off_state;              /**< @brief Offset of @p state field.   */
+  67:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****   uint8_t   off_flags;              /**< @brief Offset of @p flags field.   */
+  68:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****   uint8_t   off_refs;               /**< @brief Offset of @p refs field.    */
+  69:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****   uint8_t   off_preempt;            /**< @brief Offset of @p ticks field.   */
+  70:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****   uint8_t   off_time;               /**< @brief Offset of @p time field.    */
+  71:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****   uint8_t   off_reserved[4];
+  72:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****   uint8_t   intctxsize;             /**< @brief Size of a @p port_intctx.   */
+  73:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****   uint8_t   intervalsize;           /**< @brief Size of a @p sysinterval_t. */
+  74:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****   uint8_t   instancesnum;           /**< @brief Number of instances.        */
+  75:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****   uint8_t   off_sys_state;          /**< @brief Offset of @p state field.   */
+  76:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****   uint8_t   off_sys_instances;      /**< @brief Offset of @p instances array
+  77:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****                                                 field.                      */
+  78:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****   uint8_t   off_sys_reglist;        /**< @brief Offset of @p reglist field. */
+  79:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****   uint8_t   off_sys_rfcu;           /**< @brief Offset of @p rfcu field.    */
+  80:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****   uint8_t   off_sys_reserved[4];
+  81:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****   uint8_t   off_inst_rlist_current; /**< @brief Offset of @p rlist.current
+  82:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****                                                 field.                      */
+  83:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****   uint8_t   off_inst_rlist;         /**< @brief Offset of @p rlist field.   */
+  84:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****   uint8_t   off_inst_vtlist;        /**< @brief Offset of @p vtlist field.  */
+  85:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****   uint8_t   off_inst_reglist;       /**< @brief Offset of @p reglist field. */
+  86:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****   uint8_t   off_inst_core_id;       /**< @brief Offset of @p core_id field. */
+  87:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****   uint8_t   off_inst_rfcu;          /**< @brief Offset of @p rfcu field.    */
+  88:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** } chdebug_t;
+  89:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** 
+  90:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** /*===========================================================================*/
+  91:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** /* Module macros.                                                            */
+  92:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** /*===========================================================================*/
+  93:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** 
+  94:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** /**
+  95:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****  * @brief   Access to the registry list header.
+  96:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****  */
+  97:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** #if (CH_CFG_SMP_MODE == TRUE) || defined(__DOXYGEN__)
+  98:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** #define REG_HEADER(oip) (&ch_system.reglist.queue)
+  99:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** #else
+ 100:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** #define REG_HEADER(oip) (&(oip)->reglist.queue)
+ 101:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** #endif
+ 102:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** 
+ 103:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** /**
+ 104:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****  * @brief   Removes a thread from the registry list.
+ 105:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****  * @note    This macro is not meant for use in application code.
+ 106:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****  *
+ 107:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****  * @param[in] tp        thread to remove from the registry
+ 108:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****  */
+ 109:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** #define REG_REMOVE(tp) (void) ch_queue_dequeue(&(tp)->rqueue)
+ 110:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** 
+ 111:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** /**
+ 112:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****  * @brief   Adds a thread to the registry list.
+ 113:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****  * @note    This macro is not meant for use in application code.
+ 114:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****  *
+ 115:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****  * @param[in] oip       pointer to the OS instance
+ 116:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****  * @param[in] tp        thread to add to the registry
+ 117:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****  */
+ 118:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** #define REG_INSERT(oip, tp) ch_queue_insert(REG_HEADER(oip), &(tp)->rqueue)
+ 119:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** 
+ 120:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** /*===========================================================================*/
+ 121:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** /* External declarations.                                                    */
+ 122:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** /*===========================================================================*/
+ 123:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** 
+ 124:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** #ifdef __cplusplus
+ 125:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** extern "C" {
+ 126:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** #endif
+ 127:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****   extern ROMCONST chdebug_t ch_debug;
+ 128:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****   thread_t *chRegFirstThread(void);
+ 129:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****   thread_t *chRegNextThread(thread_t *tp);
+ 130:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****   thread_t *chRegFindThreadByName(const char *name);
+ 131:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****   thread_t *chRegFindThreadByPointer(thread_t *tp);
+ 132:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****   thread_t *chRegFindThreadByWorkingArea(stkalign_t *wa);
+ 133:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** #ifdef __cplusplus
+ 134:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** }
+ 135:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** #endif
+ 136:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** 
+ 137:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** #endif /* CH_CFG_USE_REGISTRY == TRUE */
+ 138:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** 
+ 139:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** /*===========================================================================*/
+ 140:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** /* Module inline functions.                                                  */
+ 141:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** /*===========================================================================*/
+ 142:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** 
+ 143:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** /**
+ 144:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****  * @brief   Initializes a registry.
+ 145:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****  * @note    Internal use only.
+ 146:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****  *
+ 147:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****  * @param[out] rp       pointer to a @p registry_t structure
+ 148:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****  *
+ 149:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****  * @init
+ 150:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****  */
+ 151:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** static inline void __reg_object_init(registry_t *rp) {
+ 152:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** 
+ 153:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****   ch_queue_init(&rp->queue);
+ 154:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** }
+ 155:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** 
+ 156:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** /**
+ 157:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****  * @brief   Sets the current thread name.
+ 158:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****  * @pre     This function only stores the pointer to the name if the option
+ 159:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****  *          @p CH_CFG_USE_REGISTRY is enabled else no action is performed.
+ 160:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****  *
+ 161:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****  * @param[in] name      thread name as a zero terminated string
+ 162:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****  *
+ 163:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****  * @api
+ 164:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****  */
+ 165:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** static inline void chRegSetThreadName(const char *name) {
+ 166:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** 
+ 167:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** #if CH_CFG_USE_REGISTRY == TRUE
+ 168:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****   __sch_get_currthread()->name = name;
+  28               		.loc 2 168 0
+  29 0000 E091 0000 		lds r30,ch0+5
+  30 0004 F091 0000 		lds r31,ch0+5+1
+  31 0008 80E0      		ldi r24,lo8(.LC0)
+  32 000a 90E0      		ldi r25,hi8(.LC0)
+  33               	.LVL1:
+  34 000c 9687      		std Z+14,r25
+  35 000e 8587      		std Z+13,r24
+  36               	.LBE10:
+  37               	.LBE9:
+  38               	.LBB11:
+  26:main.c        ****   chRegSetThreadName("Save/Write Event");
+  27:main.c        ****   while (1)
+  28:main.c        ****   {
+  29:main.c        ****     for (int i = 0; i < 10 ; i++) 
+  30:main.c        ****     {
+  31:main.c        ****       palTogglePad(IOPORT2, PORTB_LED1);
+  39               		.loc 1 31 0
+  40 0010 10E2      		ldi r17,lo8(32)
+  41               	.L3:
+  42               	.LVL2:
+  43               	.LBE11:
+  25:main.c        ****   chRegSetThreadName("Save/Write Event");
+  44               		.loc 1 25 0
+  45 0012 CAE0      		ldi r28,lo8(10)
+  46 0014 D0E0      		ldi r29,0
+  47               	.LVL3:
+  48               	.L2:
+  49               	.LBB12:
+  50               		.loc 1 31 0 discriminator 3
+  51 0016 85B1      		in r24,0x5
+  52 0018 8127      		eor r24,r17
+  53 001a 85B9      		out 0x5,r24
+  32:main.c        ****       chThdSleepMilliseconds(100);
+  54               		.loc 1 32 0 discriminator 3
+  55 001c 8BE1      		ldi r24,lo8(27)
+  56 001e 96E0      		ldi r25,lo8(6)
+  57 0020 0E94 0000 		call chThdSleep
+  58               	.LVL4:
+  59 0024 2197      		sbiw r28,1
+  60               	.LVL5:
+  29:main.c        ****     {
+  61               		.loc 1 29 0 discriminator 3
+  62 0026 01F4      		brne .L2
+  63 0028 00C0      		rjmp .L3
+  64               	.LBE12:
+  65               		.cfi_endproc
+  66               	.LFE238:
+  68               		.section	.rodata.ProcessEvent.str1.1,"aMS",@progbits,1
+  69               	.LC2:
+  70 0000 5072 6F63 		.string	"Process Event"
+  70      6573 7320 
+  70      4576 656E 
+  70      7400 
+  71               	.LC1:
+  72 000e 4D61 7175 		.string	"Maquina de estado\r\n"
+  72      696E 6120 
+  72      6465 2065 
+  72      7374 6164 
+  72      6F0D 0A00 
+  73               		.section	.text.ProcessEvent,"ax",@progbits
+  75               	ProcessEvent:
+  76               	.LFB240:
+  33:main.c        ****     }
+  34:main.c        ****   }
+  35:main.c        **** }
+  36:main.c        **** 
+  37:main.c        **** /* 
+  38:main.c        ****   * Thread Read Event
+  39:main.c        **** */
+  40:main.c        **** static THD_WORKING_AREA(wa_ReadEvent, 128);
+  41:main.c        **** static THD_FUNCTION(Read_Collect_Event, arg)
+  42:main.c        **** {
+  43:main.c        ****   char msg[] = "Lendo eventos\r\n";
+  44:main.c        **** 
+  45:main.c        ****   chRegSetThreadName("Read/Collect Event");
+  46:main.c        ****   while (1)
+  47:main.c        ****   {
+  48:main.c        ****     sdWrite(&SD1, msg, sizeof(msg));
+  49:main.c        ****     chThdSleepMilliseconds(1);
+  50:main.c        ****   }
+  51:main.c        **** }
+  52:main.c        **** 
+  53:main.c        **** /* 
+  54:main.c        ****   * Thread Process Event 
+  55:main.c        **** */
+  56:main.c        **** static THD_WORKING_AREA(wa_ProcessEvent, 128);
+  57:main.c        **** static THD_FUNCTION(ProcessEvent, arg)
+  58:main.c        **** {
+  77               		.loc 1 58 0
+  78               		.cfi_startproc
+  79               	.LVL6:
+  80 0000 CF93      		push r28
+  81               	.LCFI0:
+  82               		.cfi_def_cfa_offset 3
+  83               		.cfi_offset 28, -2
+  84 0002 DF93      		push r29
+  85               	.LCFI1:
+  86               		.cfi_def_cfa_offset 4
+  87               		.cfi_offset 29, -3
+  88 0004 CDB7      		in r28,__SP_L__
+  89 0006 DEB7      		in r29,__SP_H__
+  90               	.LCFI2:
+  91               		.cfi_def_cfa_register 28
+  92 0008 6497      		sbiw r28,20
+  93               	.LCFI3:
+  94               		.cfi_def_cfa_offset 24
+  95 000a 0FB6      		in __tmp_reg__,__SREG__
+  96 000c F894      		cli
+  97 000e DEBF      		out __SP_H__,r29
+  98 0010 0FBE      		out __SREG__,__tmp_reg__
+  99 0012 CDBF      		out __SP_L__,r28
+ 100               	/* prologue: function */
+ 101               	/* frame size = 20 */
+ 102               	/* stack size = 22 */
+ 103               	.L__stack_usage = 22
+  59:main.c        ****   char msg[] = "Maquina de estado\r\n";
+ 104               		.loc 1 59 0
+ 105 0014 84E1      		ldi r24,lo8(20)
+ 106               	.LVL7:
+ 107 0016 E0E0      		ldi r30,lo8(.LC1)
+ 108 0018 F0E0      		ldi r31,hi8(.LC1)
+ 109 001a DE01      		movw r26,r28
+ 110 001c 1196      		adiw r26,1
+ 111               		0:
+ 112 001e 0190      		ld r0,Z+
+ 113 0020 0D92      		st X+,r0
+ 114 0022 8A95      		dec r24
+ 115 0024 01F4      		brne 0b
+ 116               	.LVL8:
+ 117               	.LBB13:
+ 118               	.LBB14:
+ 119               		.loc 2 168 0
+ 120 0026 E091 0000 		lds r30,ch0+5
+ 121 002a F091 0000 		lds r31,ch0+5+1
+ 122 002e 80E0      		ldi r24,lo8(.LC2)
+ 123 0030 90E0      		ldi r25,hi8(.LC2)
+ 124 0032 9687      		std Z+14,r25
+ 125 0034 8587      		std Z+13,r24
+ 126               	.L7:
+ 127               	.LBE14:
+ 128               	.LBE13:
+  60:main.c        **** 
+  61:main.c        ****   chRegSetThreadName("Process Event");
+  62:main.c        ****   while (1)
+  63:main.c        ****   {
+  64:main.c        ****     sdWrite(&SD1, msg, sizeof(msg));
+ 129               		.loc 1 64 0 discriminator 1
+ 130 0036 2FEF      		ldi r18,lo8(-1)
+ 131 0038 3FEF      		ldi r19,lo8(-1)
+ 132 003a 44E1      		ldi r20,lo8(20)
+ 133 003c 50E0      		ldi r21,0
+ 134 003e BE01      		movw r22,r28
+ 135 0040 6F5F      		subi r22,-1
+ 136 0042 7F4F      		sbci r23,-1
+ 137 0044 80E0      		ldi r24,lo8(SD1+23)
+ 138 0046 90E0      		ldi r25,hi8(SD1+23)
+ 139 0048 0E94 0000 		call oqWriteTimeout
+ 140               	.LVL9:
+  65:main.c        ****     chThdSleepMilliseconds(100);
+ 141               		.loc 1 65 0 discriminator 1
+ 142 004c 8BE1      		ldi r24,lo8(27)
+ 143 004e 96E0      		ldi r25,lo8(6)
+ 144 0050 0E94 0000 		call chThdSleep
+ 145               	.LVL10:
+ 146 0054 00C0      		rjmp .L7
+ 147               		.cfi_endproc
+ 148               	.LFE240:
+ 150               		.section	.rodata.Read_Collect_Event.str1.1,"aMS",@progbits,1
+ 151               	.LC4:
+ 152 0000 5265 6164 		.string	"Read/Collect Event"
+ 152      2F43 6F6C 
+ 152      6C65 6374 
+ 152      2045 7665 
+ 152      6E74 00
+ 153               	.LC3:
+ 154 0013 4C65 6E64 		.string	"Lendo eventos\r\n"
+ 154      6F20 6576 
+ 154      656E 746F 
+ 154      730D 0A00 
+ 155               		.section	.text.Read_Collect_Event,"ax",@progbits
+ 157               	Read_Collect_Event:
+ 158               	.LFB239:
+  42:main.c        ****   char msg[] = "Lendo eventos\r\n";
+ 159               		.loc 1 42 0
+ 160               		.cfi_startproc
+ 161               	.LVL11:
+ 162 0000 CF93      		push r28
+ 163               	.LCFI4:
+ 164               		.cfi_def_cfa_offset 3
+ 165               		.cfi_offset 28, -2
+ 166 0002 DF93      		push r29
+ 167               	.LCFI5:
+ 168               		.cfi_def_cfa_offset 4
+ 169               		.cfi_offset 29, -3
+ 170 0004 CDB7      		in r28,__SP_L__
+ 171 0006 DEB7      		in r29,__SP_H__
+ 172               	.LCFI6:
+ 173               		.cfi_def_cfa_register 28
+ 174 0008 6097      		sbiw r28,16
+ 175               	.LCFI7:
+ 176               		.cfi_def_cfa_offset 20
+ 177 000a 0FB6      		in __tmp_reg__,__SREG__
+ 178 000c F894      		cli
+ 179 000e DEBF      		out __SP_H__,r29
+ 180 0010 0FBE      		out __SREG__,__tmp_reg__
+ 181 0012 CDBF      		out __SP_L__,r28
+ 182               	/* prologue: function */
+ 183               	/* frame size = 16 */
+ 184               	/* stack size = 18 */
+ 185               	.L__stack_usage = 18
+  43:main.c        **** 
+ 186               		.loc 1 43 0
+ 187 0014 80E1      		ldi r24,lo8(16)
+ 188               	.LVL12:
+ 189 0016 E0E0      		ldi r30,lo8(.LC3)
+ 190 0018 F0E0      		ldi r31,hi8(.LC3)
+ 191 001a DE01      		movw r26,r28
+ 192 001c 1196      		adiw r26,1
+ 193               		0:
+ 194 001e 0190      		ld r0,Z+
+ 195 0020 0D92      		st X+,r0
+ 196 0022 8A95      		dec r24
+ 197 0024 01F4      		brne 0b
+ 198               	.LVL13:
+ 199               	.LBB15:
+ 200               	.LBB16:
+ 201               		.loc 2 168 0
+ 202 0026 E091 0000 		lds r30,ch0+5
+ 203 002a F091 0000 		lds r31,ch0+5+1
+ 204 002e 80E0      		ldi r24,lo8(.LC4)
+ 205 0030 90E0      		ldi r25,hi8(.LC4)
+ 206 0032 9687      		std Z+14,r25
+ 207 0034 8587      		std Z+13,r24
+ 208               	.L9:
+ 209               	.LBE16:
+ 210               	.LBE15:
+  48:main.c        ****     chThdSleepMilliseconds(1);
+ 211               		.loc 1 48 0 discriminator 1
+ 212 0036 2FEF      		ldi r18,lo8(-1)
+ 213 0038 3FEF      		ldi r19,lo8(-1)
+ 214 003a 40E1      		ldi r20,lo8(16)
+ 215 003c 50E0      		ldi r21,0
+ 216 003e BE01      		movw r22,r28
+ 217 0040 6F5F      		subi r22,-1
+ 218 0042 7F4F      		sbci r23,-1
+ 219 0044 80E0      		ldi r24,lo8(SD1+23)
+ 220 0046 90E0      		ldi r25,hi8(SD1+23)
+ 221 0048 0E94 0000 		call oqWriteTimeout
+ 222               	.LVL14:
+  49:main.c        ****   }
+ 223               		.loc 1 49 0 discriminator 1
+ 224 004c 80E1      		ldi r24,lo8(16)
+ 225 004e 90E0      		ldi r25,0
+ 226 0050 0E94 0000 		call chThdSleep
+ 227               	.LVL15:
+ 228 0054 00C0      		rjmp .L9
+ 229               		.cfi_endproc
+ 230               	.LFE239:
+ 232               		.section	.text.startup.main,"ax",@progbits
+ 233               	.global	main
+ 235               	main:
+ 236               	.LFB241:
+  66:main.c        ****   }
+  67:main.c        **** }
+  68:main.c        **** 
+  69:main.c        **** /*
+  70:main.c        ****  * Application entry point.
+  71:main.c        ****  */
+  72:main.c        **** int main(void) 
+  73:main.c        **** {
+ 237               		.loc 1 73 0
+ 238               		.cfi_startproc
+ 239 0000 CF93      		push r28
+ 240               	.LCFI8:
+ 241               		.cfi_def_cfa_offset 3
+ 242               		.cfi_offset 28, -2
+ 243 0002 DF93      		push r29
+ 244               	.LCFI9:
+ 245               		.cfi_def_cfa_offset 4
+ 246               		.cfi_offset 29, -3
+ 247 0004 00D0      		rcall .
+ 248 0006 1F92      		push __zero_reg__
+ 249               	.LCFI10:
+ 250               		.cfi_def_cfa_offset 7
+ 251 0008 CDB7      		in r28,__SP_L__
+ 252 000a DEB7      		in r29,__SP_H__
+ 253               	.LCFI11:
+ 254               		.cfi_def_cfa_register 28
+ 255               	/* prologue: function */
+ 256               	/* frame size = 3 */
+ 257               	/* stack size = 5 */
+ 258               	.L__stack_usage = 5
+ 259               	.LVL16:
+  74:main.c        ****   thread_t *thd0 = 0, *thd1 = 0, *thd2 = 0;
+  75:main.c        ****   SerialConfig Serial_Configuration = {.sc_brr = UBRR2x(115200), .sc_bits_per_char = USART_CHAR_SIZ
+ 260               		.loc 1 75 0
+ 261 000c 80E1      		ldi r24,lo8(16)
+ 262 000e 90E0      		ldi r25,0
+ 263 0010 9A83      		std Y+2,r25
+ 264 0012 8983      		std Y+1,r24
+ 265 0014 83E0      		ldi r24,lo8(3)
+ 266 0016 8B83      		std Y+3,r24
+  76:main.c        **** 
+  77:main.c        ****   /*
+  78:main.c        ****    * System initializations.
+  79:main.c        ****    * - HAL initialization, this also initializes the configured device drivers
+  80:main.c        ****    *   and performs the board-specific initializations.
+  81:main.c        ****    * - Kernel initialization, the main() function becomes a thread and the
+  82:main.c        ****    *   RTOS is active.
+  83:main.c        ****    */
+  84:main.c        ****   halInit();
+ 267               		.loc 1 84 0
+ 268 0018 0E94 0000 		call halInit
+ 269               	.LVL17:
+  85:main.c        ****   chSysInit();
+ 270               		.loc 1 85 0
+ 271 001c 0E94 0000 		call chSysInit
+ 272               	.LVL18:
+  86:main.c        **** 
+  87:main.c        **** 
+  88:main.c        ****   sdStart(&SD1, &Serial_Configuration);
+ 273               		.loc 1 88 0
+ 274 0020 BE01      		movw r22,r28
+ 275 0022 6F5F      		subi r22,-1
+ 276 0024 7F4F      		sbci r23,-1
+ 277 0026 80E0      		ldi r24,lo8(SD1)
+ 278 0028 90E0      		ldi r25,hi8(SD1)
+ 279 002a 0E94 0000 		call sdStart
+ 280               	.LVL19:
+  89:main.c        ****   
+  90:main.c        ****   thd0 = chThdCreateStatic(wa_WriteEvent, sizeof(wa_WriteEvent), NORMALPRIO, Write_Save_Event, NULL
+ 281               		.loc 1 90 0
+ 282 002e 10E0      		ldi r17,0
+ 283 0030 00E0      		ldi r16,0
+ 284 0032 20E0      		ldi r18,lo8(gs(Write_Save_Event))
+ 285 0034 30E0      		ldi r19,hi8(gs(Write_Save_Event))
+ 286 0036 40E8      		ldi r20,lo8(-128)
+ 287 0038 63EE      		ldi r22,lo8(-29)
+ 288 003a 70E0      		ldi r23,0
+ 289 003c 80E0      		ldi r24,lo8(wa_WriteEvent)
+ 290 003e 90E0      		ldi r25,hi8(wa_WriteEvent)
+ 291 0040 0E94 0000 		call chThdCreateStatic
+ 292               	.LVL20:
+  91:main.c        ****   thd1 = chThdCreateStatic(wa_ReadEvent, sizeof(wa_ReadEvent), NORMALPRIO, Read_Collect_Event, NULL
+ 293               		.loc 1 91 0
+ 294 0044 20E0      		ldi r18,lo8(gs(Read_Collect_Event))
+ 295 0046 30E0      		ldi r19,hi8(gs(Read_Collect_Event))
+ 296 0048 40E8      		ldi r20,lo8(-128)
+ 297 004a 63EE      		ldi r22,lo8(-29)
+ 298 004c 70E0      		ldi r23,0
+ 299 004e 80E0      		ldi r24,lo8(wa_ReadEvent)
+ 300 0050 90E0      		ldi r25,hi8(wa_ReadEvent)
+ 301 0052 0E94 0000 		call chThdCreateStatic
+ 302               	.LVL21:
+  92:main.c        ****   thd2 = chThdCreateStatic(wa_ProcessEvent, sizeof(wa_ProcessEvent), NORMALPRIO, ProcessEvent, NULL
+ 303               		.loc 1 92 0
+ 304 0056 20E0      		ldi r18,lo8(gs(ProcessEvent))
+ 305 0058 30E0      		ldi r19,hi8(gs(ProcessEvent))
+ 306 005a 40E8      		ldi r20,lo8(-128)
+ 307 005c 63EE      		ldi r22,lo8(-29)
+ 308 005e 70E0      		ldi r23,0
+ 309 0060 80E0      		ldi r24,lo8(wa_ProcessEvent)
+ 310 0062 90E0      		ldi r25,hi8(wa_ProcessEvent)
+ 311 0064 0E94 0000 		call chThdCreateStatic
+ 312               	.LVL22:
+ 313               	.L11:
+  93:main.c        **** 
+  94:main.c        ****   while (true) 
+  95:main.c        ****   {
+  96:main.c        ****     chThdSleepMilliseconds(1);
+ 314               		.loc 1 96 0 discriminator 1
+ 315 0068 80E1      		ldi r24,lo8(16)
+ 316 006a 90E0      		ldi r25,0
+ 317 006c 0E94 0000 		call chThdSleep
+ 318               	.LVL23:
+ 319 0070 00C0      		rjmp .L11
+ 320               		.cfi_endproc
+ 321               	.LFE241:
+ 323               		.section	.bss.wa_ProcessEvent,"aw",@nobits
+ 326               	wa_ProcessEvent:
+ 327 0000 0000 0000 		.zero	227
+ 327      0000 0000 
+ 327      0000 0000 
+ 327      0000 0000 
+ 327      0000 0000 
+ 328               		.section	.bss.wa_ReadEvent,"aw",@nobits
+ 331               	wa_ReadEvent:
+ 332 0000 0000 0000 		.zero	227
+ 332      0000 0000 
+ 332      0000 0000 
+ 332      0000 0000 
+ 332      0000 0000 
+ 333               		.section	.bss.wa_WriteEvent,"aw",@nobits
+ 336               	wa_WriteEvent:
+ 337 0000 0000 0000 		.zero	227
+ 337      0000 0000 
+ 337      0000 0000 
+ 337      0000 0000 
+ 337      0000 0000 
+ 338               		.text
+ 339               	.Letext0:
+ 340               		.file 3 "/usr/lib/gcc/avr/7.3.0/include/stddef.h"
+ 341               		.file 4 "/usr/lib/avr/include/stdint.h"
+ 342               		.file 5 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/compile
+ 343               		.file 6 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chearly.h"
+ 344               		.file 7 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chobjects.h"
+ 345               		.file 8 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chrfcu.h"
+ 346               		.file 9 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chdebug.h"
+ 347               		.file 10 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chtime.h"
+ 348               		.file 11 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chlists.h"
+ 349               		.file 12 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore
+ 350               		.file 13 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chsem.h"
+ 351               		.file 14 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chmtx.h"
+ 352               		.file 15 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chsys.h"
+ 353               		.file 16 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chevents.h"
+ 354               		.file 17 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/oslib/include/chmemcore
+ 355               		.file 18 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_queues.
+ 356               		.file 19 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
+ 357               		.file 20 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_serial.
+ 358               		.file 21 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
+ 359               		.file 22 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal.h"
+ 360               		.file 23 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chthreads.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 main.c
-     /tmp/ccHr8hEu.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccHr8hEu.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccHr8hEu.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccHr8hEu.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccHr8hEu.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccHr8hEu.s:16     .text.startup.main:0000000000000000 main
+     /tmp/ccvIhj3H.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccvIhj3H.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccvIhj3H.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccvIhj3H.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccvIhj3H.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccvIhj3H.s:15     .text.Write_Save_Event:0000000000000000 Write_Save_Event
+     /tmp/ccvIhj3H.s:75     .text.ProcessEvent:0000000000000000 ProcessEvent
+     /tmp/ccvIhj3H.s:157    .text.Read_Collect_Event:0000000000000000 Read_Collect_Event
+     /tmp/ccvIhj3H.s:235    .text.startup.main:0000000000000000 main
+     /tmp/ccvIhj3H.s:336    .bss.wa_WriteEvent:0000000000000000 wa_WriteEvent
+     /tmp/ccvIhj3H.s:331    .bss.wa_ReadEvent:0000000000000000 wa_ReadEvent
+     /tmp/ccvIhj3H.s:326    .bss.wa_ProcessEvent:0000000000000000 wa_ProcessEvent
 
 UNDEFINED SYMBOLS
+ch0
+chThdSleep
+SD1
+oqWriteTimeout
 halInit
 chSysInit
-SD1
 sdStart
-oqWriteTimeout
-chThdSleep
+chThdCreateStatic
 __do_copy_data
+__do_clear_bss
