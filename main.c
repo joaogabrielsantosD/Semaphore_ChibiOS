@@ -20,24 +20,45 @@
 #include <stdio.h>
 #include "definitions.h"
 
+/*
+  * Global Variables
+*/ 
+static msg_t queue[QUEUE_SIZE], *rdp, *wrp;
+static size_t qsize;
+static mutex_t qmtx;
+static condition_variable_t qempty;
+static condition_variable_t qfull;
+
+/*
+  * Global Functions
+*/
+void InitBuffer(void);
+void PushBUffer(msg_t msg);
+msg_t PopBUffer(void);
+int IsBUfferEmpty(void);
+
 /* 
   * Thread Write Event 
 */
 static THD_WORKING_AREA(wa_WriteEvent, 128);
 static THD_FUNCTION(Write_Save_Event, arg)
 {
-  char msg[15];
   chRegSetThreadName("Save/Write Event");
   while (1)
   {
-    palTogglePad(IOPORT2, PORTB_LED1);
-    
-    snprintf(msg, 15, "%d %d %d %d \r\n", 
-    palReadPad(IOPORT2, PEDESTRE), palReadPad(IOPORT2, CARRO_SECUNDARIA), 
-    palReadPad(IOPORT2, AMBULANCIA_PRINCIPAL), palReadPad(IOPORT2, AMBULANCIA_SECUNDARIA));
+    if (palReadPad(IOPORT2, PEDESTRE) == PAL_LOW)
+      PushBUffer(PEDESTRE);
 
-    sdWrite(&SD1, msg, 15);
-    
+    if (palReadPad(IOPORT2, CARRO_SECUNDARIA) == PAL_LOW)
+      PushBUffer(CARRO_SECUNDARIA);
+
+    if (palReadPad(IOPORT2, AMBULANCIA_PRINCIPAL) == PAL_LOW)
+      PushBUffer(AMBULANCIA_PRINCIPAL);
+
+    if (palReadPad(IOPORT2, AMBULANCIA_SECUNDARIA) == PAL_LOW)
+      PushBUffer(AMBULANCIA_SECUNDARIA);
+
+    /* Debouce Delay */
     chThdSleepMilliseconds(100);
   }
 }
@@ -48,13 +69,12 @@ static THD_FUNCTION(Write_Save_Event, arg)
 static THD_WORKING_AREA(wa_ReadEvent, 128);
 static THD_FUNCTION(Read_Collect_Event, arg)
 {
-  char msg[] = "Lendo eventos\r\n";
-
   chRegSetThreadName("Read/Collect Event");
   while (1)
   {
-    sdWrite(&SD1, msg, sizeof(msg));
-    chThdSleepMilliseconds(1);
+    if (!IsBUfferEmpty())
+      palTogglePad(IOPORT2, PORTB_LED1);
+    chThdSleepMilliseconds(100);
   }
 }
 
@@ -82,6 +102,7 @@ int main(void)
   thread_t *thd0 = 0, *thd1 = 0, *thd2 = 0;
   SerialConfig Serial_Configuration = {.sc_brr = UBRR2x(115200), .sc_bits_per_char = USART_CHAR_SIZE_8};
 
+  InitBuffer();
   /*
    * System initializations.
    * - HAL initialization, this also initializes the configured device drivers
@@ -99,13 +120,75 @@ int main(void)
   palSetPadMode(IOPORT2, AMBULANCIA_PRINCIPAL, PAL_MODE_INPUT_PULLUP);
   palSetPadMode(IOPORT2, AMBULANCIA_SECUNDARIA, PAL_MODE_INPUT_PULLUP);  
 
-
   thd0 = chThdCreateStatic(wa_WriteEvent, sizeof(wa_WriteEvent), NORMALPRIO, Write_Save_Event, NULL);
-  //thd1 = chThdCreateStatic(wa_ReadEvent, sizeof(wa_ReadEvent), NORMALPRIO, Read_Collect_Event, NULL);
+  thd1 = chThdCreateStatic(wa_ReadEvent, sizeof(wa_ReadEvent), NORMALPRIO, Read_Collect_Event, NULL);
   //thd2 = chThdCreateStatic(wa_ProcessEvent, sizeof(wa_ProcessEvent), NORMALPRIO, ProcessEvent, NULL);
 
   while (true) 
   {
     chThdSleepMilliseconds(1);
   }
+}
+
+void InitBuffer()
+{
+  chMtxObjectInit(&qmtx);
+  chCondObjectInit(&qempty);
+  chCondObjectInit(&qfull);
+ 
+  rdp = wrp = &queue[0];
+  qsize = 0;
+}
+
+void PushBUffer(msg_t msg)
+{
+  /* Entering monitor.*/
+  chMtxLock(&qmtx);
+ 
+  /* Waiting for space in the queue.*/
+  while (qsize >= QUEUE_SIZE)
+    chCondWait(&qfull);
+ 
+  /* Writing the message in the queue.*/  
+  *wrp = msg;
+  if (++wrp >= &queue[QUEUE_SIZE])
+    wrp = &queue[0];
+  qsize++;
+
+  /* Signaling that there is at least a message.*/
+  chCondSignal(&qempty);
+
+  /* Leaving monitor.*/
+  chMtxUnlock(&qmtx);
+}
+
+msg_t PopBUffer()
+{
+  msg_t msg;
+ 
+  /* Entering monitor.*/
+  chMtxLock(&qmtx);
+ 
+  /* Waiting for messages in the queue.*/
+  while (qsize == 0)
+    chCondWait(&qempty);
+ 
+  /* Reading the message from the queue.*/  
+  msg = *rdp;
+  if (++rdp >= &queue[QUEUE_SIZE])
+    rdp = &queue[0];
+  qsize--;
+ 
+  /* Signaling that there is at least one free slot.*/
+  chCondSignal(&qfull);
+ 
+  /* Leaving monitor.*/
+  chMtxUnlock(&qmtx);
+ 
+  return msg;
+}
+
+int IsBUfferEmpty()
+{
+  return qsize == 0;
 }
