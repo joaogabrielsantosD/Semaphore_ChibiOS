@@ -28,14 +28,16 @@ static size_t qsize;
 static mutex_t qmtx;
 static condition_variable_t qempty;
 static condition_variable_t qfull;
+uint8_t STATE = 0;
 
 /*
   * Global Functions
 */
 void InitBuffer(void);
 void PushBUffer(msg_t msg);
-msg_t PopBUffer(void);
+uint8_t PopBUffer(void);
 int IsBUfferEmpty(void);
+int IsBufferFull(void);
 
 /* 
   * Thread Write Event 
@@ -69,12 +71,16 @@ static THD_FUNCTION(Write_Save_Event, arg)
 static THD_WORKING_AREA(wa_ReadEvent, 128);
 static THD_FUNCTION(Read_Collect_Event, arg)
 {
+  char r[5];
   chRegSetThreadName("Read/Collect Event");
   while (1)
   {
     if (!IsBUfferEmpty())
-      palTogglePad(IOPORT2, PORTB_LED1);
-    chThdSleepMilliseconds(100);
+      STATE = PopBUffer();
+
+    snprintf(r, 5, "%d\r\n", STATE);
+    sdWrite(&SD1, &r, sizeof(r));
+    chThdSleepMilliseconds(1);
   }
 }
 
@@ -146,7 +152,7 @@ void PushBUffer(msg_t msg)
   chMtxLock(&qmtx);
  
   /* Waiting for space in the queue.*/
-  while (qsize >= QUEUE_SIZE)
+  while (IsBufferFull())
     chCondWait(&qfull);
  
   /* Writing the message in the queue.*/  
@@ -162,7 +168,7 @@ void PushBUffer(msg_t msg)
   chMtxUnlock(&qmtx);
 }
 
-msg_t PopBUffer()
+uint8_t PopBUffer()
 {
   msg_t msg;
  
@@ -170,7 +176,7 @@ msg_t PopBUffer()
   chMtxLock(&qmtx);
  
   /* Waiting for messages in the queue.*/
-  while (qsize == 0)
+  while (IsBUfferEmpty())
     chCondWait(&qempty);
  
   /* Reading the message from the queue.*/  
@@ -185,10 +191,15 @@ msg_t PopBUffer()
   /* Leaving monitor.*/
   chMtxUnlock(&qmtx);
  
-  return msg;
+  return (uint8_t)msg;
 }
 
 int IsBUfferEmpty()
 {
   return qsize == 0;
+}
+
+int IsBufferFull()
+{
+  return qsize >= QUEUE_SIZE;
 }
