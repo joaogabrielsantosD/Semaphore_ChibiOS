@@ -3078,20 +3078,20 @@
  1209               		.file 17 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/oslib/include/chmemcore
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 chmtx.c
-     /tmp/ccEqICv4.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccEqICv4.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccEqICv4.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccEqICv4.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccEqICv4.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccEqICv4.s:13     .text.chMtxObjectInit:0000000000000000 chMtxObjectInit
-     /tmp/ccEqICv4.s:49     .text.chMtxLockS:0000000000000000 chMtxLockS
-     /tmp/ccEqICv4.s:455    .text.chMtxLock:0000000000000000 chMtxLock
-     /tmp/ccEqICv4.s:503    .text.chMtxTryLock:0000000000000000 chMtxTryLock
-     /tmp/ccEqICv4.s:611    .text.chMtxTryLockS:0000000000000000 chMtxTryLockS
-     /tmp/ccEqICv4.s:668    .text.chMtxUnlock:0000000000000000 chMtxUnlock
-     /tmp/ccEqICv4.s:856    .text.chMtxUnlockS:0000000000000000 chMtxUnlockS
-     /tmp/ccEqICv4.s:1003   .text.chMtxUnlockAllS:0000000000000000 chMtxUnlockAllS
-     /tmp/ccEqICv4.s:1153   .text.chMtxUnlockAll:0000000000000000 chMtxUnlockAll
+     /tmp/ccU18KxF.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccU18KxF.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccU18KxF.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccU18KxF.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccU18KxF.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccU18KxF.s:13     .text.chMtxObjectInit:0000000000000000 chMtxObjectInit
+     /tmp/ccU18KxF.s:49     .text.chMtxLockS:0000000000000000 chMtxLockS
+     /tmp/ccU18KxF.s:455    .text.chMtxLock:0000000000000000 chMtxLock
+     /tmp/ccU18KxF.s:503    .text.chMtxTryLock:0000000000000000 chMtxTryLock
+     /tmp/ccU18KxF.s:611    .text.chMtxTryLockS:0000000000000000 chMtxTryLockS
+     /tmp/ccU18KxF.s:668    .text.chMtxUnlock:0000000000000000 chMtxUnlock
+     /tmp/ccU18KxF.s:856    .text.chMtxUnlockS:0000000000000000 chMtxUnlockS
+     /tmp/ccU18KxF.s:1003   .text.chMtxUnlockAllS:0000000000000000 chMtxUnlockAllS
+     /tmp/ccU18KxF.s:1153   .text.chMtxUnlockAll:0000000000000000 chMtxUnlockAll
 
 UNDEFINED SYMBOLS
 ch0

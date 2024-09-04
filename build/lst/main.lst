@@ -7,17 +7,11 @@
    7               		.text
    8               	.Ltext0:
    9               		.cfi_sections	.debug_frame
-  10               		.section	.rodata.Read_Collect_Event.str1.1,"aMS",@progbits,1
-  11               	.LC0:
-  12 0000 5265 6164 		.string	"Read/Collect Event"
-  12      2F43 6F6C 
-  12      6C65 6374 
-  12      2045 7665 
-  12      6E74 00
-  13               		.section	.text.Read_Collect_Event,"ax",@progbits
-  15               	Read_Collect_Event:
-  16               	.LFB240:
-  17               		.file 1 "main.c"
+  10               		.section	.text.InitBuffer,"ax",@progbits
+  11               	.global	InitBuffer
+  13               	InitBuffer:
+  14               	.LFB243:
+  15               		.file 1 "main.c"
    1:main.c        **** /*
    2:main.c        ****     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
    3:main.c        **** 
@@ -48,57 +42,470 @@
   28:main.c        **** static mutex_t qmtx;
   29:main.c        **** static condition_variable_t qempty;
   30:main.c        **** static condition_variable_t qfull;
-  31:main.c        **** 
-  32:main.c        **** /*
-  33:main.c        ****   * Global Functions
-  34:main.c        **** */
-  35:main.c        **** void InitBuffer(void);
-  36:main.c        **** void PushBUffer(msg_t msg);
-  37:main.c        **** msg_t PopBUffer(void);
-  38:main.c        **** int IsBUfferEmpty(void);
-  39:main.c        **** 
-  40:main.c        **** /* 
-  41:main.c        ****   * Thread Write Event 
-  42:main.c        **** */
-  43:main.c        **** static THD_WORKING_AREA(wa_WriteEvent, 128);
-  44:main.c        **** static THD_FUNCTION(Write_Save_Event, arg)
-  45:main.c        **** {
-  46:main.c        ****   chRegSetThreadName("Save/Write Event");
-  47:main.c        ****   while (1)
-  48:main.c        ****   {
-  49:main.c        ****     if (palReadPad(IOPORT2, PEDESTRE) == PAL_LOW)
-  50:main.c        ****       PushBUffer(PEDESTRE);
-  51:main.c        **** 
-  52:main.c        ****     if (palReadPad(IOPORT2, CARRO_SECUNDARIA) == PAL_LOW)
-  53:main.c        ****       PushBUffer(CARRO_SECUNDARIA);
-  54:main.c        **** 
-  55:main.c        ****     if (palReadPad(IOPORT2, AMBULANCIA_PRINCIPAL) == PAL_LOW)
-  56:main.c        ****       PushBUffer(AMBULANCIA_PRINCIPAL);
-  57:main.c        **** 
-  58:main.c        ****     if (palReadPad(IOPORT2, AMBULANCIA_SECUNDARIA) == PAL_LOW)
-  59:main.c        ****       PushBUffer(AMBULANCIA_SECUNDARIA);
-  60:main.c        **** 
-  61:main.c        ****     /* Debouce Delay */
-  62:main.c        ****     chThdSleepMilliseconds(100);
-  63:main.c        ****   }
-  64:main.c        **** }
-  65:main.c        **** 
-  66:main.c        **** /* 
-  67:main.c        ****   * Thread Read Event
-  68:main.c        **** */
-  69:main.c        **** static THD_WORKING_AREA(wa_ReadEvent, 128);
-  70:main.c        **** static THD_FUNCTION(Read_Collect_Event, arg)
-  71:main.c        **** {
-  18               		.loc 1 71 0
-  19               		.cfi_startproc
-  20               	.LVL0:
-  21               	/* prologue: function */
-  22               	/* frame size = 0 */
-  23               	/* stack size = 0 */
-  24               	.L__stack_usage = 0
-  25               	.LBB8:
-  26               	.LBB9:
-  27               		.file 2 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h"
+  31:main.c        **** uint8_t STATE = 0;
+  32:main.c        **** 
+  33:main.c        **** /*
+  34:main.c        ****   * Global Functions
+  35:main.c        **** */
+  36:main.c        **** void InitBuffer(void);
+  37:main.c        **** void PushBUffer(msg_t msg);
+  38:main.c        **** uint8_t PopBUffer(void);
+  39:main.c        **** int IsBUfferEmpty(void);
+  40:main.c        **** int IsBufferFull(void);
+  41:main.c        **** 
+  42:main.c        **** /* 
+  43:main.c        ****   * Thread Write Event 
+  44:main.c        **** */
+  45:main.c        **** static THD_WORKING_AREA(wa_WriteEvent, 128);
+  46:main.c        **** static THD_FUNCTION(Write_Save_Event, arg)
+  47:main.c        **** {
+  48:main.c        ****   chRegSetThreadName("Save/Write Event");
+  49:main.c        ****   while (1)
+  50:main.c        ****   {
+  51:main.c        ****     if (palReadPad(IOPORT2, PEDESTRE) == PAL_LOW)
+  52:main.c        ****       PushBUffer(PEDESTRE);
+  53:main.c        **** 
+  54:main.c        ****     if (palReadPad(IOPORT2, CARRO_SECUNDARIA) == PAL_LOW)
+  55:main.c        ****       PushBUffer(CARRO_SECUNDARIA);
+  56:main.c        **** 
+  57:main.c        ****     if (palReadPad(IOPORT2, AMBULANCIA_PRINCIPAL) == PAL_LOW)
+  58:main.c        ****       PushBUffer(AMBULANCIA_PRINCIPAL);
+  59:main.c        **** 
+  60:main.c        ****     if (palReadPad(IOPORT2, AMBULANCIA_SECUNDARIA) == PAL_LOW)
+  61:main.c        ****       PushBUffer(AMBULANCIA_SECUNDARIA);
+  62:main.c        **** 
+  63:main.c        ****     /* Debouce Delay */
+  64:main.c        ****     chThdSleepMilliseconds(100);
+  65:main.c        ****   }
+  66:main.c        **** }
+  67:main.c        **** 
+  68:main.c        **** /* 
+  69:main.c        ****   * Thread Read Event
+  70:main.c        **** */
+  71:main.c        **** static THD_WORKING_AREA(wa_ReadEvent, 128);
+  72:main.c        **** static THD_FUNCTION(Read_Collect_Event, arg)
+  73:main.c        **** {
+  74:main.c        ****   char r[5];
+  75:main.c        ****   chRegSetThreadName("Read/Collect Event");
+  76:main.c        ****   while (1)
+  77:main.c        ****   {
+  78:main.c        ****     if (!IsBUfferEmpty())
+  79:main.c        ****       STATE = PopBUffer();
+  80:main.c        **** 
+  81:main.c        ****     snprintf(r, 5, "%d\r\n", STATE);
+  82:main.c        ****     sdWrite(&SD1, &r, sizeof(r));
+  83:main.c        ****     chThdSleepMilliseconds(1);
+  84:main.c        ****   }
+  85:main.c        **** }
+  86:main.c        **** 
+  87:main.c        **** /* 
+  88:main.c        ****   * Thread Process Event 
+  89:main.c        **** */
+  90:main.c        **** static THD_WORKING_AREA(wa_ProcessEvent, 128);
+  91:main.c        **** static THD_FUNCTION(ProcessEvent, arg)
+  92:main.c        **** {
+  93:main.c        ****   char msg[] = "Maquina de estado\r\n";
+  94:main.c        **** 
+  95:main.c        ****   chRegSetThreadName("Process Event");
+  96:main.c        ****   while (1)
+  97:main.c        ****   {
+  98:main.c        ****     sdWrite(&SD1, msg, sizeof(msg));
+  99:main.c        ****     chThdSleepMilliseconds(100);
+ 100:main.c        ****   }
+ 101:main.c        **** }
+ 102:main.c        **** 
+ 103:main.c        **** /*
+ 104:main.c        ****  * Application entry point.
+ 105:main.c        ****  */
+ 106:main.c        **** int main(void) 
+ 107:main.c        **** {
+ 108:main.c        ****   thread_t *thd0 = 0, *thd1 = 0, *thd2 = 0;
+ 109:main.c        ****   SerialConfig Serial_Configuration = {.sc_brr = UBRR2x(115200), .sc_bits_per_char = USART_CHAR_SIZ
+ 110:main.c        **** 
+ 111:main.c        ****   InitBuffer();
+ 112:main.c        ****   /*
+ 113:main.c        ****    * System initializations.
+ 114:main.c        ****    * - HAL initialization, this also initializes the configured device drivers
+ 115:main.c        ****    *   and performs the board-specific initializations.
+ 116:main.c        ****    * - Kernel initialization, the main() function becomes a thread and the
+ 117:main.c        ****    *   RTOS is active.
+ 118:main.c        ****    */
+ 119:main.c        ****   halInit();
+ 120:main.c        ****   chSysInit();
+ 121:main.c        **** 
+ 122:main.c        ****   sdStart(&SD1, &Serial_Configuration);
+ 123:main.c        **** 
+ 124:main.c        ****   palSetPadMode(IOPORT2, PEDESTRE, PAL_MODE_INPUT_PULLUP);
+ 125:main.c        ****   palSetPadMode(IOPORT2, CARRO_SECUNDARIA, PAL_MODE_INPUT_PULLUP);
+ 126:main.c        ****   palSetPadMode(IOPORT2, AMBULANCIA_PRINCIPAL, PAL_MODE_INPUT_PULLUP);
+ 127:main.c        ****   palSetPadMode(IOPORT2, AMBULANCIA_SECUNDARIA, PAL_MODE_INPUT_PULLUP);  
+ 128:main.c        **** 
+ 129:main.c        ****   thd0 = chThdCreateStatic(wa_WriteEvent, sizeof(wa_WriteEvent), NORMALPRIO, Write_Save_Event, NULL
+ 130:main.c        ****   thd1 = chThdCreateStatic(wa_ReadEvent, sizeof(wa_ReadEvent), NORMALPRIO, Read_Collect_Event, NULL
+ 131:main.c        ****   //thd2 = chThdCreateStatic(wa_ProcessEvent, sizeof(wa_ProcessEvent), NORMALPRIO, ProcessEvent, NU
+ 132:main.c        **** 
+ 133:main.c        ****   while (true) 
+ 134:main.c        ****   {
+ 135:main.c        ****     chThdSleepMilliseconds(1);
+ 136:main.c        ****   }
+ 137:main.c        **** }
+ 138:main.c        **** 
+ 139:main.c        **** void InitBuffer()
+ 140:main.c        **** {
+  16               		.loc 1 140 0
+  17               		.cfi_startproc
+  18               	/* prologue: function */
+  19               	/* frame size = 0 */
+  20               	/* stack size = 0 */
+  21               	.L__stack_usage = 0
+ 141:main.c        ****   chMtxObjectInit(&qmtx);
+  22               		.loc 1 141 0
+  23 0000 80E0      		ldi r24,lo8(qmtx)
+  24 0002 90E0      		ldi r25,hi8(qmtx)
+  25 0004 0E94 0000 		call chMtxObjectInit
+  26               	.LVL0:
+ 142:main.c        ****   chCondObjectInit(&qempty);
+  27               		.loc 1 142 0
+  28 0008 80E0      		ldi r24,lo8(qempty)
+  29 000a 90E0      		ldi r25,hi8(qempty)
+  30 000c 0E94 0000 		call chCondObjectInit
+  31               	.LVL1:
+ 143:main.c        ****   chCondObjectInit(&qfull);
+  32               		.loc 1 143 0
+  33 0010 80E0      		ldi r24,lo8(qfull)
+  34 0012 90E0      		ldi r25,hi8(qfull)
+  35 0014 0E94 0000 		call chCondObjectInit
+  36               	.LVL2:
+ 144:main.c        ****  
+ 145:main.c        ****   rdp = wrp = &queue[0];
+  37               		.loc 1 145 0
+  38 0018 80E0      		ldi r24,lo8(queue)
+  39 001a 90E0      		ldi r25,hi8(queue)
+  40 001c 9093 0000 		sts wrp+1,r25
+  41 0020 8093 0000 		sts wrp,r24
+  42 0024 9093 0000 		sts rdp+1,r25
+  43 0028 8093 0000 		sts rdp,r24
+ 146:main.c        ****   qsize = 0;
+  44               		.loc 1 146 0
+  45 002c 1092 0000 		sts qsize+1,__zero_reg__
+  46 0030 1092 0000 		sts qsize,__zero_reg__
+  47               	/* epilogue start */
+ 147:main.c        **** }
+  48               		.loc 1 147 0
+  49 0034 0895      		ret
+  50               		.cfi_endproc
+  51               	.LFE243:
+  53               		.section	.text.startup.main,"ax",@progbits
+  54               	.global	main
+  56               	main:
+  57               	.LFB242:
+ 107:main.c        ****   thread_t *thd0 = 0, *thd1 = 0, *thd2 = 0;
+  58               		.loc 1 107 0
+  59               		.cfi_startproc
+  60 0000 CF93      		push r28
+  61               	.LCFI0:
+  62               		.cfi_def_cfa_offset 3
+  63               		.cfi_offset 28, -2
+  64 0002 DF93      		push r29
+  65               	.LCFI1:
+  66               		.cfi_def_cfa_offset 4
+  67               		.cfi_offset 29, -3
+  68 0004 00D0      		rcall .
+  69 0006 1F92      		push __zero_reg__
+  70               	.LCFI2:
+  71               		.cfi_def_cfa_offset 7
+  72 0008 CDB7      		in r28,__SP_L__
+  73 000a DEB7      		in r29,__SP_H__
+  74               	.LCFI3:
+  75               		.cfi_def_cfa_register 28
+  76               	/* prologue: function */
+  77               	/* frame size = 3 */
+  78               	/* stack size = 5 */
+  79               	.L__stack_usage = 5
+  80               	.LVL3:
+ 109:main.c        **** 
+  81               		.loc 1 109 0
+  82 000c 80E1      		ldi r24,lo8(16)
+  83 000e 90E0      		ldi r25,0
+  84 0010 9A83      		std Y+2,r25
+  85 0012 8983      		std Y+1,r24
+  86 0014 83E0      		ldi r24,lo8(3)
+  87 0016 8B83      		std Y+3,r24
+ 111:main.c        ****   /*
+  88               		.loc 1 111 0
+  89 0018 0E94 0000 		call InitBuffer
+  90               	.LVL4:
+ 119:main.c        ****   chSysInit();
+  91               		.loc 1 119 0
+  92 001c 0E94 0000 		call halInit
+  93               	.LVL5:
+ 120:main.c        **** 
+  94               		.loc 1 120 0
+  95 0020 0E94 0000 		call chSysInit
+  96               	.LVL6:
+ 122:main.c        **** 
+  97               		.loc 1 122 0
+  98 0024 BE01      		movw r22,r28
+  99 0026 6F5F      		subi r22,-1
+ 100 0028 7F4F      		sbci r23,-1
+ 101 002a 80E0      		ldi r24,lo8(SD1)
+ 102 002c 90E0      		ldi r25,hi8(SD1)
+ 103 002e 0E94 0000 		call sdStart
+ 104               	.LVL7:
+ 124:main.c        ****   palSetPadMode(IOPORT2, CARRO_SECUNDARIA, PAL_MODE_INPUT_PULLUP);
+ 105               		.loc 1 124 0
+ 106 0032 43E0      		ldi r20,lo8(3)
+ 107 0034 60E1      		ldi r22,lo8(16)
+ 108 0036 83E2      		ldi r24,lo8(35)
+ 109 0038 90E0      		ldi r25,0
+ 110 003a 0E94 0000 		call _pal_lld_setgroupmode
+ 111               	.LVL8:
+ 125:main.c        ****   palSetPadMode(IOPORT2, AMBULANCIA_PRINCIPAL, PAL_MODE_INPUT_PULLUP);
+ 112               		.loc 1 125 0
+ 113 003e 43E0      		ldi r20,lo8(3)
+ 114 0040 68E0      		ldi r22,lo8(8)
+ 115 0042 83E2      		ldi r24,lo8(35)
+ 116 0044 90E0      		ldi r25,0
+ 117 0046 0E94 0000 		call _pal_lld_setgroupmode
+ 118               	.LVL9:
+ 126:main.c        ****   palSetPadMode(IOPORT2, AMBULANCIA_SECUNDARIA, PAL_MODE_INPUT_PULLUP);  
+ 119               		.loc 1 126 0
+ 120 004a 43E0      		ldi r20,lo8(3)
+ 121 004c 64E0      		ldi r22,lo8(4)
+ 122 004e 83E2      		ldi r24,lo8(35)
+ 123 0050 90E0      		ldi r25,0
+ 124 0052 0E94 0000 		call _pal_lld_setgroupmode
+ 125               	.LVL10:
+ 127:main.c        **** 
+ 126               		.loc 1 127 0
+ 127 0056 43E0      		ldi r20,lo8(3)
+ 128 0058 62E0      		ldi r22,lo8(2)
+ 129 005a 83E2      		ldi r24,lo8(35)
+ 130 005c 90E0      		ldi r25,0
+ 131 005e 0E94 0000 		call _pal_lld_setgroupmode
+ 132               	.LVL11:
+ 129:main.c        ****   thd1 = chThdCreateStatic(wa_ReadEvent, sizeof(wa_ReadEvent), NORMALPRIO, Read_Collect_Event, NULL
+ 133               		.loc 1 129 0
+ 134 0062 10E0      		ldi r17,0
+ 135 0064 00E0      		ldi r16,0
+ 136 0066 20E0      		ldi r18,lo8(gs(Write_Save_Event))
+ 137 0068 30E0      		ldi r19,hi8(gs(Write_Save_Event))
+ 138 006a 40E8      		ldi r20,lo8(-128)
+ 139 006c 63EE      		ldi r22,lo8(-29)
+ 140 006e 70E0      		ldi r23,0
+ 141 0070 80E0      		ldi r24,lo8(wa_WriteEvent)
+ 142 0072 90E0      		ldi r25,hi8(wa_WriteEvent)
+ 143 0074 0E94 0000 		call chThdCreateStatic
+ 144               	.LVL12:
+ 130:main.c        ****   //thd2 = chThdCreateStatic(wa_ProcessEvent, sizeof(wa_ProcessEvent), NORMALPRIO, ProcessEvent, NU
+ 145               		.loc 1 130 0
+ 146 0078 20E0      		ldi r18,lo8(gs(Read_Collect_Event))
+ 147 007a 30E0      		ldi r19,hi8(gs(Read_Collect_Event))
+ 148 007c 40E8      		ldi r20,lo8(-128)
+ 149 007e 63EE      		ldi r22,lo8(-29)
+ 150 0080 70E0      		ldi r23,0
+ 151 0082 80E0      		ldi r24,lo8(wa_ReadEvent)
+ 152 0084 90E0      		ldi r25,hi8(wa_ReadEvent)
+ 153 0086 0E94 0000 		call chThdCreateStatic
+ 154               	.LVL13:
+ 155               	.L4:
+ 135:main.c        ****   }
+ 156               		.loc 1 135 0 discriminator 1
+ 157 008a 80E1      		ldi r24,lo8(16)
+ 158 008c 90E0      		ldi r25,0
+ 159 008e 0E94 0000 		call chThdSleep
+ 160               	.LVL14:
+ 161 0092 00C0      		rjmp .L4
+ 162               		.cfi_endproc
+ 163               	.LFE242:
+ 165               		.section	.text.PushBUffer,"ax",@progbits
+ 166               	.global	PushBUffer
+ 168               	PushBUffer:
+ 169               	.LFB244:
+ 148:main.c        **** 
+ 149:main.c        **** void PushBUffer(msg_t msg)
+ 150:main.c        **** {
+ 170               		.loc 1 150 0
+ 171               		.cfi_startproc
+ 172               	.LVL15:
+ 173 0000 CF93      		push r28
+ 174               	.LCFI4:
+ 175               		.cfi_def_cfa_offset 3
+ 176               		.cfi_offset 28, -2
+ 177 0002 DF93      		push r29
+ 178               	.LCFI5:
+ 179               		.cfi_def_cfa_offset 4
+ 180               		.cfi_offset 29, -3
+ 181               	/* prologue: function */
+ 182               	/* frame size = 0 */
+ 183               	/* stack size = 2 */
+ 184               	.L__stack_usage = 2
+ 185 0004 EC01      		movw r28,r24
+ 151:main.c        ****   /* Entering monitor.*/
+ 152:main.c        ****   chMtxLock(&qmtx);
+ 186               		.loc 1 152 0
+ 187 0006 80E0      		ldi r24,lo8(qmtx)
+ 188 0008 90E0      		ldi r25,hi8(qmtx)
+ 189               	.LVL16:
+ 190 000a 0E94 0000 		call chMtxLock
+ 191               	.LVL17:
+ 192               	.LBB12:
+ 193               	.LBB13:
+ 153:main.c        ****  
+ 154:main.c        ****   /* Waiting for space in the queue.*/
+ 155:main.c        ****   while (IsBufferFull())
+ 156:main.c        ****     chCondWait(&qfull);
+ 157:main.c        ****  
+ 158:main.c        ****   /* Writing the message in the queue.*/  
+ 159:main.c        ****   *wrp = msg;
+ 160:main.c        ****   if (++wrp >= &queue[QUEUE_SIZE])
+ 161:main.c        ****     wrp = &queue[0];
+ 162:main.c        ****   qsize++;
+ 163:main.c        **** 
+ 164:main.c        ****   /* Signaling that there is at least a message.*/
+ 165:main.c        ****   chCondSignal(&qempty);
+ 166:main.c        **** 
+ 167:main.c        ****   /* Leaving monitor.*/
+ 168:main.c        ****   chMtxUnlock(&qmtx);
+ 169:main.c        **** }
+ 170:main.c        **** 
+ 171:main.c        **** uint8_t PopBUffer()
+ 172:main.c        **** {
+ 173:main.c        ****   msg_t msg;
+ 174:main.c        ****  
+ 175:main.c        ****   /* Entering monitor.*/
+ 176:main.c        ****   chMtxLock(&qmtx);
+ 177:main.c        ****  
+ 178:main.c        ****   /* Waiting for messages in the queue.*/
+ 179:main.c        ****   while (IsBUfferEmpty())
+ 180:main.c        ****     chCondWait(&qempty);
+ 181:main.c        ****  
+ 182:main.c        ****   /* Reading the message from the queue.*/  
+ 183:main.c        ****   msg = *rdp;
+ 184:main.c        ****   if (++rdp >= &queue[QUEUE_SIZE])
+ 185:main.c        ****     rdp = &queue[0];
+ 186:main.c        ****   qsize--;
+ 187:main.c        ****  
+ 188:main.c        ****   /* Signaling that there is at least one free slot.*/
+ 189:main.c        ****   chCondSignal(&qfull);
+ 190:main.c        ****  
+ 191:main.c        ****   /* Leaving monitor.*/
+ 192:main.c        ****   chMtxUnlock(&qmtx);
+ 193:main.c        ****  
+ 194:main.c        ****   return (uint8_t)msg;
+ 195:main.c        **** }
+ 196:main.c        **** 
+ 197:main.c        **** int IsBUfferEmpty()
+ 198:main.c        **** {
+ 199:main.c        ****   return qsize == 0;
+ 200:main.c        **** }
+ 201:main.c        **** 
+ 202:main.c        **** int IsBufferFull()
+ 203:main.c        **** {
+ 204:main.c        ****   return qsize >= QUEUE_SIZE;
+ 194               		.loc 1 204 0
+ 195 000e 8091 0000 		lds r24,qsize
+ 196 0012 9091 0000 		lds r25,qsize+1
+ 197               	.LBE13:
+ 198               	.LBE12:
+ 155:main.c        ****     chCondWait(&qfull);
+ 199               		.loc 1 155 0
+ 200 0016 8038      		cpi r24,-128
+ 201 0018 9105      		cpc r25,__zero_reg__
+ 202 001a 00F0      		brlo .L6
+ 203               	.L7:
+ 156:main.c        ****  
+ 204               		.loc 1 156 0
+ 205 001c 80E0      		ldi r24,lo8(qfull)
+ 206 001e 90E0      		ldi r25,hi8(qfull)
+ 207 0020 0E94 0000 		call chCondWait
+ 208               	.LVL18:
+ 209               	.LBB15:
+ 210               	.LBB14:
+ 211               		.loc 1 204 0
+ 212 0024 8091 0000 		lds r24,qsize
+ 213 0028 9091 0000 		lds r25,qsize+1
+ 214               	.LBE14:
+ 215               	.LBE15:
+ 155:main.c        ****     chCondWait(&qfull);
+ 216               		.loc 1 155 0
+ 217 002c 8038      		cpi r24,-128
+ 218 002e 9105      		cpc r25,__zero_reg__
+ 219 0030 00F4      		brsh .L7
+ 220               	.L6:
+ 159:main.c        ****   if (++wrp >= &queue[QUEUE_SIZE])
+ 221               		.loc 1 159 0
+ 222 0032 E091 0000 		lds r30,wrp
+ 223 0036 F091 0000 		lds r31,wrp+1
+ 224 003a C193      		st Z+,r28
+ 225 003c D193      		st Z+,r29
+ 160:main.c        ****     wrp = &queue[0];
+ 226               		.loc 1 160 0
+ 227 003e 20E0      		ldi r18,hi8(queue+256)
+ 228 0040 E030      		cpi r30,lo8(queue+256)
+ 229 0042 F207      		cpc r31,r18
+ 230 0044 00F0      		brlo .L11
+ 161:main.c        ****   qsize++;
+ 231               		.loc 1 161 0
+ 232 0046 20E0      		ldi r18,lo8(queue)
+ 233 0048 30E0      		ldi r19,hi8(queue)
+ 234 004a 3093 0000 		sts wrp+1,r19
+ 235 004e 2093 0000 		sts wrp,r18
+ 236               	.L9:
+ 162:main.c        **** 
+ 237               		.loc 1 162 0
+ 238 0052 0196      		adiw r24,1
+ 239 0054 9093 0000 		sts qsize+1,r25
+ 240 0058 8093 0000 		sts qsize,r24
+ 165:main.c        **** 
+ 241               		.loc 1 165 0
+ 242 005c 80E0      		ldi r24,lo8(qempty)
+ 243 005e 90E0      		ldi r25,hi8(qempty)
+ 244 0060 0E94 0000 		call chCondSignal
+ 245               	.LVL19:
+ 168:main.c        **** }
+ 246               		.loc 1 168 0
+ 247 0064 80E0      		ldi r24,lo8(qmtx)
+ 248 0066 90E0      		ldi r25,hi8(qmtx)
+ 249               	/* epilogue start */
+ 169:main.c        **** 
+ 250               		.loc 1 169 0
+ 251 0068 DF91      		pop r29
+ 252 006a CF91      		pop r28
+ 253               	.LVL20:
+ 168:main.c        **** }
+ 254               		.loc 1 168 0
+ 255 006c 0C94 0000 		jmp chMtxUnlock
+ 256               	.LVL21:
+ 257               	.L11:
+ 160:main.c        ****     wrp = &queue[0];
+ 258               		.loc 1 160 0
+ 259 0070 F093 0000 		sts wrp+1,r31
+ 260 0074 E093 0000 		sts wrp,r30
+ 261 0078 00C0      		rjmp .L9
+ 262               		.cfi_endproc
+ 263               	.LFE244:
+ 265               		.section	.rodata.Write_Save_Event.str1.1,"aMS",@progbits,1
+ 266               	.LC0:
+ 267 0000 5361 7665 		.string	"Save/Write Event"
+ 267      2F57 7269 
+ 267      7465 2045 
+ 267      7665 6E74 
+ 267      00
+ 268               		.section	.text.Write_Save_Event,"ax",@progbits
+ 270               	Write_Save_Event:
+ 271               	.LFB239:
+  47:main.c        ****   chRegSetThreadName("Save/Write Event");
+ 272               		.loc 1 47 0
+ 273               		.cfi_startproc
+ 274               	.LVL22:
+ 275               	/* prologue: function */
+ 276               	/* frame size = 0 */
+ 277               	/* stack size = 0 */
+ 278               	.L__stack_usage = 0
+ 279               	.LBB16:
+ 280               	.LBB17:
+ 281               		.file 2 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h"
    1:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** /*
    2:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****     ChibiOS - Copyright (C) 2006,2007,2008,2009,2010,2011,2012,2013,2014,
    3:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****               2015,2016,2017,2018,2019,2020,2021 Giovanni Di Sirio.
@@ -267,722 +674,457 @@
  166:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** 
  167:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** #if CH_CFG_USE_REGISTRY == TRUE
  168:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****   __sch_get_currthread()->name = name;
-  28               		.loc 2 168 0
-  29 0000 E091 0000 		lds r30,ch0+5
-  30 0004 F091 0000 		lds r31,ch0+5+1
-  31 0008 80E0      		ldi r24,lo8(.LC0)
-  32 000a 90E0      		ldi r25,hi8(.LC0)
-  33               	.LVL1:
-  34 000c 9687      		std Z+14,r25
-  35 000e 8587      		std Z+13,r24
-  36               	.LBE9:
-  37               	.LBE8:
-  72:main.c        ****   chRegSetThreadName("Read/Collect Event");
-  73:main.c        ****   while (1)
-  74:main.c        ****   {
-  75:main.c        ****     if (!IsBUfferEmpty())
-  76:main.c        ****       palTogglePad(IOPORT2, PORTB_LED1);
-  38               		.loc 1 76 0
-  39 0010 C0E2      		ldi r28,lo8(32)
-  40               	.L3:
-  75:main.c        ****       palTogglePad(IOPORT2, PORTB_LED1);
-  41               		.loc 1 75 0
-  42 0012 8091 0000 		lds r24,qsize
-  43 0016 9091 0000 		lds r25,qsize+1
-  44 001a 892B      		or r24,r25
-  45 001c 01F0      		breq .L2
-  46               		.loc 1 76 0
-  47 001e 85B1      		in r24,0x5
-  48 0020 8C27      		eor r24,r28
-  49 0022 85B9      		out 0x5,r24
-  50               	.L2:
-  77:main.c        ****     chThdSleepMilliseconds(100);
-  51               		.loc 1 77 0
-  52 0024 8BE1      		ldi r24,lo8(27)
-  53 0026 96E0      		ldi r25,lo8(6)
-  54 0028 0E94 0000 		call chThdSleep
-  55               	.LVL2:
-  75:main.c        ****       palTogglePad(IOPORT2, PORTB_LED1);
-  56               		.loc 1 75 0
-  57 002c 00C0      		rjmp .L3
-  58               		.cfi_endproc
-  59               	.LFE240:
-  61               		.section	.text.InitBuffer,"ax",@progbits
-  62               	.global	InitBuffer
-  64               	InitBuffer:
-  65               	.LFB243:
-  78:main.c        ****   }
-  79:main.c        **** }
-  80:main.c        **** 
-  81:main.c        **** /* 
-  82:main.c        ****   * Thread Process Event 
-  83:main.c        **** */
-  84:main.c        **** static THD_WORKING_AREA(wa_ProcessEvent, 128);
-  85:main.c        **** static THD_FUNCTION(ProcessEvent, arg)
-  86:main.c        **** {
-  87:main.c        ****   char msg[] = "Maquina de estado\r\n";
-  88:main.c        **** 
-  89:main.c        ****   chRegSetThreadName("Process Event");
-  90:main.c        ****   while (1)
-  91:main.c        ****   {
-  92:main.c        ****     sdWrite(&SD1, msg, sizeof(msg));
-  93:main.c        ****     chThdSleepMilliseconds(100);
-  94:main.c        ****   }
-  95:main.c        **** }
-  96:main.c        **** 
-  97:main.c        **** /*
-  98:main.c        ****  * Application entry point.
-  99:main.c        ****  */
- 100:main.c        **** int main(void) 
- 101:main.c        **** {
- 102:main.c        ****   thread_t *thd0 = 0, *thd1 = 0, *thd2 = 0;
- 103:main.c        ****   SerialConfig Serial_Configuration = {.sc_brr = UBRR2x(115200), .sc_bits_per_char = USART_CHAR_SIZ
- 104:main.c        **** 
- 105:main.c        ****   InitBuffer();
- 106:main.c        ****   /*
- 107:main.c        ****    * System initializations.
- 108:main.c        ****    * - HAL initialization, this also initializes the configured device drivers
- 109:main.c        ****    *   and performs the board-specific initializations.
- 110:main.c        ****    * - Kernel initialization, the main() function becomes a thread and the
- 111:main.c        ****    *   RTOS is active.
- 112:main.c        ****    */
- 113:main.c        ****   halInit();
- 114:main.c        ****   chSysInit();
- 115:main.c        **** 
- 116:main.c        ****   sdStart(&SD1, &Serial_Configuration);
- 117:main.c        **** 
- 118:main.c        ****   palSetPadMode(IOPORT2, PEDESTRE, PAL_MODE_INPUT_PULLUP);
- 119:main.c        ****   palSetPadMode(IOPORT2, CARRO_SECUNDARIA, PAL_MODE_INPUT_PULLUP);
- 120:main.c        ****   palSetPadMode(IOPORT2, AMBULANCIA_PRINCIPAL, PAL_MODE_INPUT_PULLUP);
- 121:main.c        ****   palSetPadMode(IOPORT2, AMBULANCIA_SECUNDARIA, PAL_MODE_INPUT_PULLUP);  
- 122:main.c        **** 
- 123:main.c        ****   thd0 = chThdCreateStatic(wa_WriteEvent, sizeof(wa_WriteEvent), NORMALPRIO, Write_Save_Event, NULL
- 124:main.c        ****   thd1 = chThdCreateStatic(wa_ReadEvent, sizeof(wa_ReadEvent), NORMALPRIO, Read_Collect_Event, NULL
- 125:main.c        ****   //thd2 = chThdCreateStatic(wa_ProcessEvent, sizeof(wa_ProcessEvent), NORMALPRIO, ProcessEvent, NU
- 126:main.c        **** 
- 127:main.c        ****   while (true) 
- 128:main.c        ****   {
- 129:main.c        ****     chThdSleepMilliseconds(1);
- 130:main.c        ****   }
- 131:main.c        **** }
- 132:main.c        **** 
- 133:main.c        **** void InitBuffer()
- 134:main.c        **** {
-  66               		.loc 1 134 0
-  67               		.cfi_startproc
-  68               	/* prologue: function */
-  69               	/* frame size = 0 */
-  70               	/* stack size = 0 */
-  71               	.L__stack_usage = 0
- 135:main.c        ****   chMtxObjectInit(&qmtx);
-  72               		.loc 1 135 0
-  73 0000 80E0      		ldi r24,lo8(qmtx)
-  74 0002 90E0      		ldi r25,hi8(qmtx)
-  75 0004 0E94 0000 		call chMtxObjectInit
-  76               	.LVL3:
- 136:main.c        ****   chCondObjectInit(&qempty);
-  77               		.loc 1 136 0
-  78 0008 80E0      		ldi r24,lo8(qempty)
-  79 000a 90E0      		ldi r25,hi8(qempty)
-  80 000c 0E94 0000 		call chCondObjectInit
-  81               	.LVL4:
- 137:main.c        ****   chCondObjectInit(&qfull);
-  82               		.loc 1 137 0
-  83 0010 80E0      		ldi r24,lo8(qfull)
-  84 0012 90E0      		ldi r25,hi8(qfull)
-  85 0014 0E94 0000 		call chCondObjectInit
-  86               	.LVL5:
- 138:main.c        ****  
- 139:main.c        ****   rdp = wrp = &queue[0];
-  87               		.loc 1 139 0
-  88 0018 80E0      		ldi r24,lo8(queue)
-  89 001a 90E0      		ldi r25,hi8(queue)
-  90 001c 9093 0000 		sts wrp+1,r25
-  91 0020 8093 0000 		sts wrp,r24
-  92 0024 9093 0000 		sts rdp+1,r25
-  93 0028 8093 0000 		sts rdp,r24
- 140:main.c        ****   qsize = 0;
-  94               		.loc 1 140 0
-  95 002c 1092 0000 		sts qsize+1,__zero_reg__
-  96 0030 1092 0000 		sts qsize,__zero_reg__
-  97               	/* epilogue start */
- 141:main.c        **** }
-  98               		.loc 1 141 0
-  99 0034 0895      		ret
- 100               		.cfi_endproc
- 101               	.LFE243:
- 103               		.section	.text.startup.main,"ax",@progbits
- 104               	.global	main
- 106               	main:
- 107               	.LFB242:
- 101:main.c        ****   thread_t *thd0 = 0, *thd1 = 0, *thd2 = 0;
- 108               		.loc 1 101 0
- 109               		.cfi_startproc
- 110 0000 CF93      		push r28
- 111               	.LCFI0:
- 112               		.cfi_def_cfa_offset 3
- 113               		.cfi_offset 28, -2
- 114 0002 DF93      		push r29
- 115               	.LCFI1:
- 116               		.cfi_def_cfa_offset 4
- 117               		.cfi_offset 29, -3
- 118 0004 00D0      		rcall .
- 119 0006 1F92      		push __zero_reg__
- 120               	.LCFI2:
- 121               		.cfi_def_cfa_offset 7
- 122 0008 CDB7      		in r28,__SP_L__
- 123 000a DEB7      		in r29,__SP_H__
- 124               	.LCFI3:
- 125               		.cfi_def_cfa_register 28
- 126               	/* prologue: function */
- 127               	/* frame size = 3 */
- 128               	/* stack size = 5 */
- 129               	.L__stack_usage = 5
- 130               	.LVL6:
- 103:main.c        **** 
- 131               		.loc 1 103 0
- 132 000c 80E1      		ldi r24,lo8(16)
- 133 000e 90E0      		ldi r25,0
- 134 0010 9A83      		std Y+2,r25
- 135 0012 8983      		std Y+1,r24
- 136 0014 83E0      		ldi r24,lo8(3)
- 137 0016 8B83      		std Y+3,r24
- 105:main.c        ****   /*
- 138               		.loc 1 105 0
- 139 0018 0E94 0000 		call InitBuffer
- 140               	.LVL7:
- 113:main.c        ****   chSysInit();
- 141               		.loc 1 113 0
- 142 001c 0E94 0000 		call halInit
- 143               	.LVL8:
- 114:main.c        **** 
- 144               		.loc 1 114 0
- 145 0020 0E94 0000 		call chSysInit
- 146               	.LVL9:
- 116:main.c        **** 
- 147               		.loc 1 116 0
- 148 0024 BE01      		movw r22,r28
- 149 0026 6F5F      		subi r22,-1
- 150 0028 7F4F      		sbci r23,-1
- 151 002a 80E0      		ldi r24,lo8(SD1)
- 152 002c 90E0      		ldi r25,hi8(SD1)
- 153 002e 0E94 0000 		call sdStart
- 154               	.LVL10:
- 118:main.c        ****   palSetPadMode(IOPORT2, CARRO_SECUNDARIA, PAL_MODE_INPUT_PULLUP);
- 155               		.loc 1 118 0
- 156 0032 43E0      		ldi r20,lo8(3)
- 157 0034 60E1      		ldi r22,lo8(16)
- 158 0036 83E2      		ldi r24,lo8(35)
- 159 0038 90E0      		ldi r25,0
- 160 003a 0E94 0000 		call _pal_lld_setgroupmode
- 161               	.LVL11:
- 119:main.c        ****   palSetPadMode(IOPORT2, AMBULANCIA_PRINCIPAL, PAL_MODE_INPUT_PULLUP);
- 162               		.loc 1 119 0
- 163 003e 43E0      		ldi r20,lo8(3)
- 164 0040 68E0      		ldi r22,lo8(8)
- 165 0042 83E2      		ldi r24,lo8(35)
- 166 0044 90E0      		ldi r25,0
- 167 0046 0E94 0000 		call _pal_lld_setgroupmode
- 168               	.LVL12:
- 120:main.c        ****   palSetPadMode(IOPORT2, AMBULANCIA_SECUNDARIA, PAL_MODE_INPUT_PULLUP);  
- 169               		.loc 1 120 0
- 170 004a 43E0      		ldi r20,lo8(3)
- 171 004c 64E0      		ldi r22,lo8(4)
- 172 004e 83E2      		ldi r24,lo8(35)
- 173 0050 90E0      		ldi r25,0
- 174 0052 0E94 0000 		call _pal_lld_setgroupmode
- 175               	.LVL13:
- 121:main.c        **** 
- 176               		.loc 1 121 0
- 177 0056 43E0      		ldi r20,lo8(3)
- 178 0058 62E0      		ldi r22,lo8(2)
- 179 005a 83E2      		ldi r24,lo8(35)
- 180 005c 90E0      		ldi r25,0
- 181 005e 0E94 0000 		call _pal_lld_setgroupmode
- 182               	.LVL14:
- 123:main.c        ****   thd1 = chThdCreateStatic(wa_ReadEvent, sizeof(wa_ReadEvent), NORMALPRIO, Read_Collect_Event, NULL
- 183               		.loc 1 123 0
- 184 0062 10E0      		ldi r17,0
- 185 0064 00E0      		ldi r16,0
- 186 0066 20E0      		ldi r18,lo8(gs(Write_Save_Event))
- 187 0068 30E0      		ldi r19,hi8(gs(Write_Save_Event))
- 188 006a 40E8      		ldi r20,lo8(-128)
- 189 006c 63EE      		ldi r22,lo8(-29)
- 190 006e 70E0      		ldi r23,0
- 191 0070 80E0      		ldi r24,lo8(wa_WriteEvent)
- 192 0072 90E0      		ldi r25,hi8(wa_WriteEvent)
- 193 0074 0E94 0000 		call chThdCreateStatic
- 194               	.LVL15:
- 124:main.c        ****   //thd2 = chThdCreateStatic(wa_ProcessEvent, sizeof(wa_ProcessEvent), NORMALPRIO, ProcessEvent, NU
- 195               		.loc 1 124 0
- 196 0078 20E0      		ldi r18,lo8(gs(Read_Collect_Event))
- 197 007a 30E0      		ldi r19,hi8(gs(Read_Collect_Event))
- 198 007c 40E8      		ldi r20,lo8(-128)
- 199 007e 63EE      		ldi r22,lo8(-29)
- 200 0080 70E0      		ldi r23,0
- 201 0082 80E0      		ldi r24,lo8(wa_ReadEvent)
- 202 0084 90E0      		ldi r25,hi8(wa_ReadEvent)
- 203 0086 0E94 0000 		call chThdCreateStatic
- 204               	.LVL16:
- 205               	.L10:
- 129:main.c        ****   }
- 206               		.loc 1 129 0 discriminator 1
- 207 008a 80E1      		ldi r24,lo8(16)
- 208 008c 90E0      		ldi r25,0
- 209 008e 0E94 0000 		call chThdSleep
- 210               	.LVL17:
- 211 0092 00C0      		rjmp .L10
- 212               		.cfi_endproc
- 213               	.LFE242:
- 215               		.section	.text.PushBUffer,"ax",@progbits
- 216               	.global	PushBUffer
- 218               	PushBUffer:
- 219               	.LFB244:
- 142:main.c        **** 
- 143:main.c        **** void PushBUffer(msg_t msg)
- 144:main.c        **** {
- 220               		.loc 1 144 0
- 221               		.cfi_startproc
- 222               	.LVL18:
- 223 0000 CF93      		push r28
- 224               	.LCFI4:
- 225               		.cfi_def_cfa_offset 3
- 226               		.cfi_offset 28, -2
- 227 0002 DF93      		push r29
- 228               	.LCFI5:
- 229               		.cfi_def_cfa_offset 4
- 230               		.cfi_offset 29, -3
- 231               	/* prologue: function */
- 232               	/* frame size = 0 */
- 233               	/* stack size = 2 */
- 234               	.L__stack_usage = 2
- 235 0004 EC01      		movw r28,r24
- 145:main.c        ****   /* Entering monitor.*/
- 146:main.c        ****   chMtxLock(&qmtx);
- 236               		.loc 1 146 0
- 237 0006 80E0      		ldi r24,lo8(qmtx)
- 238 0008 90E0      		ldi r25,hi8(qmtx)
- 239               	.LVL19:
- 240 000a 0E94 0000 		call chMtxLock
- 241               	.LVL20:
- 147:main.c        ****  
- 148:main.c        ****   /* Waiting for space in the queue.*/
- 149:main.c        ****   while (qsize >= QUEUE_SIZE)
- 242               		.loc 1 149 0
- 243 000e 8091 0000 		lds r24,qsize
- 244 0012 9091 0000 		lds r25,qsize+1
- 245 0016 8038      		cpi r24,-128
- 246 0018 9105      		cpc r25,__zero_reg__
- 247 001a 00F0      		brlo .L12
- 248               	.L13:
- 150:main.c        ****     chCondWait(&qfull);
- 249               		.loc 1 150 0
- 250 001c 80E0      		ldi r24,lo8(qfull)
- 251 001e 90E0      		ldi r25,hi8(qfull)
- 252 0020 0E94 0000 		call chCondWait
- 253               	.LVL21:
- 149:main.c        ****     chCondWait(&qfull);
- 254               		.loc 1 149 0
- 255 0024 8091 0000 		lds r24,qsize
- 256 0028 9091 0000 		lds r25,qsize+1
- 257 002c 8038      		cpi r24,-128
- 258 002e 9105      		cpc r25,__zero_reg__
- 259 0030 00F4      		brsh .L13
- 260               	.L12:
- 151:main.c        ****  
- 152:main.c        ****   /* Writing the message in the queue.*/  
- 153:main.c        ****   *wrp = msg;
- 261               		.loc 1 153 0
- 262 0032 E091 0000 		lds r30,wrp
- 263 0036 F091 0000 		lds r31,wrp+1
- 264 003a C193      		st Z+,r28
- 265 003c D193      		st Z+,r29
- 154:main.c        ****   if (++wrp >= &queue[QUEUE_SIZE])
- 266               		.loc 1 154 0
- 267 003e 20E0      		ldi r18,hi8(queue+256)
- 268 0040 E030      		cpi r30,lo8(queue+256)
- 269 0042 F207      		cpc r31,r18
- 270 0044 00F0      		brlo .L17
- 155:main.c        ****     wrp = &queue[0];
- 271               		.loc 1 155 0
- 272 0046 20E0      		ldi r18,lo8(queue)
- 273 0048 30E0      		ldi r19,hi8(queue)
- 274 004a 3093 0000 		sts wrp+1,r19
- 275 004e 2093 0000 		sts wrp,r18
- 276               	.L15:
- 156:main.c        ****   qsize++;
- 277               		.loc 1 156 0
- 278 0052 0196      		adiw r24,1
- 279 0054 9093 0000 		sts qsize+1,r25
- 280 0058 8093 0000 		sts qsize,r24
- 157:main.c        **** 
- 158:main.c        ****   /* Signaling that there is at least a message.*/
- 159:main.c        ****   chCondSignal(&qempty);
- 281               		.loc 1 159 0
- 282 005c 80E0      		ldi r24,lo8(qempty)
- 283 005e 90E0      		ldi r25,hi8(qempty)
- 284 0060 0E94 0000 		call chCondSignal
- 285               	.LVL22:
- 160:main.c        **** 
- 161:main.c        ****   /* Leaving monitor.*/
- 162:main.c        ****   chMtxUnlock(&qmtx);
- 286               		.loc 1 162 0
- 287 0064 80E0      		ldi r24,lo8(qmtx)
- 288 0066 90E0      		ldi r25,hi8(qmtx)
- 289               	/* epilogue start */
- 163:main.c        **** }
- 290               		.loc 1 163 0
- 291 0068 DF91      		pop r29
- 292 006a CF91      		pop r28
- 293               	.LVL23:
- 162:main.c        **** }
- 294               		.loc 1 162 0
- 295 006c 0C94 0000 		jmp chMtxUnlock
- 296               	.LVL24:
- 297               	.L17:
- 154:main.c        ****     wrp = &queue[0];
- 298               		.loc 1 154 0
- 299 0070 F093 0000 		sts wrp+1,r31
- 300 0074 E093 0000 		sts wrp,r30
- 301 0078 00C0      		rjmp .L15
- 302               		.cfi_endproc
- 303               	.LFE244:
- 305               		.section	.rodata.Write_Save_Event.str1.1,"aMS",@progbits,1
- 306               	.LC1:
- 307 0000 5361 7665 		.string	"Save/Write Event"
- 307      2F57 7269 
- 307      7465 2045 
- 307      7665 6E74 
- 307      00
- 308               		.section	.text.Write_Save_Event,"ax",@progbits
- 310               	Write_Save_Event:
- 311               	.LFB239:
-  45:main.c        ****   chRegSetThreadName("Save/Write Event");
- 312               		.loc 1 45 0
- 313               		.cfi_startproc
- 314               	.LVL25:
- 315               	/* prologue: function */
- 316               	/* frame size = 0 */
- 317               	/* stack size = 0 */
- 318               	.L__stack_usage = 0
- 319               	.LBB10:
- 320               	.LBB11:
- 321               		.loc 2 168 0
- 322 0000 E091 0000 		lds r30,ch0+5
- 323 0004 F091 0000 		lds r31,ch0+5+1
- 324 0008 80E0      		ldi r24,lo8(.LC1)
- 325 000a 90E0      		ldi r25,hi8(.LC1)
- 326               	.LVL26:
- 327 000c 9687      		std Z+14,r25
- 328 000e 8587      		std Z+13,r24
- 329 0010 00C0      		rjmp .L23
- 330               	.L19:
- 331               	.LBE11:
- 332               	.LBE10:
-  52:main.c        ****       PushBUffer(CARRO_SECUNDARIA);
- 333               		.loc 1 52 0
- 334 0012 1B9B      		sbis 0x3,3
- 335 0014 00C0      		rjmp .L24
- 336               	.L20:
-  55:main.c        ****       PushBUffer(AMBULANCIA_PRINCIPAL);
- 337               		.loc 1 55 0
- 338 0016 1A9B      		sbis 0x3,2
- 339 0018 00C0      		rjmp .L25
- 340               	.L21:
-  58:main.c        ****       PushBUffer(AMBULANCIA_SECUNDARIA);
- 341               		.loc 1 58 0
- 342 001a 199B      		sbis 0x3,1
- 343 001c 00C0      		rjmp .L26
- 344               	.L22:
-  62:main.c        ****   }
- 345               		.loc 1 62 0
- 346 001e 8BE1      		ldi r24,lo8(27)
- 347 0020 96E0      		ldi r25,lo8(6)
- 348 0022 0E94 0000 		call chThdSleep
- 349               	.LVL27:
- 350               	.L23:
-  49:main.c        ****       PushBUffer(PEDESTRE);
- 351               		.loc 1 49 0
- 352 0026 1C99      		sbic 0x3,4
- 353 0028 00C0      		rjmp .L19
-  50:main.c        **** 
- 354               		.loc 1 50 0
- 355 002a 84E0      		ldi r24,lo8(4)
- 356 002c 90E0      		ldi r25,0
- 357 002e 0E94 0000 		call PushBUffer
- 358               	.LVL28:
-  52:main.c        ****       PushBUffer(CARRO_SECUNDARIA);
- 359               		.loc 1 52 0
- 360 0032 1B99      		sbic 0x3,3
- 361 0034 00C0      		rjmp .L20
- 362               	.L24:
-  53:main.c        **** 
- 363               		.loc 1 53 0
- 364 0036 83E0      		ldi r24,lo8(3)
- 365 0038 90E0      		ldi r25,0
- 366 003a 0E94 0000 		call PushBUffer
- 367               	.LVL29:
-  55:main.c        ****       PushBUffer(AMBULANCIA_PRINCIPAL);
- 368               		.loc 1 55 0
- 369 003e 1A99      		sbic 0x3,2
- 370 0040 00C0      		rjmp .L21
- 371               	.L25:
-  56:main.c        **** 
- 372               		.loc 1 56 0
- 373 0042 82E0      		ldi r24,lo8(2)
- 374 0044 90E0      		ldi r25,0
- 375 0046 0E94 0000 		call PushBUffer
- 376               	.LVL30:
-  58:main.c        ****       PushBUffer(AMBULANCIA_SECUNDARIA);
- 377               		.loc 1 58 0
- 378 004a 1999      		sbic 0x3,1
- 379 004c 00C0      		rjmp .L22
- 380               	.L26:
-  59:main.c        **** 
- 381               		.loc 1 59 0
- 382 004e 81E0      		ldi r24,lo8(1)
- 383 0050 90E0      		ldi r25,0
- 384 0052 0E94 0000 		call PushBUffer
- 385               	.LVL31:
- 386 0056 00C0      		rjmp .L22
- 387               		.cfi_endproc
- 388               	.LFE239:
- 390               		.section	.text.PopBUffer,"ax",@progbits
- 391               	.global	PopBUffer
- 393               	PopBUffer:
- 394               	.LFB245:
- 164:main.c        **** 
- 165:main.c        **** msg_t PopBUffer()
- 166:main.c        **** {
- 395               		.loc 1 166 0
- 396               		.cfi_startproc
- 397 0000 CF93      		push r28
- 398               	.LCFI6:
- 399               		.cfi_def_cfa_offset 3
- 400               		.cfi_offset 28, -2
- 401 0002 DF93      		push r29
- 402               	.LCFI7:
- 403               		.cfi_def_cfa_offset 4
- 404               		.cfi_offset 29, -3
- 405               	/* prologue: function */
- 406               	/* frame size = 0 */
- 407               	/* stack size = 2 */
- 408               	.L__stack_usage = 2
- 167:main.c        ****   msg_t msg;
- 168:main.c        ****  
- 169:main.c        ****   /* Entering monitor.*/
- 170:main.c        ****   chMtxLock(&qmtx);
- 409               		.loc 1 170 0
- 410 0004 80E0      		ldi r24,lo8(qmtx)
- 411 0006 90E0      		ldi r25,hi8(qmtx)
- 412 0008 0E94 0000 		call chMtxLock
- 413               	.LVL32:
- 171:main.c        ****  
- 172:main.c        ****   /* Waiting for messages in the queue.*/
- 173:main.c        ****   while (qsize == 0)
- 414               		.loc 1 173 0
- 415 000c 8091 0000 		lds r24,qsize
- 416 0010 9091 0000 		lds r25,qsize+1
- 417 0014 0097      		sbiw r24,0
- 418 0016 01F4      		brne .L28
- 419               	.L29:
- 174:main.c        ****     chCondWait(&qempty);
- 420               		.loc 1 174 0
- 421 0018 80E0      		ldi r24,lo8(qempty)
- 422 001a 90E0      		ldi r25,hi8(qempty)
- 423 001c 0E94 0000 		call chCondWait
- 424               	.LVL33:
- 173:main.c        ****     chCondWait(&qempty);
- 425               		.loc 1 173 0
- 426 0020 8091 0000 		lds r24,qsize
- 427 0024 9091 0000 		lds r25,qsize+1
- 428 0028 0097      		sbiw r24,0
- 429 002a 01F0      		breq .L29
- 430               	.L28:
- 175:main.c        ****  
- 176:main.c        ****   /* Reading the message from the queue.*/  
- 177:main.c        ****   msg = *rdp;
- 431               		.loc 1 177 0
- 432 002c E091 0000 		lds r30,rdp
- 433 0030 F091 0000 		lds r31,rdp+1
- 434 0034 C191      		ld r28,Z+
- 435 0036 D191      		ld r29,Z+
- 436               	.LVL34:
- 178:main.c        ****   if (++rdp >= &queue[QUEUE_SIZE])
- 437               		.loc 1 178 0
- 438 0038 20E0      		ldi r18,hi8(queue+256)
- 439 003a E030      		cpi r30,lo8(queue+256)
- 440 003c F207      		cpc r31,r18
- 441 003e 00F0      		brlo .L34
- 179:main.c        ****     rdp = &queue[0];
- 442               		.loc 1 179 0
- 443 0040 20E0      		ldi r18,lo8(queue)
- 444 0042 30E0      		ldi r19,hi8(queue)
- 445 0044 3093 0000 		sts rdp+1,r19
- 446 0048 2093 0000 		sts rdp,r18
- 447               	.L31:
- 180:main.c        ****   qsize--;
- 448               		.loc 1 180 0
- 449 004c 0197      		sbiw r24,1
- 450 004e 9093 0000 		sts qsize+1,r25
- 451 0052 8093 0000 		sts qsize,r24
- 181:main.c        ****  
- 182:main.c        ****   /* Signaling that there is at least one free slot.*/
- 183:main.c        ****   chCondSignal(&qfull);
- 452               		.loc 1 183 0
- 453 0056 80E0      		ldi r24,lo8(qfull)
- 454 0058 90E0      		ldi r25,hi8(qfull)
- 455 005a 0E94 0000 		call chCondSignal
- 456               	.LVL35:
- 184:main.c        ****  
- 185:main.c        ****   /* Leaving monitor.*/
- 186:main.c        ****   chMtxUnlock(&qmtx);
- 457               		.loc 1 186 0
- 458 005e 80E0      		ldi r24,lo8(qmtx)
- 459 0060 90E0      		ldi r25,hi8(qmtx)
- 460 0062 0E94 0000 		call chMtxUnlock
- 461               	.LVL36:
- 187:main.c        ****  
- 188:main.c        ****   return msg;
- 189:main.c        **** }
- 462               		.loc 1 189 0
- 463 0066 CE01      		movw r24,r28
- 464               	/* epilogue start */
- 465 0068 DF91      		pop r29
- 466 006a CF91      		pop r28
- 467               	.LVL37:
- 468 006c 0895      		ret
- 469               	.LVL38:
- 470               	.L34:
- 178:main.c        ****     rdp = &queue[0];
- 471               		.loc 1 178 0
- 472 006e F093 0000 		sts rdp+1,r31
- 473 0072 E093 0000 		sts rdp,r30
- 474 0076 00C0      		rjmp .L31
- 475               		.cfi_endproc
- 476               	.LFE245:
- 478               		.section	.text.IsBUfferEmpty,"ax",@progbits
- 479               	.global	IsBUfferEmpty
- 481               	IsBUfferEmpty:
- 482               	.LFB246:
- 190:main.c        **** 
- 191:main.c        **** int IsBUfferEmpty()
- 192:main.c        **** {
- 483               		.loc 1 192 0
- 484               		.cfi_startproc
- 485               	/* prologue: function */
- 486               	/* frame size = 0 */
- 487               	/* stack size = 0 */
- 488               	.L__stack_usage = 0
- 193:main.c        ****   return qsize == 0;
- 489               		.loc 1 193 0
- 490 0000 81E0      		ldi r24,lo8(1)
- 491 0002 90E0      		ldi r25,0
- 492 0004 2091 0000 		lds r18,qsize
- 493 0008 3091 0000 		lds r19,qsize+1
- 494 000c 232B      		or r18,r19
- 495 000e 01F0      		breq .L36
- 496 0010 90E0      		ldi r25,0
- 497 0012 80E0      		ldi r24,0
- 498               	.L36:
- 499               	/* epilogue start */
- 194:main.c        **** }
- 500               		.loc 1 194 0
- 501 0014 0895      		ret
- 502               		.cfi_endproc
- 503               	.LFE246:
- 505               		.section	.bss.wa_ReadEvent,"aw",@nobits
- 508               	wa_ReadEvent:
- 509 0000 0000 0000 		.zero	227
- 509      0000 0000 
- 509      0000 0000 
- 509      0000 0000 
- 509      0000 0000 
- 510               		.section	.bss.wa_WriteEvent,"aw",@nobits
- 513               	wa_WriteEvent:
- 514 0000 0000 0000 		.zero	227
- 514      0000 0000 
- 514      0000 0000 
- 514      0000 0000 
- 514      0000 0000 
- 515               		.section	.bss.qfull,"aw",@nobits
- 518               	qfull:
- 519 0000 0000 0000 		.zero	4
- 520               		.section	.bss.qempty,"aw",@nobits
- 523               	qempty:
- 524 0000 0000 0000 		.zero	4
- 525               		.section	.bss.qmtx,"aw",@nobits
- 528               	qmtx:
- 529 0000 0000 0000 		.zero	8
- 529      0000 0000 
- 530               		.section	.bss.qsize,"aw",@nobits
- 533               	qsize:
- 534 0000 0000      		.zero	2
- 535               		.section	.bss.wrp,"aw",@nobits
- 538               	wrp:
- 539 0000 0000      		.zero	2
- 540               		.section	.bss.rdp,"aw",@nobits
- 543               	rdp:
- 544 0000 0000      		.zero	2
- 545               		.section	.bss.queue,"aw",@nobits
- 548               	queue:
- 549 0000 0000 0000 		.zero	256
- 549      0000 0000 
- 549      0000 0000 
- 549      0000 0000 
- 549      0000 0000 
- 550               		.text
- 551               	.Letext0:
- 552               		.file 3 "/usr/lib/gcc/avr/7.3.0/include/stddef.h"
- 553               		.file 4 "/usr/lib/avr/include/stdint.h"
- 554               		.file 5 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/compile
- 555               		.file 6 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chearly.h"
- 556               		.file 7 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chobjects.h"
- 557               		.file 8 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chrfcu.h"
- 558               		.file 9 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chdebug.h"
- 559               		.file 10 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chtime.h"
- 560               		.file 11 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chlists.h"
- 561               		.file 12 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore
- 562               		.file 13 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chsem.h"
- 563               		.file 14 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chmtx.h"
- 564               		.file 15 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chsys.h"
- 565               		.file 16 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chcond.h"
- 566               		.file 17 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chevents.h"
- 567               		.file 18 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/oslib/include/chmemcore
- 568               		.file 19 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_queues.
- 569               		.file 20 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
- 570               		.file 21 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_serial.
- 571               		.file 22 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
- 572               		.file 23 "/usr/lib/avr/include/stdio.h"
- 573               		.file 24 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal.h"
- 574               		.file 25 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chthreads.h"
+ 282               		.loc 2 168 0
+ 283 0000 E091 0000 		lds r30,ch0+5
+ 284 0004 F091 0000 		lds r31,ch0+5+1
+ 285 0008 80E0      		ldi r24,lo8(.LC0)
+ 286 000a 90E0      		ldi r25,hi8(.LC0)
+ 287               	.LVL23:
+ 288 000c 9687      		std Z+14,r25
+ 289 000e 8587      		std Z+13,r24
+ 290 0010 00C0      		rjmp .L17
+ 291               	.L13:
+ 292               	.LBE17:
+ 293               	.LBE16:
+  54:main.c        ****       PushBUffer(CARRO_SECUNDARIA);
+ 294               		.loc 1 54 0
+ 295 0012 1B9B      		sbis 0x3,3
+ 296 0014 00C0      		rjmp .L18
+ 297               	.L14:
+  57:main.c        ****       PushBUffer(AMBULANCIA_PRINCIPAL);
+ 298               		.loc 1 57 0
+ 299 0016 1A9B      		sbis 0x3,2
+ 300 0018 00C0      		rjmp .L19
+ 301               	.L15:
+  60:main.c        ****       PushBUffer(AMBULANCIA_SECUNDARIA);
+ 302               		.loc 1 60 0
+ 303 001a 199B      		sbis 0x3,1
+ 304 001c 00C0      		rjmp .L20
+ 305               	.L16:
+  64:main.c        ****   }
+ 306               		.loc 1 64 0
+ 307 001e 8BE1      		ldi r24,lo8(27)
+ 308 0020 96E0      		ldi r25,lo8(6)
+ 309 0022 0E94 0000 		call chThdSleep
+ 310               	.LVL24:
+ 311               	.L17:
+  51:main.c        ****       PushBUffer(PEDESTRE);
+ 312               		.loc 1 51 0
+ 313 0026 1C99      		sbic 0x3,4
+ 314 0028 00C0      		rjmp .L13
+  52:main.c        **** 
+ 315               		.loc 1 52 0
+ 316 002a 84E0      		ldi r24,lo8(4)
+ 317 002c 90E0      		ldi r25,0
+ 318 002e 0E94 0000 		call PushBUffer
+ 319               	.LVL25:
+  54:main.c        ****       PushBUffer(CARRO_SECUNDARIA);
+ 320               		.loc 1 54 0
+ 321 0032 1B99      		sbic 0x3,3
+ 322 0034 00C0      		rjmp .L14
+ 323               	.L18:
+  55:main.c        **** 
+ 324               		.loc 1 55 0
+ 325 0036 83E0      		ldi r24,lo8(3)
+ 326 0038 90E0      		ldi r25,0
+ 327 003a 0E94 0000 		call PushBUffer
+ 328               	.LVL26:
+  57:main.c        ****       PushBUffer(AMBULANCIA_PRINCIPAL);
+ 329               		.loc 1 57 0
+ 330 003e 1A99      		sbic 0x3,2
+ 331 0040 00C0      		rjmp .L15
+ 332               	.L19:
+  58:main.c        **** 
+ 333               		.loc 1 58 0
+ 334 0042 82E0      		ldi r24,lo8(2)
+ 335 0044 90E0      		ldi r25,0
+ 336 0046 0E94 0000 		call PushBUffer
+ 337               	.LVL27:
+  60:main.c        ****       PushBUffer(AMBULANCIA_SECUNDARIA);
+ 338               		.loc 1 60 0
+ 339 004a 1999      		sbic 0x3,1
+ 340 004c 00C0      		rjmp .L16
+ 341               	.L20:
+  61:main.c        **** 
+ 342               		.loc 1 61 0
+ 343 004e 81E0      		ldi r24,lo8(1)
+ 344 0050 90E0      		ldi r25,0
+ 345 0052 0E94 0000 		call PushBUffer
+ 346               	.LVL28:
+ 347 0056 00C0      		rjmp .L16
+ 348               		.cfi_endproc
+ 349               	.LFE239:
+ 351               		.section	.text.PopBUffer,"ax",@progbits
+ 352               	.global	PopBUffer
+ 354               	PopBUffer:
+ 355               	.LFB245:
+ 172:main.c        ****   msg_t msg;
+ 356               		.loc 1 172 0
+ 357               		.cfi_startproc
+ 358 0000 CF93      		push r28
+ 359               	.LCFI6:
+ 360               		.cfi_def_cfa_offset 3
+ 361               		.cfi_offset 28, -2
+ 362               	/* prologue: function */
+ 363               	/* frame size = 0 */
+ 364               	/* stack size = 1 */
+ 365               	.L__stack_usage = 1
+ 176:main.c        ****  
+ 366               		.loc 1 176 0
+ 367 0002 80E0      		ldi r24,lo8(qmtx)
+ 368 0004 90E0      		ldi r25,hi8(qmtx)
+ 369 0006 0E94 0000 		call chMtxLock
+ 370               	.LVL29:
+ 371               	.LBB18:
+ 372               	.LBB19:
+ 199:main.c        **** }
+ 373               		.loc 1 199 0
+ 374 000a 8091 0000 		lds r24,qsize
+ 375 000e 9091 0000 		lds r25,qsize+1
+ 376               	.LBE19:
+ 377               	.LBE18:
+ 179:main.c        ****     chCondWait(&qempty);
+ 378               		.loc 1 179 0
+ 379 0012 0097      		sbiw r24,0
+ 380 0014 01F4      		brne .L22
+ 381               	.L23:
+ 180:main.c        ****  
+ 382               		.loc 1 180 0
+ 383 0016 80E0      		ldi r24,lo8(qempty)
+ 384 0018 90E0      		ldi r25,hi8(qempty)
+ 385 001a 0E94 0000 		call chCondWait
+ 386               	.LVL30:
+ 387               	.LBB21:
+ 388               	.LBB20:
+ 199:main.c        **** }
+ 389               		.loc 1 199 0
+ 390 001e 8091 0000 		lds r24,qsize
+ 391 0022 9091 0000 		lds r25,qsize+1
+ 392               	.LBE20:
+ 393               	.LBE21:
+ 179:main.c        ****     chCondWait(&qempty);
+ 394               		.loc 1 179 0
+ 395 0026 0097      		sbiw r24,0
+ 396 0028 01F0      		breq .L23
+ 397               	.L22:
+ 183:main.c        ****   if (++rdp >= &queue[QUEUE_SIZE])
+ 398               		.loc 1 183 0
+ 399 002a E091 0000 		lds r30,rdp
+ 400 002e F091 0000 		lds r31,rdp+1
+ 401 0032 C081      		ld r28,Z
+ 402               	.LVL31:
+ 184:main.c        ****     rdp = &queue[0];
+ 403               		.loc 1 184 0
+ 404 0034 3296      		adiw r30,2
+ 405               	.LVL32:
+ 406 0036 20E0      		ldi r18,hi8(queue+256)
+ 407 0038 E030      		cpi r30,lo8(queue+256)
+ 408 003a F207      		cpc r31,r18
+ 409 003c 00F0      		brlo .L28
+ 185:main.c        ****   qsize--;
+ 410               		.loc 1 185 0
+ 411 003e 20E0      		ldi r18,lo8(queue)
+ 412 0040 30E0      		ldi r19,hi8(queue)
+ 413 0042 3093 0000 		sts rdp+1,r19
+ 414 0046 2093 0000 		sts rdp,r18
+ 415               	.LVL33:
+ 416               	.L25:
+ 186:main.c        ****  
+ 417               		.loc 1 186 0
+ 418 004a 0197      		sbiw r24,1
+ 419 004c 9093 0000 		sts qsize+1,r25
+ 420 0050 8093 0000 		sts qsize,r24
+ 189:main.c        ****  
+ 421               		.loc 1 189 0
+ 422 0054 80E0      		ldi r24,lo8(qfull)
+ 423 0056 90E0      		ldi r25,hi8(qfull)
+ 424 0058 0E94 0000 		call chCondSignal
+ 425               	.LVL34:
+ 192:main.c        ****  
+ 426               		.loc 1 192 0
+ 427 005c 80E0      		ldi r24,lo8(qmtx)
+ 428 005e 90E0      		ldi r25,hi8(qmtx)
+ 429 0060 0E94 0000 		call chMtxUnlock
+ 430               	.LVL35:
+ 195:main.c        **** 
+ 431               		.loc 1 195 0
+ 432 0064 8C2F      		mov r24,r28
+ 433               	/* epilogue start */
+ 434 0066 CF91      		pop r28
+ 435 0068 0895      		ret
+ 436               	.LVL36:
+ 437               	.L28:
+ 184:main.c        ****     rdp = &queue[0];
+ 438               		.loc 1 184 0
+ 439 006a F093 0000 		sts rdp+1,r31
+ 440 006e E093 0000 		sts rdp,r30
+ 441               	.LVL37:
+ 442 0072 00C0      		rjmp .L25
+ 443               		.cfi_endproc
+ 444               	.LFE245:
+ 446               		.section	.rodata.Read_Collect_Event.str1.1,"aMS",@progbits,1
+ 447               	.LC1:
+ 448 0000 5265 6164 		.string	"Read/Collect Event"
+ 448      2F43 6F6C 
+ 448      6C65 6374 
+ 448      2045 7665 
+ 448      6E74 00
+ 449               	.LC2:
+ 450 0013 2564 0D0A 		.string	"%d\r\n"
+ 450      00
+ 451               		.section	.text.Read_Collect_Event,"ax",@progbits
+ 453               	Read_Collect_Event:
+ 454               	.LFB240:
+  73:main.c        ****   char r[5];
+ 455               		.loc 1 73 0
+ 456               		.cfi_startproc
+ 457               	.LVL38:
+ 458 0000 CF93      		push r28
+ 459               	.LCFI7:
+ 460               		.cfi_def_cfa_offset 3
+ 461               		.cfi_offset 28, -2
+ 462 0002 DF93      		push r29
+ 463               	.LCFI8:
+ 464               		.cfi_def_cfa_offset 4
+ 465               		.cfi_offset 29, -3
+ 466 0004 00D0      		rcall .
+ 467 0006 00D0      		rcall .
+ 468 0008 1F92      		push __zero_reg__
+ 469               	.LCFI9:
+ 470               		.cfi_def_cfa_offset 9
+ 471 000a CDB7      		in r28,__SP_L__
+ 472 000c DEB7      		in r29,__SP_H__
+ 473               	.LCFI10:
+ 474               		.cfi_def_cfa_register 28
+ 475               	/* prologue: function */
+ 476               	/* frame size = 5 */
+ 477               	/* stack size = 7 */
+ 478               	.L__stack_usage = 7
+ 479               	.LVL39:
+ 480               	.LBB22:
+ 481               	.LBB23:
+ 482               		.loc 2 168 0
+ 483 000e E091 0000 		lds r30,ch0+5
+ 484 0012 F091 0000 		lds r31,ch0+5+1
+ 485 0016 80E0      		ldi r24,lo8(.LC1)
+ 486 0018 90E0      		ldi r25,hi8(.LC1)
+ 487               	.LVL40:
+ 488 001a 9687      		std Z+14,r25
+ 489 001c 8587      		std Z+13,r24
+ 490 001e CE01      		movw r24,r28
+ 491 0020 0196      		adiw r24,1
+ 492 0022 7C01      		movw r14,r24
+ 493               	.LBE23:
+ 494               	.LBE22:
+  81:main.c        ****     sdWrite(&SD1, &r, sizeof(r));
+ 495               		.loc 1 81 0
+ 496 0024 00E0      		ldi r16,lo8(.LC2)
+ 497 0026 10E0      		ldi r17,hi8(.LC2)
+ 498 0028 85E0      		ldi r24,lo8(5)
+ 499 002a D82E      		mov r13,r24
+ 500 002c 00C0      		rjmp .L32
+ 501               	.L33:
+ 502 002e 8091 0000 		lds r24,STATE
+ 503               	.L31:
+ 504 0032 1F92      		push __zero_reg__
+ 505 0034 8F93      		push r24
+ 506 0036 1F93      		push r17
+ 507 0038 0F93      		push r16
+ 508 003a 1F92      		push __zero_reg__
+ 509 003c DF92      		push r13
+ 510 003e FF92      		push r15
+ 511 0040 EF92      		push r14
+ 512 0042 0E94 0000 		call snprintf
+ 513               	.LVL41:
+  82:main.c        ****     chThdSleepMilliseconds(1);
+ 514               		.loc 1 82 0
+ 515 0046 2FEF      		ldi r18,lo8(-1)
+ 516 0048 3FEF      		ldi r19,lo8(-1)
+ 517 004a 45E0      		ldi r20,lo8(5)
+ 518 004c 50E0      		ldi r21,0
+ 519 004e B701      		movw r22,r14
+ 520 0050 80E0      		ldi r24,lo8(SD1+23)
+ 521 0052 90E0      		ldi r25,hi8(SD1+23)
+ 522 0054 0E94 0000 		call oqWriteTimeout
+ 523               	.LVL42:
+  83:main.c        ****   }
+ 524               		.loc 1 83 0
+ 525 0058 80E1      		ldi r24,lo8(16)
+ 526 005a 90E0      		ldi r25,0
+ 527 005c 0E94 0000 		call chThdSleep
+ 528               	.LVL43:
+  78:main.c        ****       STATE = PopBUffer();
+ 529               		.loc 1 78 0
+ 530 0060 0FB6      		in __tmp_reg__,__SREG__
+ 531 0062 F894      		cli
+ 532 0064 DEBF      		out __SP_H__,r29
+ 533 0066 0FBE      		out __SREG__,__tmp_reg__
+ 534 0068 CDBF      		out __SP_L__,r28
+ 535               	.L32:
+ 536 006a 8091 0000 		lds r24,qsize
+ 537 006e 9091 0000 		lds r25,qsize+1
+ 538 0072 892B      		or r24,r25
+ 539 0074 01F0      		breq .L33
+  79:main.c        **** 
+ 540               		.loc 1 79 0
+ 541 0076 0E94 0000 		call PopBUffer
+ 542               	.LVL44:
+ 543 007a 8093 0000 		sts STATE,r24
+ 544 007e 00C0      		rjmp .L31
+ 545               		.cfi_endproc
+ 546               	.LFE240:
+ 548               		.section	.text.IsBUfferEmpty,"ax",@progbits
+ 549               	.global	IsBUfferEmpty
+ 551               	IsBUfferEmpty:
+ 552               	.LFB246:
+ 198:main.c        ****   return qsize == 0;
+ 553               		.loc 1 198 0
+ 554               		.cfi_startproc
+ 555               	/* prologue: function */
+ 556               	/* frame size = 0 */
+ 557               	/* stack size = 0 */
+ 558               	.L__stack_usage = 0
+ 199:main.c        **** }
+ 559               		.loc 1 199 0
+ 560 0000 81E0      		ldi r24,lo8(1)
+ 561 0002 90E0      		ldi r25,0
+ 562 0004 2091 0000 		lds r18,qsize
+ 563 0008 3091 0000 		lds r19,qsize+1
+ 564 000c 232B      		or r18,r19
+ 565 000e 01F0      		breq .L35
+ 566 0010 90E0      		ldi r25,0
+ 567 0012 80E0      		ldi r24,0
+ 568               	.L35:
+ 569               	/* epilogue start */
+ 200:main.c        **** 
+ 570               		.loc 1 200 0
+ 571 0014 0895      		ret
+ 572               		.cfi_endproc
+ 573               	.LFE246:
+ 575               		.section	.text.IsBufferFull,"ax",@progbits
+ 576               	.global	IsBufferFull
+ 578               	IsBufferFull:
+ 579               	.LFB247:
+ 203:main.c        ****   return qsize >= QUEUE_SIZE;
+ 580               		.loc 1 203 0
+ 581               		.cfi_startproc
+ 582               	/* prologue: function */
+ 583               	/* frame size = 0 */
+ 584               	/* stack size = 0 */
+ 585               	.L__stack_usage = 0
+ 586               		.loc 1 204 0
+ 587 0000 81E0      		ldi r24,lo8(1)
+ 588 0002 90E0      		ldi r25,0
+ 589 0004 2091 0000 		lds r18,qsize
+ 590 0008 3091 0000 		lds r19,qsize+1
+ 591 000c 2038      		cpi r18,-128
+ 592 000e 3105      		cpc r19,__zero_reg__
+ 593 0010 00F4      		brsh .L40
+ 594 0012 90E0      		ldi r25,0
+ 595 0014 80E0      		ldi r24,0
+ 596               	.L40:
+ 597               	/* epilogue start */
+ 205:main.c        **** }
+ 598               		.loc 1 205 0
+ 599 0016 0895      		ret
+ 600               		.cfi_endproc
+ 601               	.LFE247:
+ 603               		.section	.bss.wa_ReadEvent,"aw",@nobits
+ 606               	wa_ReadEvent:
+ 607 0000 0000 0000 		.zero	227
+ 607      0000 0000 
+ 607      0000 0000 
+ 607      0000 0000 
+ 607      0000 0000 
+ 608               		.section	.bss.wa_WriteEvent,"aw",@nobits
+ 611               	wa_WriteEvent:
+ 612 0000 0000 0000 		.zero	227
+ 612      0000 0000 
+ 612      0000 0000 
+ 612      0000 0000 
+ 612      0000 0000 
+ 613               	.global	STATE
+ 614               		.section	.bss.STATE,"aw",@nobits
+ 617               	STATE:
+ 618 0000 00        		.zero	1
+ 619               		.section	.bss.qfull,"aw",@nobits
+ 622               	qfull:
+ 623 0000 0000 0000 		.zero	4
+ 624               		.section	.bss.qempty,"aw",@nobits
+ 627               	qempty:
+ 628 0000 0000 0000 		.zero	4
+ 629               		.section	.bss.qmtx,"aw",@nobits
+ 632               	qmtx:
+ 633 0000 0000 0000 		.zero	8
+ 633      0000 0000 
+ 634               		.section	.bss.qsize,"aw",@nobits
+ 637               	qsize:
+ 638 0000 0000      		.zero	2
+ 639               		.section	.bss.wrp,"aw",@nobits
+ 642               	wrp:
+ 643 0000 0000      		.zero	2
+ 644               		.section	.bss.rdp,"aw",@nobits
+ 647               	rdp:
+ 648 0000 0000      		.zero	2
+ 649               		.section	.bss.queue,"aw",@nobits
+ 652               	queue:
+ 653 0000 0000 0000 		.zero	256
+ 653      0000 0000 
+ 653      0000 0000 
+ 653      0000 0000 
+ 653      0000 0000 
+ 654               		.text
+ 655               	.Letext0:
+ 656               		.file 3 "/usr/lib/gcc/avr/7.3.0/include/stddef.h"
+ 657               		.file 4 "/usr/lib/avr/include/stdint.h"
+ 658               		.file 5 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/compile
+ 659               		.file 6 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chearly.h"
+ 660               		.file 7 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chobjects.h"
+ 661               		.file 8 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chrfcu.h"
+ 662               		.file 9 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chdebug.h"
+ 663               		.file 10 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chtime.h"
+ 664               		.file 11 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chlists.h"
+ 665               		.file 12 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore
+ 666               		.file 13 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chsem.h"
+ 667               		.file 14 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chmtx.h"
+ 668               		.file 15 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chsys.h"
+ 669               		.file 16 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chcond.h"
+ 670               		.file 17 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chevents.h"
+ 671               		.file 18 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/oslib/include/chmemcore
+ 672               		.file 19 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_queues.
+ 673               		.file 20 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
+ 674               		.file 21 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_serial.
+ 675               		.file 22 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
+ 676               		.file 23 "/usr/lib/avr/include/stdio.h"
+ 677               		.file 24 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal.h"
+ 678               		.file 25 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chthreads.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 main.c
-     /tmp/ccwVgddD.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccwVgddD.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccwVgddD.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccwVgddD.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccwVgddD.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccwVgddD.s:15     .text.Read_Collect_Event:0000000000000000 Read_Collect_Event
-     /tmp/ccwVgddD.s:533    .bss.qsize:0000000000000000 qsize
-     /tmp/ccwVgddD.s:64     .text.InitBuffer:0000000000000000 InitBuffer
-     /tmp/ccwVgddD.s:528    .bss.qmtx:0000000000000000 qmtx
-     /tmp/ccwVgddD.s:523    .bss.qempty:0000000000000000 qempty
-     /tmp/ccwVgddD.s:518    .bss.qfull:0000000000000000 qfull
-     /tmp/ccwVgddD.s:548    .bss.queue:0000000000000000 queue
-     /tmp/ccwVgddD.s:538    .bss.wrp:0000000000000000 wrp
-     /tmp/ccwVgddD.s:543    .bss.rdp:0000000000000000 rdp
-     /tmp/ccwVgddD.s:106    .text.startup.main:0000000000000000 main
-     /tmp/ccwVgddD.s:310    .text.Write_Save_Event:0000000000000000 Write_Save_Event
-     /tmp/ccwVgddD.s:513    .bss.wa_WriteEvent:0000000000000000 wa_WriteEvent
-     /tmp/ccwVgddD.s:508    .bss.wa_ReadEvent:0000000000000000 wa_ReadEvent
-     /tmp/ccwVgddD.s:218    .text.PushBUffer:0000000000000000 PushBUffer
-     /tmp/ccwVgddD.s:393    .text.PopBUffer:0000000000000000 PopBUffer
-     /tmp/ccwVgddD.s:481    .text.IsBUfferEmpty:0000000000000000 IsBUfferEmpty
+     /tmp/ccUYLC0R.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccUYLC0R.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccUYLC0R.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccUYLC0R.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccUYLC0R.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccUYLC0R.s:13     .text.InitBuffer:0000000000000000 InitBuffer
+     /tmp/ccUYLC0R.s:632    .bss.qmtx:0000000000000000 qmtx
+     /tmp/ccUYLC0R.s:627    .bss.qempty:0000000000000000 qempty
+     /tmp/ccUYLC0R.s:622    .bss.qfull:0000000000000000 qfull
+     /tmp/ccUYLC0R.s:652    .bss.queue:0000000000000000 queue
+     /tmp/ccUYLC0R.s:642    .bss.wrp:0000000000000000 wrp
+     /tmp/ccUYLC0R.s:647    .bss.rdp:0000000000000000 rdp
+     /tmp/ccUYLC0R.s:637    .bss.qsize:0000000000000000 qsize
+     /tmp/ccUYLC0R.s:56     .text.startup.main:0000000000000000 main
+     /tmp/ccUYLC0R.s:270    .text.Write_Save_Event:0000000000000000 Write_Save_Event
+     /tmp/ccUYLC0R.s:611    .bss.wa_WriteEvent:0000000000000000 wa_WriteEvent
+     /tmp/ccUYLC0R.s:453    .text.Read_Collect_Event:0000000000000000 Read_Collect_Event
+     /tmp/ccUYLC0R.s:606    .bss.wa_ReadEvent:0000000000000000 wa_ReadEvent
+     /tmp/ccUYLC0R.s:168    .text.PushBUffer:0000000000000000 PushBUffer
+     /tmp/ccUYLC0R.s:354    .text.PopBUffer:0000000000000000 PopBUffer
+     /tmp/ccUYLC0R.s:617    .bss.STATE:0000000000000000 STATE
+     /tmp/ccUYLC0R.s:551    .text.IsBUfferEmpty:0000000000000000 IsBUfferEmpty
+     /tmp/ccUYLC0R.s:578    .text.IsBufferFull:0000000000000000 IsBufferFull
 
 UNDEFINED SYMBOLS
-ch0
-chThdSleep
 chMtxObjectInit
 chCondObjectInit
 halInit
@@ -991,9 +1133,13 @@ SD1
 sdStart
 _pal_lld_setgroupmode
 chThdCreateStatic
+chThdSleep
 chMtxLock
 chCondWait
 chCondSignal
 chMtxUnlock
+ch0
+snprintf
+oqWriteTimeout
 __do_copy_data
 __do_clear_bss

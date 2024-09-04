@@ -2056,15 +2056,15 @@
  1017               		.file 20 "<embutido>"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 chpipes.c
-     /tmp/cc9LGe0x.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/cc9LGe0x.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/cc9LGe0x.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/cc9LGe0x.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/cc9LGe0x.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/cc9LGe0x.s:13     .text.chPipeObjectInit:0000000000000000 chPipeObjectInit
-     /tmp/cc9LGe0x.s:85     .text.chPipeReset:0000000000000000 chPipeReset
-     /tmp/cc9LGe0x.s:196    .text.chPipeWriteTimeout:0000000000000000 chPipeWriteTimeout
-     /tmp/cc9LGe0x.s:610    .text.chPipeReadTimeout:0000000000000000 chPipeReadTimeout
+     /tmp/cczVskGS.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/cczVskGS.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/cczVskGS.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/cczVskGS.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/cczVskGS.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/cczVskGS.s:13     .text.chPipeObjectInit:0000000000000000 chPipeObjectInit
+     /tmp/cczVskGS.s:85     .text.chPipeReset:0000000000000000 chPipeReset
+     /tmp/cczVskGS.s:196    .text.chPipeWriteTimeout:0000000000000000 chPipeWriteTimeout
+     /tmp/cczVskGS.s:610    .text.chPipeReadTimeout:0000000000000000 chPipeReadTimeout
 
 UNDEFINED SYMBOLS
 chMtxObjectInit
