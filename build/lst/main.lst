@@ -14,10 +14,15 @@
   12      7465 2045 
   12      7665 6E74 
   12      00
-  13               		.section	.text.Write_Save_Event,"ax",@progbits
-  15               	Write_Save_Event:
-  16               	.LFB238:
-  17               		.file 1 "main.c"
+  13               	.LC1:
+  14 0011 2564 2025 		.string	"%d %d %d %d \r\n"
+  14      6420 2564 
+  14      2025 6420 
+  14      0D0A 00
+  15               		.section	.text.Write_Save_Event,"ax",@progbits
+  17               	Write_Save_Event:
+  18               	.LFB239:
+  19               		.file 1 "main.c"
    1:main.c        **** /*
    2:main.c        ****     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
    3:main.c        **** 
@@ -36,23 +41,47 @@
   16:main.c        **** 
   17:main.c        **** #include "ch.h"
   18:main.c        **** #include "hal.h"
-  19:main.c        **** 
-  20:main.c        **** /* 
-  21:main.c        ****   * Thread Write Event 
-  22:main.c        **** */
-  23:main.c        **** static THD_WORKING_AREA(wa_WriteEvent, 128);
-  24:main.c        **** static THD_FUNCTION(Write_Save_Event, arg)
-  25:main.c        **** {
-  18               		.loc 1 25 0
-  19               		.cfi_startproc
-  20               	.LVL0:
-  21               	/* prologue: function */
-  22               	/* frame size = 0 */
-  23               	/* stack size = 0 */
-  24               	.L__stack_usage = 0
-  25               	.LBB9:
-  26               	.LBB10:
-  27               		.file 2 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h"
+  19:main.c        **** #include <string.h>
+  20:main.c        **** #include <stdio.h>
+  21:main.c        **** #include "definitions.h"
+  22:main.c        **** 
+  23:main.c        **** /* 
+  24:main.c        ****   * Thread Write Event 
+  25:main.c        **** */
+  26:main.c        **** static THD_WORKING_AREA(wa_WriteEvent, 128);
+  27:main.c        **** static THD_FUNCTION(Write_Save_Event, arg)
+  28:main.c        **** {
+  20               		.loc 1 28 0
+  21               		.cfi_startproc
+  22               	.LVL0:
+  23 0000 CF93      		push r28
+  24               	.LCFI0:
+  25               		.cfi_def_cfa_offset 3
+  26               		.cfi_offset 28, -2
+  27 0002 DF93      		push r29
+  28               	.LCFI1:
+  29               		.cfi_def_cfa_offset 4
+  30               		.cfi_offset 29, -3
+  31 0004 CDB7      		in r28,__SP_L__
+  32 0006 DEB7      		in r29,__SP_H__
+  33               	.LCFI2:
+  34               		.cfi_def_cfa_register 28
+  35 0008 2F97      		sbiw r28,15
+  36               	.LCFI3:
+  37               		.cfi_def_cfa_offset 19
+  38 000a 0FB6      		in __tmp_reg__,__SREG__
+  39 000c F894      		cli
+  40 000e DEBF      		out __SP_H__,r29
+  41 0010 0FBE      		out __SREG__,__tmp_reg__
+  42 0012 CDBF      		out __SP_L__,r28
+  43               	/* prologue: function */
+  44               	/* frame size = 15 */
+  45               	/* stack size = 17 */
+  46               	.L__stack_usage = 17
+  47               	.LVL1:
+  48               	.LBB4:
+  49               	.LBB5:
+  50               		.file 2 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h"
    1:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** /*
    2:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****     ChibiOS - Copyright (C) 2006,2007,2008,2009,2010,2011,2012,2013,2014,
    3:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****               2015,2016,2017,2018,2019,2020,2021 Giovanni Di Sirio.
@@ -221,452 +250,321 @@
  166:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** 
  167:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** #if CH_CFG_USE_REGISTRY == TRUE
  168:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****   __sch_get_currthread()->name = name;
-  28               		.loc 2 168 0
-  29 0000 E091 0000 		lds r30,ch0+5
-  30 0004 F091 0000 		lds r31,ch0+5+1
-  31 0008 80E0      		ldi r24,lo8(.LC0)
-  32 000a 90E0      		ldi r25,hi8(.LC0)
-  33               	.LVL1:
-  34 000c 9687      		std Z+14,r25
-  35 000e 8587      		std Z+13,r24
-  36               	.LBE10:
-  37               	.LBE9:
-  38               	.LBB11:
-  26:main.c        ****   chRegSetThreadName("Save/Write Event");
-  27:main.c        ****   while (1)
-  28:main.c        ****   {
-  29:main.c        ****     for (int i = 0; i < 10 ; i++) 
-  30:main.c        ****     {
-  31:main.c        ****       palTogglePad(IOPORT2, PORTB_LED1);
-  39               		.loc 1 31 0
-  40 0010 10E2      		ldi r17,lo8(32)
-  41               	.L3:
-  42               	.LVL2:
-  43               	.LBE11:
-  25:main.c        ****   chRegSetThreadName("Save/Write Event");
-  44               		.loc 1 25 0
-  45 0012 CAE0      		ldi r28,lo8(10)
-  46 0014 D0E0      		ldi r29,0
-  47               	.LVL3:
-  48               	.L2:
-  49               	.LBB12:
-  50               		.loc 1 31 0 discriminator 3
-  51 0016 85B1      		in r24,0x5
-  52 0018 8127      		eor r24,r17
-  53 001a 85B9      		out 0x5,r24
-  32:main.c        ****       chThdSleepMilliseconds(100);
-  54               		.loc 1 32 0 discriminator 3
-  55 001c 8BE1      		ldi r24,lo8(27)
-  56 001e 96E0      		ldi r25,lo8(6)
-  57 0020 0E94 0000 		call chThdSleep
-  58               	.LVL4:
-  59 0024 2197      		sbiw r28,1
-  60               	.LVL5:
-  29:main.c        ****     {
-  61               		.loc 1 29 0 discriminator 3
-  62 0026 01F4      		brne .L2
-  63 0028 00C0      		rjmp .L3
-  64               	.LBE12:
-  65               		.cfi_endproc
-  66               	.LFE238:
-  68               		.section	.rodata.ProcessEvent.str1.1,"aMS",@progbits,1
-  69               	.LC2:
-  70 0000 5072 6F63 		.string	"Process Event"
-  70      6573 7320 
-  70      4576 656E 
-  70      7400 
-  71               	.LC1:
-  72 000e 4D61 7175 		.string	"Maquina de estado\r\n"
-  72      696E 6120 
-  72      6465 2065 
-  72      7374 6164 
-  72      6F0D 0A00 
-  73               		.section	.text.ProcessEvent,"ax",@progbits
-  75               	ProcessEvent:
-  76               	.LFB240:
-  33:main.c        ****     }
-  34:main.c        ****   }
-  35:main.c        **** }
-  36:main.c        **** 
-  37:main.c        **** /* 
-  38:main.c        ****   * Thread Read Event
-  39:main.c        **** */
-  40:main.c        **** static THD_WORKING_AREA(wa_ReadEvent, 128);
-  41:main.c        **** static THD_FUNCTION(Read_Collect_Event, arg)
-  42:main.c        **** {
-  43:main.c        ****   char msg[] = "Lendo eventos\r\n";
+  51               		.loc 2 168 0
+  52 0014 E091 0000 		lds r30,ch0+5
+  53 0018 F091 0000 		lds r31,ch0+5+1
+  54 001c 80E0      		ldi r24,lo8(.LC0)
+  55 001e 90E0      		ldi r25,hi8(.LC0)
+  56               	.LVL2:
+  57 0020 9687      		std Z+14,r25
+  58 0022 8587      		std Z+13,r24
+  59 0024 CE01      		movw r24,r28
+  60 0026 0196      		adiw r24,1
+  61 0028 7C01      		movw r14,r24
+  62               	.LBE5:
+  63               	.LBE4:
+  29:main.c        ****   char msg[15];
+  30:main.c        ****   chRegSetThreadName("Save/Write Event");
+  31:main.c        ****   while (1)
+  32:main.c        ****   {
+  33:main.c        ****     palTogglePad(IOPORT2, PORTB_LED1);
+  64               		.loc 1 33 0
+  65 002a 80E2      		ldi r24,lo8(32)
+  66 002c C82E      		mov r12,r24
+  34:main.c        ****     
+  35:main.c        ****     snprintf(msg, 15, "%d %d %d %d \r\n", 
+  67               		.loc 1 35 0
+  68 002e 00E0      		ldi r16,lo8(.LC1)
+  69 0030 10E0      		ldi r17,hi8(.LC1)
+  70 0032 9FE0      		ldi r25,lo8(15)
+  71 0034 D92E      		mov r13,r25
+  72               	.L2:
+  33:main.c        ****     
+  73               		.loc 1 33 0 discriminator 1
+  74 0036 85B1      		in r24,0x5
+  75 0038 8C25      		eor r24,r12
+  76 003a 85B9      		out 0x5,r24
+  36:main.c        ****     palReadPad(IOPORT2, PEDESTRE), palReadPad(IOPORT2, CARRO_SECUNDARIA), 
+  37:main.c        ****     palReadPad(IOPORT2, AMBULANCIA_PRINCIPAL), palReadPad(IOPORT2, AMBULANCIA_SECUNDARIA));
+  77               		.loc 1 37 0 discriminator 1
+  78 003c 33B1      		in r19,0x3
+  79 003e 23B1      		in r18,0x3
+  36:main.c        ****     palReadPad(IOPORT2, PEDESTRE), palReadPad(IOPORT2, CARRO_SECUNDARIA), 
+  80               		.loc 1 36 0 discriminator 1
+  81 0040 93B1      		in r25,0x3
+  82 0042 83B1      		in r24,0x3
+  35:main.c        ****     palReadPad(IOPORT2, PEDESTRE), palReadPad(IOPORT2, CARRO_SECUNDARIA), 
+  83               		.loc 1 35 0 discriminator 1
+  84 0044 3695      		lsr r19
+  85 0046 3170      		andi r19,1
+  86 0048 1F92      		push __zero_reg__
+  87 004a 3F93      		push r19
+  88 004c 22FB      		bst r18,2
+  89 004e 2227      		clr r18
+  90 0050 20F9      		bld r18,0
+  91 0052 1F92      		push __zero_reg__
+  92 0054 2F93      		push r18
+  93 0056 93FB      		bst r25,3
+  94 0058 9927      		clr r25
+  95 005a 90F9      		bld r25,0
+  96 005c 1F92      		push __zero_reg__
+  97 005e 9F93      		push r25
+  98 0060 8295      		swap r24
+  99 0062 8170      		andi r24,1
+ 100 0064 1F92      		push __zero_reg__
+ 101 0066 8F93      		push r24
+ 102 0068 1F93      		push r17
+ 103 006a 0F93      		push r16
+ 104 006c 1F92      		push __zero_reg__
+ 105 006e DF92      		push r13
+ 106 0070 FF92      		push r15
+ 107 0072 EF92      		push r14
+ 108 0074 0E94 0000 		call snprintf
+ 109               	.LVL3:
+  38:main.c        **** 
+  39:main.c        ****     sdWrite(&SD1, msg, 15);
+ 110               		.loc 1 39 0 discriminator 1
+ 111 0078 2FEF      		ldi r18,lo8(-1)
+ 112 007a 3FEF      		ldi r19,lo8(-1)
+ 113 007c 4FE0      		ldi r20,lo8(15)
+ 114 007e 50E0      		ldi r21,0
+ 115 0080 B701      		movw r22,r14
+ 116 0082 80E0      		ldi r24,lo8(SD1+23)
+ 117 0084 90E0      		ldi r25,hi8(SD1+23)
+ 118 0086 0E94 0000 		call oqWriteTimeout
+ 119               	.LVL4:
+  40:main.c        ****     
+  41:main.c        ****     chThdSleepMilliseconds(100);
+ 120               		.loc 1 41 0 discriminator 1
+ 121 008a 8BE1      		ldi r24,lo8(27)
+ 122 008c 96E0      		ldi r25,lo8(6)
+ 123 008e 0E94 0000 		call chThdSleep
+ 124               	.LVL5:
+ 125 0092 0FB6      		in __tmp_reg__,__SREG__
+ 126 0094 F894      		cli
+ 127 0096 DEBF      		out __SP_H__,r29
+ 128 0098 0FBE      		out __SREG__,__tmp_reg__
+ 129 009a CDBF      		out __SP_L__,r28
+ 130 009c 00C0      		rjmp .L2
+ 131               		.cfi_endproc
+ 132               	.LFE239:
+ 134               		.section	.text.startup.main,"ax",@progbits
+ 135               	.global	main
+ 137               	main:
+ 138               	.LFB242:
+  42:main.c        ****   }
+  43:main.c        **** }
   44:main.c        **** 
-  45:main.c        ****   chRegSetThreadName("Read/Collect Event");
-  46:main.c        ****   while (1)
-  47:main.c        ****   {
-  48:main.c        ****     sdWrite(&SD1, msg, sizeof(msg));
-  49:main.c        ****     chThdSleepMilliseconds(1);
-  50:main.c        ****   }
-  51:main.c        **** }
+  45:main.c        **** /* 
+  46:main.c        ****   * Thread Read Event
+  47:main.c        **** */
+  48:main.c        **** static THD_WORKING_AREA(wa_ReadEvent, 128);
+  49:main.c        **** static THD_FUNCTION(Read_Collect_Event, arg)
+  50:main.c        **** {
+  51:main.c        ****   char msg[] = "Lendo eventos\r\n";
   52:main.c        **** 
-  53:main.c        **** /* 
-  54:main.c        ****   * Thread Process Event 
-  55:main.c        **** */
-  56:main.c        **** static THD_WORKING_AREA(wa_ProcessEvent, 128);
-  57:main.c        **** static THD_FUNCTION(ProcessEvent, arg)
-  58:main.c        **** {
-  77               		.loc 1 58 0
-  78               		.cfi_startproc
-  79               	.LVL6:
-  80 0000 CF93      		push r28
-  81               	.LCFI0:
-  82               		.cfi_def_cfa_offset 3
-  83               		.cfi_offset 28, -2
-  84 0002 DF93      		push r29
-  85               	.LCFI1:
-  86               		.cfi_def_cfa_offset 4
-  87               		.cfi_offset 29, -3
-  88 0004 CDB7      		in r28,__SP_L__
-  89 0006 DEB7      		in r29,__SP_H__
-  90               	.LCFI2:
-  91               		.cfi_def_cfa_register 28
-  92 0008 6497      		sbiw r28,20
-  93               	.LCFI3:
-  94               		.cfi_def_cfa_offset 24
-  95 000a 0FB6      		in __tmp_reg__,__SREG__
-  96 000c F894      		cli
-  97 000e DEBF      		out __SP_H__,r29
-  98 0010 0FBE      		out __SREG__,__tmp_reg__
-  99 0012 CDBF      		out __SP_L__,r28
- 100               	/* prologue: function */
- 101               	/* frame size = 20 */
- 102               	/* stack size = 22 */
- 103               	.L__stack_usage = 22
-  59:main.c        ****   char msg[] = "Maquina de estado\r\n";
- 104               		.loc 1 59 0
- 105 0014 84E1      		ldi r24,lo8(20)
- 106               	.LVL7:
- 107 0016 E0E0      		ldi r30,lo8(.LC1)
- 108 0018 F0E0      		ldi r31,hi8(.LC1)
- 109 001a DE01      		movw r26,r28
- 110 001c 1196      		adiw r26,1
- 111               		0:
- 112 001e 0190      		ld r0,Z+
- 113 0020 0D92      		st X+,r0
- 114 0022 8A95      		dec r24
- 115 0024 01F4      		brne 0b
- 116               	.LVL8:
- 117               	.LBB13:
- 118               	.LBB14:
- 119               		.loc 2 168 0
- 120 0026 E091 0000 		lds r30,ch0+5
- 121 002a F091 0000 		lds r31,ch0+5+1
- 122 002e 80E0      		ldi r24,lo8(.LC2)
- 123 0030 90E0      		ldi r25,hi8(.LC2)
- 124 0032 9687      		std Z+14,r25
- 125 0034 8587      		std Z+13,r24
- 126               	.L7:
- 127               	.LBE14:
- 128               	.LBE13:
+  53:main.c        ****   chRegSetThreadName("Read/Collect Event");
+  54:main.c        ****   while (1)
+  55:main.c        ****   {
+  56:main.c        ****     sdWrite(&SD1, msg, sizeof(msg));
+  57:main.c        ****     chThdSleepMilliseconds(1);
+  58:main.c        ****   }
+  59:main.c        **** }
   60:main.c        **** 
-  61:main.c        ****   chRegSetThreadName("Process Event");
-  62:main.c        ****   while (1)
-  63:main.c        ****   {
-  64:main.c        ****     sdWrite(&SD1, msg, sizeof(msg));
- 129               		.loc 1 64 0 discriminator 1
- 130 0036 2FEF      		ldi r18,lo8(-1)
- 131 0038 3FEF      		ldi r19,lo8(-1)
- 132 003a 44E1      		ldi r20,lo8(20)
- 133 003c 50E0      		ldi r21,0
- 134 003e BE01      		movw r22,r28
- 135 0040 6F5F      		subi r22,-1
- 136 0042 7F4F      		sbci r23,-1
- 137 0044 80E0      		ldi r24,lo8(SD1+23)
- 138 0046 90E0      		ldi r25,hi8(SD1+23)
- 139 0048 0E94 0000 		call oqWriteTimeout
- 140               	.LVL9:
-  65:main.c        ****     chThdSleepMilliseconds(100);
- 141               		.loc 1 65 0 discriminator 1
- 142 004c 8BE1      		ldi r24,lo8(27)
- 143 004e 96E0      		ldi r25,lo8(6)
- 144 0050 0E94 0000 		call chThdSleep
- 145               	.LVL10:
- 146 0054 00C0      		rjmp .L7
- 147               		.cfi_endproc
- 148               	.LFE240:
- 150               		.section	.rodata.Read_Collect_Event.str1.1,"aMS",@progbits,1
- 151               	.LC4:
- 152 0000 5265 6164 		.string	"Read/Collect Event"
- 152      2F43 6F6C 
- 152      6C65 6374 
- 152      2045 7665 
- 152      6E74 00
- 153               	.LC3:
- 154 0013 4C65 6E64 		.string	"Lendo eventos\r\n"
- 154      6F20 6576 
- 154      656E 746F 
- 154      730D 0A00 
- 155               		.section	.text.Read_Collect_Event,"ax",@progbits
- 157               	Read_Collect_Event:
- 158               	.LFB239:
-  42:main.c        ****   char msg[] = "Lendo eventos\r\n";
- 159               		.loc 1 42 0
- 160               		.cfi_startproc
- 161               	.LVL11:
- 162 0000 CF93      		push r28
- 163               	.LCFI4:
- 164               		.cfi_def_cfa_offset 3
- 165               		.cfi_offset 28, -2
- 166 0002 DF93      		push r29
- 167               	.LCFI5:
- 168               		.cfi_def_cfa_offset 4
- 169               		.cfi_offset 29, -3
- 170 0004 CDB7      		in r28,__SP_L__
- 171 0006 DEB7      		in r29,__SP_H__
- 172               	.LCFI6:
- 173               		.cfi_def_cfa_register 28
- 174 0008 6097      		sbiw r28,16
- 175               	.LCFI7:
- 176               		.cfi_def_cfa_offset 20
- 177 000a 0FB6      		in __tmp_reg__,__SREG__
- 178 000c F894      		cli
- 179 000e DEBF      		out __SP_H__,r29
- 180 0010 0FBE      		out __SREG__,__tmp_reg__
- 181 0012 CDBF      		out __SP_L__,r28
- 182               	/* prologue: function */
- 183               	/* frame size = 16 */
- 184               	/* stack size = 18 */
- 185               	.L__stack_usage = 18
-  43:main.c        **** 
- 186               		.loc 1 43 0
- 187 0014 80E1      		ldi r24,lo8(16)
- 188               	.LVL12:
- 189 0016 E0E0      		ldi r30,lo8(.LC3)
- 190 0018 F0E0      		ldi r31,hi8(.LC3)
- 191 001a DE01      		movw r26,r28
- 192 001c 1196      		adiw r26,1
- 193               		0:
- 194 001e 0190      		ld r0,Z+
- 195 0020 0D92      		st X+,r0
- 196 0022 8A95      		dec r24
- 197 0024 01F4      		brne 0b
- 198               	.LVL13:
- 199               	.LBB15:
- 200               	.LBB16:
- 201               		.loc 2 168 0
- 202 0026 E091 0000 		lds r30,ch0+5
- 203 002a F091 0000 		lds r31,ch0+5+1
- 204 002e 80E0      		ldi r24,lo8(.LC4)
- 205 0030 90E0      		ldi r25,hi8(.LC4)
- 206 0032 9687      		std Z+14,r25
- 207 0034 8587      		std Z+13,r24
- 208               	.L9:
- 209               	.LBE16:
- 210               	.LBE15:
-  48:main.c        ****     chThdSleepMilliseconds(1);
- 211               		.loc 1 48 0 discriminator 1
- 212 0036 2FEF      		ldi r18,lo8(-1)
- 213 0038 3FEF      		ldi r19,lo8(-1)
- 214 003a 40E1      		ldi r20,lo8(16)
- 215 003c 50E0      		ldi r21,0
- 216 003e BE01      		movw r22,r28
- 217 0040 6F5F      		subi r22,-1
- 218 0042 7F4F      		sbci r23,-1
- 219 0044 80E0      		ldi r24,lo8(SD1+23)
- 220 0046 90E0      		ldi r25,hi8(SD1+23)
- 221 0048 0E94 0000 		call oqWriteTimeout
- 222               	.LVL14:
-  49:main.c        ****   }
- 223               		.loc 1 49 0 discriminator 1
- 224 004c 80E1      		ldi r24,lo8(16)
- 225 004e 90E0      		ldi r25,0
- 226 0050 0E94 0000 		call chThdSleep
- 227               	.LVL15:
- 228 0054 00C0      		rjmp .L9
- 229               		.cfi_endproc
- 230               	.LFE239:
- 232               		.section	.text.startup.main,"ax",@progbits
- 233               	.global	main
- 235               	main:
- 236               	.LFB241:
-  66:main.c        ****   }
-  67:main.c        **** }
+  61:main.c        **** /* 
+  62:main.c        ****   * Thread Process Event 
+  63:main.c        **** */
+  64:main.c        **** static THD_WORKING_AREA(wa_ProcessEvent, 128);
+  65:main.c        **** static THD_FUNCTION(ProcessEvent, arg)
+  66:main.c        **** {
+  67:main.c        ****   char msg[] = "Maquina de estado\r\n";
   68:main.c        **** 
-  69:main.c        **** /*
-  70:main.c        ****  * Application entry point.
-  71:main.c        ****  */
-  72:main.c        **** int main(void) 
-  73:main.c        **** {
- 237               		.loc 1 73 0
- 238               		.cfi_startproc
- 239 0000 CF93      		push r28
- 240               	.LCFI8:
- 241               		.cfi_def_cfa_offset 3
- 242               		.cfi_offset 28, -2
- 243 0002 DF93      		push r29
- 244               	.LCFI9:
- 245               		.cfi_def_cfa_offset 4
- 246               		.cfi_offset 29, -3
- 247 0004 00D0      		rcall .
- 248 0006 1F92      		push __zero_reg__
- 249               	.LCFI10:
- 250               		.cfi_def_cfa_offset 7
- 251 0008 CDB7      		in r28,__SP_L__
- 252 000a DEB7      		in r29,__SP_H__
- 253               	.LCFI11:
- 254               		.cfi_def_cfa_register 28
- 255               	/* prologue: function */
- 256               	/* frame size = 3 */
- 257               	/* stack size = 5 */
- 258               	.L__stack_usage = 5
- 259               	.LVL16:
-  74:main.c        ****   thread_t *thd0 = 0, *thd1 = 0, *thd2 = 0;
-  75:main.c        ****   SerialConfig Serial_Configuration = {.sc_brr = UBRR2x(115200), .sc_bits_per_char = USART_CHAR_SIZ
- 260               		.loc 1 75 0
- 261 000c 80E1      		ldi r24,lo8(16)
- 262 000e 90E0      		ldi r25,0
- 263 0010 9A83      		std Y+2,r25
- 264 0012 8983      		std Y+1,r24
- 265 0014 83E0      		ldi r24,lo8(3)
- 266 0016 8B83      		std Y+3,r24
+  69:main.c        ****   chRegSetThreadName("Process Event");
+  70:main.c        ****   while (1)
+  71:main.c        ****   {
+  72:main.c        ****     sdWrite(&SD1, msg, sizeof(msg));
+  73:main.c        ****     chThdSleepMilliseconds(100);
+  74:main.c        ****   }
+  75:main.c        **** }
   76:main.c        **** 
-  77:main.c        ****   /*
-  78:main.c        ****    * System initializations.
-  79:main.c        ****    * - HAL initialization, this also initializes the configured device drivers
-  80:main.c        ****    *   and performs the board-specific initializations.
-  81:main.c        ****    * - Kernel initialization, the main() function becomes a thread and the
-  82:main.c        ****    *   RTOS is active.
-  83:main.c        ****    */
-  84:main.c        ****   halInit();
- 267               		.loc 1 84 0
- 268 0018 0E94 0000 		call halInit
- 269               	.LVL17:
-  85:main.c        ****   chSysInit();
- 270               		.loc 1 85 0
- 271 001c 0E94 0000 		call chSysInit
- 272               	.LVL18:
-  86:main.c        **** 
-  87:main.c        **** 
-  88:main.c        ****   sdStart(&SD1, &Serial_Configuration);
- 273               		.loc 1 88 0
- 274 0020 BE01      		movw r22,r28
- 275 0022 6F5F      		subi r22,-1
- 276 0024 7F4F      		sbci r23,-1
- 277 0026 80E0      		ldi r24,lo8(SD1)
- 278 0028 90E0      		ldi r25,hi8(SD1)
- 279 002a 0E94 0000 		call sdStart
- 280               	.LVL19:
-  89:main.c        ****   
-  90:main.c        ****   thd0 = chThdCreateStatic(wa_WriteEvent, sizeof(wa_WriteEvent), NORMALPRIO, Write_Save_Event, NULL
- 281               		.loc 1 90 0
- 282 002e 10E0      		ldi r17,0
- 283 0030 00E0      		ldi r16,0
- 284 0032 20E0      		ldi r18,lo8(gs(Write_Save_Event))
- 285 0034 30E0      		ldi r19,hi8(gs(Write_Save_Event))
- 286 0036 40E8      		ldi r20,lo8(-128)
- 287 0038 63EE      		ldi r22,lo8(-29)
- 288 003a 70E0      		ldi r23,0
- 289 003c 80E0      		ldi r24,lo8(wa_WriteEvent)
- 290 003e 90E0      		ldi r25,hi8(wa_WriteEvent)
- 291 0040 0E94 0000 		call chThdCreateStatic
- 292               	.LVL20:
-  91:main.c        ****   thd1 = chThdCreateStatic(wa_ReadEvent, sizeof(wa_ReadEvent), NORMALPRIO, Read_Collect_Event, NULL
- 293               		.loc 1 91 0
- 294 0044 20E0      		ldi r18,lo8(gs(Read_Collect_Event))
- 295 0046 30E0      		ldi r19,hi8(gs(Read_Collect_Event))
- 296 0048 40E8      		ldi r20,lo8(-128)
- 297 004a 63EE      		ldi r22,lo8(-29)
- 298 004c 70E0      		ldi r23,0
- 299 004e 80E0      		ldi r24,lo8(wa_ReadEvent)
- 300 0050 90E0      		ldi r25,hi8(wa_ReadEvent)
- 301 0052 0E94 0000 		call chThdCreateStatic
- 302               	.LVL21:
-  92:main.c        ****   thd2 = chThdCreateStatic(wa_ProcessEvent, sizeof(wa_ProcessEvent), NORMALPRIO, ProcessEvent, NULL
- 303               		.loc 1 92 0
- 304 0056 20E0      		ldi r18,lo8(gs(ProcessEvent))
- 305 0058 30E0      		ldi r19,hi8(gs(ProcessEvent))
- 306 005a 40E8      		ldi r20,lo8(-128)
- 307 005c 63EE      		ldi r22,lo8(-29)
- 308 005e 70E0      		ldi r23,0
- 309 0060 80E0      		ldi r24,lo8(wa_ProcessEvent)
- 310 0062 90E0      		ldi r25,hi8(wa_ProcessEvent)
- 311 0064 0E94 0000 		call chThdCreateStatic
- 312               	.LVL22:
- 313               	.L11:
-  93:main.c        **** 
-  94:main.c        ****   while (true) 
-  95:main.c        ****   {
-  96:main.c        ****     chThdSleepMilliseconds(1);
- 314               		.loc 1 96 0 discriminator 1
- 315 0068 80E1      		ldi r24,lo8(16)
- 316 006a 90E0      		ldi r25,0
- 317 006c 0E94 0000 		call chThdSleep
- 318               	.LVL23:
- 319 0070 00C0      		rjmp .L11
- 320               		.cfi_endproc
- 321               	.LFE241:
- 323               		.section	.bss.wa_ProcessEvent,"aw",@nobits
- 326               	wa_ProcessEvent:
- 327 0000 0000 0000 		.zero	227
- 327      0000 0000 
- 327      0000 0000 
- 327      0000 0000 
- 327      0000 0000 
- 328               		.section	.bss.wa_ReadEvent,"aw",@nobits
- 331               	wa_ReadEvent:
- 332 0000 0000 0000 		.zero	227
- 332      0000 0000 
- 332      0000 0000 
- 332      0000 0000 
- 332      0000 0000 
- 333               		.section	.bss.wa_WriteEvent,"aw",@nobits
- 336               	wa_WriteEvent:
- 337 0000 0000 0000 		.zero	227
- 337      0000 0000 
- 337      0000 0000 
- 337      0000 0000 
- 337      0000 0000 
- 338               		.text
- 339               	.Letext0:
- 340               		.file 3 "/usr/lib/gcc/avr/7.3.0/include/stddef.h"
- 341               		.file 4 "/usr/lib/avr/include/stdint.h"
- 342               		.file 5 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/compile
- 343               		.file 6 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chearly.h"
- 344               		.file 7 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chobjects.h"
- 345               		.file 8 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chrfcu.h"
- 346               		.file 9 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chdebug.h"
- 347               		.file 10 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chtime.h"
- 348               		.file 11 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chlists.h"
- 349               		.file 12 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore
- 350               		.file 13 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chsem.h"
- 351               		.file 14 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chmtx.h"
- 352               		.file 15 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chsys.h"
- 353               		.file 16 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chevents.h"
- 354               		.file 17 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/oslib/include/chmemcore
- 355               		.file 18 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_queues.
- 356               		.file 19 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
- 357               		.file 20 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_serial.
- 358               		.file 21 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
- 359               		.file 22 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal.h"
- 360               		.file 23 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chthreads.h"
+  77:main.c        **** /*
+  78:main.c        ****  * Application entry point.
+  79:main.c        ****  */
+  80:main.c        **** int main(void) 
+  81:main.c        **** {
+ 139               		.loc 1 81 0
+ 140               		.cfi_startproc
+ 141 0000 CF93      		push r28
+ 142               	.LCFI4:
+ 143               		.cfi_def_cfa_offset 3
+ 144               		.cfi_offset 28, -2
+ 145 0002 DF93      		push r29
+ 146               	.LCFI5:
+ 147               		.cfi_def_cfa_offset 4
+ 148               		.cfi_offset 29, -3
+ 149 0004 00D0      		rcall .
+ 150 0006 1F92      		push __zero_reg__
+ 151               	.LCFI6:
+ 152               		.cfi_def_cfa_offset 7
+ 153 0008 CDB7      		in r28,__SP_L__
+ 154 000a DEB7      		in r29,__SP_H__
+ 155               	.LCFI7:
+ 156               		.cfi_def_cfa_register 28
+ 157               	/* prologue: function */
+ 158               	/* frame size = 3 */
+ 159               	/* stack size = 5 */
+ 160               	.L__stack_usage = 5
+ 161               	.LVL6:
+  82:main.c        ****   thread_t *thd0 = 0, *thd1 = 0, *thd2 = 0;
+  83:main.c        ****   SerialConfig Serial_Configuration = {.sc_brr = UBRR2x(115200), .sc_bits_per_char = USART_CHAR_SIZ
+ 162               		.loc 1 83 0
+ 163 000c 80E1      		ldi r24,lo8(16)
+ 164 000e 90E0      		ldi r25,0
+ 165 0010 9A83      		std Y+2,r25
+ 166 0012 8983      		std Y+1,r24
+ 167 0014 83E0      		ldi r24,lo8(3)
+ 168 0016 8B83      		std Y+3,r24
+  84:main.c        **** 
+  85:main.c        ****   /*
+  86:main.c        ****    * System initializations.
+  87:main.c        ****    * - HAL initialization, this also initializes the configured device drivers
+  88:main.c        ****    *   and performs the board-specific initializations.
+  89:main.c        ****    * - Kernel initialization, the main() function becomes a thread and the
+  90:main.c        ****    *   RTOS is active.
+  91:main.c        ****    */
+  92:main.c        ****   halInit();
+ 169               		.loc 1 92 0
+ 170 0018 0E94 0000 		call halInit
+ 171               	.LVL7:
+  93:main.c        ****   chSysInit();
+ 172               		.loc 1 93 0
+ 173 001c 0E94 0000 		call chSysInit
+ 174               	.LVL8:
+  94:main.c        **** 
+  95:main.c        ****   sdStart(&SD1, &Serial_Configuration);
+ 175               		.loc 1 95 0
+ 176 0020 BE01      		movw r22,r28
+ 177 0022 6F5F      		subi r22,-1
+ 178 0024 7F4F      		sbci r23,-1
+ 179 0026 80E0      		ldi r24,lo8(SD1)
+ 180 0028 90E0      		ldi r25,hi8(SD1)
+ 181 002a 0E94 0000 		call sdStart
+ 182               	.LVL9:
+  96:main.c        **** 
+  97:main.c        ****   palSetPadMode(IOPORT2, PEDESTRE, PAL_MODE_INPUT_PULLUP);
+ 183               		.loc 1 97 0
+ 184 002e 43E0      		ldi r20,lo8(3)
+ 185 0030 60E1      		ldi r22,lo8(16)
+ 186 0032 83E2      		ldi r24,lo8(35)
+ 187 0034 90E0      		ldi r25,0
+ 188 0036 0E94 0000 		call _pal_lld_setgroupmode
+ 189               	.LVL10:
+  98:main.c        ****   palSetPadMode(IOPORT2, CARRO_SECUNDARIA, PAL_MODE_INPUT_PULLUP);
+ 190               		.loc 1 98 0
+ 191 003a 43E0      		ldi r20,lo8(3)
+ 192 003c 68E0      		ldi r22,lo8(8)
+ 193 003e 83E2      		ldi r24,lo8(35)
+ 194 0040 90E0      		ldi r25,0
+ 195 0042 0E94 0000 		call _pal_lld_setgroupmode
+ 196               	.LVL11:
+  99:main.c        ****   palSetPadMode(IOPORT2, AMBULANCIA_PRINCIPAL, PAL_MODE_INPUT_PULLUP);
+ 197               		.loc 1 99 0
+ 198 0046 43E0      		ldi r20,lo8(3)
+ 199 0048 64E0      		ldi r22,lo8(4)
+ 200 004a 83E2      		ldi r24,lo8(35)
+ 201 004c 90E0      		ldi r25,0
+ 202 004e 0E94 0000 		call _pal_lld_setgroupmode
+ 203               	.LVL12:
+ 100:main.c        ****   palSetPadMode(IOPORT2, AMBULANCIA_SECUNDARIA, PAL_MODE_INPUT_PULLUP);  
+ 204               		.loc 1 100 0
+ 205 0052 43E0      		ldi r20,lo8(3)
+ 206 0054 62E0      		ldi r22,lo8(2)
+ 207 0056 83E2      		ldi r24,lo8(35)
+ 208 0058 90E0      		ldi r25,0
+ 209 005a 0E94 0000 		call _pal_lld_setgroupmode
+ 210               	.LVL13:
+ 101:main.c        **** 
+ 102:main.c        **** 
+ 103:main.c        ****   thd0 = chThdCreateStatic(wa_WriteEvent, sizeof(wa_WriteEvent), NORMALPRIO, Write_Save_Event, NULL
+ 211               		.loc 1 103 0
+ 212 005e 10E0      		ldi r17,0
+ 213 0060 00E0      		ldi r16,0
+ 214 0062 20E0      		ldi r18,lo8(gs(Write_Save_Event))
+ 215 0064 30E0      		ldi r19,hi8(gs(Write_Save_Event))
+ 216 0066 40E8      		ldi r20,lo8(-128)
+ 217 0068 63EE      		ldi r22,lo8(-29)
+ 218 006a 70E0      		ldi r23,0
+ 219 006c 80E0      		ldi r24,lo8(wa_WriteEvent)
+ 220 006e 90E0      		ldi r25,hi8(wa_WriteEvent)
+ 221 0070 0E94 0000 		call chThdCreateStatic
+ 222               	.LVL14:
+ 223               	.L5:
+ 104:main.c        ****   //thd1 = chThdCreateStatic(wa_ReadEvent, sizeof(wa_ReadEvent), NORMALPRIO, Read_Collect_Event, NU
+ 105:main.c        ****   //thd2 = chThdCreateStatic(wa_ProcessEvent, sizeof(wa_ProcessEvent), NORMALPRIO, ProcessEvent, NU
+ 106:main.c        **** 
+ 107:main.c        ****   while (true) 
+ 108:main.c        ****   {
+ 109:main.c        ****     chThdSleepMilliseconds(1);
+ 224               		.loc 1 109 0 discriminator 1
+ 225 0074 80E1      		ldi r24,lo8(16)
+ 226 0076 90E0      		ldi r25,0
+ 227 0078 0E94 0000 		call chThdSleep
+ 228               	.LVL15:
+ 229 007c 00C0      		rjmp .L5
+ 230               		.cfi_endproc
+ 231               	.LFE242:
+ 233               		.section	.bss.wa_WriteEvent,"aw",@nobits
+ 236               	wa_WriteEvent:
+ 237 0000 0000 0000 		.zero	227
+ 237      0000 0000 
+ 237      0000 0000 
+ 237      0000 0000 
+ 237      0000 0000 
+ 238               		.text
+ 239               	.Letext0:
+ 240               		.file 3 "/usr/lib/gcc/avr/7.3.0/include/stddef.h"
+ 241               		.file 4 "/usr/lib/avr/include/stdint.h"
+ 242               		.file 5 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/compile
+ 243               		.file 6 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chearly.h"
+ 244               		.file 7 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chobjects.h"
+ 245               		.file 8 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chrfcu.h"
+ 246               		.file 9 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chdebug.h"
+ 247               		.file 10 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chtime.h"
+ 248               		.file 11 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chlists.h"
+ 249               		.file 12 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore
+ 250               		.file 13 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chsem.h"
+ 251               		.file 14 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chmtx.h"
+ 252               		.file 15 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chsys.h"
+ 253               		.file 16 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chevents.h"
+ 254               		.file 17 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/oslib/include/chmemcore
+ 255               		.file 18 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_queues.
+ 256               		.file 19 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
+ 257               		.file 20 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_serial.
+ 258               		.file 21 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
+ 259               		.file 22 "/usr/lib/avr/include/stdio.h"
+ 260               		.file 23 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal.h"
+ 261               		.file 24 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chthreads.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 main.c
-     /tmp/ccvIhj3H.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccvIhj3H.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccvIhj3H.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccvIhj3H.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccvIhj3H.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccvIhj3H.s:15     .text.Write_Save_Event:0000000000000000 Write_Save_Event
-     /tmp/ccvIhj3H.s:75     .text.ProcessEvent:0000000000000000 ProcessEvent
-     /tmp/ccvIhj3H.s:157    .text.Read_Collect_Event:0000000000000000 Read_Collect_Event
-     /tmp/ccvIhj3H.s:235    .text.startup.main:0000000000000000 main
-     /tmp/ccvIhj3H.s:336    .bss.wa_WriteEvent:0000000000000000 wa_WriteEvent
-     /tmp/ccvIhj3H.s:331    .bss.wa_ReadEvent:0000000000000000 wa_ReadEvent
-     /tmp/ccvIhj3H.s:326    .bss.wa_ProcessEvent:0000000000000000 wa_ProcessEvent
+     /tmp/ccmRuPlN.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccmRuPlN.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccmRuPlN.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccmRuPlN.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccmRuPlN.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccmRuPlN.s:17     .text.Write_Save_Event:0000000000000000 Write_Save_Event
+     /tmp/ccmRuPlN.s:137    .text.startup.main:0000000000000000 main
+     /tmp/ccmRuPlN.s:236    .bss.wa_WriteEvent:0000000000000000 wa_WriteEvent
 
 UNDEFINED SYMBOLS
 ch0
-chThdSleep
+snprintf
 SD1
 oqWriteTimeout
+chThdSleep
 halInit
 chSysInit
 sdStart
+_pal_lld_setgroupmode
 chThdCreateStatic
 __do_copy_data
 __do_clear_bss

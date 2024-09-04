@@ -88,7 +88,8 @@ build/obj/main.o: main.c \
  /home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_st.h \
  /home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/SYSTICKv1/hal_st_lld.h \
  /home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_mmc_spi.h \
- /home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_serial_usb.h
+ /home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_serial_usb.h \
+ definitions.h
 
 /home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/ch.h:
 
@@ -271,3 +272,5 @@ cfg/mcuconf.h:
 /home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_mmc_spi.h:
 
 /home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_serial_usb.h:
+
+definitions.h:

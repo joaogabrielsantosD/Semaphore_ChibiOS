@@ -2895,23 +2895,23 @@
  1084               		.file 19 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chschd.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 chmboxes.c
-     /tmp/ccVfhLa8.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccVfhLa8.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccVfhLa8.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccVfhLa8.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccVfhLa8.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccVfhLa8.s:13     .text.chMBObjectInit:0000000000000000 chMBObjectInit
-     /tmp/ccVfhLa8.s:95     .text.chMBResetI:0000000000000000 chMBResetI
-     /tmp/ccVfhLa8.s:154    .text.chMBReset:0000000000000000 chMBReset
-     /tmp/ccVfhLa8.s:205    .text.chMBPostTimeoutS:0000000000000000 chMBPostTimeoutS
-     /tmp/ccVfhLa8.s:362    .text.chMBPostTimeout:0000000000000000 chMBPostTimeout
-     /tmp/ccVfhLa8.s:409    .text.chMBPostI:0000000000000000 chMBPostI
-     /tmp/ccVfhLa8.s:503    .text.chMBPostAheadTimeoutS:0000000000000000 chMBPostAheadTimeoutS
-     /tmp/ccVfhLa8.s:658    .text.chMBPostAheadTimeout:0000000000000000 chMBPostAheadTimeout
-     /tmp/ccVfhLa8.s:705    .text.chMBPostAheadI:0000000000000000 chMBPostAheadI
-     /tmp/ccVfhLa8.s:798    .text.chMBFetchTimeoutS:0000000000000000 chMBFetchTimeoutS
-     /tmp/ccVfhLa8.s:942    .text.chMBFetchTimeout:0000000000000000 chMBFetchTimeout
-     /tmp/ccVfhLa8.s:989    .text.chMBFetchI:0000000000000000 chMBFetchI
+     /tmp/ccb13TTg.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccb13TTg.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccb13TTg.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccb13TTg.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccb13TTg.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccb13TTg.s:13     .text.chMBObjectInit:0000000000000000 chMBObjectInit
+     /tmp/ccb13TTg.s:95     .text.chMBResetI:0000000000000000 chMBResetI
+     /tmp/ccb13TTg.s:154    .text.chMBReset:0000000000000000 chMBReset
+     /tmp/ccb13TTg.s:205    .text.chMBPostTimeoutS:0000000000000000 chMBPostTimeoutS
+     /tmp/ccb13TTg.s:362    .text.chMBPostTimeout:0000000000000000 chMBPostTimeout
+     /tmp/ccb13TTg.s:409    .text.chMBPostI:0000000000000000 chMBPostI
+     /tmp/ccb13TTg.s:503    .text.chMBPostAheadTimeoutS:0000000000000000 chMBPostAheadTimeoutS
+     /tmp/ccb13TTg.s:658    .text.chMBPostAheadTimeout:0000000000000000 chMBPostAheadTimeout
+     /tmp/ccb13TTg.s:705    .text.chMBPostAheadI:0000000000000000 chMBPostAheadI
+     /tmp/ccb13TTg.s:798    .text.chMBFetchTimeoutS:0000000000000000 chMBFetchTimeoutS
+     /tmp/ccb13TTg.s:942    .text.chMBFetchTimeout:0000000000000000 chMBFetchTimeout
+     /tmp/ccb13TTg.s:989    .text.chMBFetchI:0000000000000000 chMBFetchI
 
 UNDEFINED SYMBOLS
 chThdDequeueAllI
