@@ -16,6 +16,9 @@
 
 #include "ch.h"
 #include "hal.h"
+#include <string.h>
+#include <stdio.h>
+#include "definitions.h"
 
 /* 
   * Thread Write Event 
@@ -23,14 +26,19 @@
 static THD_WORKING_AREA(wa_WriteEvent, 128);
 static THD_FUNCTION(Write_Save_Event, arg)
 {
+  char msg[15];
   chRegSetThreadName("Save/Write Event");
   while (1)
   {
-    for (int i = 0; i < 10; i++) 
-    {
-      palTogglePad(IOPORT2, PORTB_LED1);
-      chThdSleepMilliseconds(100);
-    }
+    palTogglePad(IOPORT2, PORTB_LED1);
+    
+    snprintf(msg, 15, "%d %d %d %d \r\n", 
+    palReadPad(IOPORT2, PEDESTRE), palReadPad(IOPORT2, CARRO_SECUNDARIA), 
+    palReadPad(IOPORT2, AMBULANCIA_PRINCIPAL), palReadPad(IOPORT2, AMBULANCIA_SECUNDARIA));
+
+    sdWrite(&SD1, msg, 15);
+    
+    chThdSleepMilliseconds(100);
   }
 }
 
@@ -84,12 +92,17 @@ int main(void)
   halInit();
   chSysInit();
 
-
   sdStart(&SD1, &Serial_Configuration);
-  
+
+  palSetPadMode(IOPORT2, PEDESTRE, PAL_MODE_INPUT_PULLUP);
+  palSetPadMode(IOPORT2, CARRO_SECUNDARIA, PAL_MODE_INPUT_PULLUP);
+  palSetPadMode(IOPORT2, AMBULANCIA_PRINCIPAL, PAL_MODE_INPUT_PULLUP);
+  palSetPadMode(IOPORT2, AMBULANCIA_SECUNDARIA, PAL_MODE_INPUT_PULLUP);  
+
+
   thd0 = chThdCreateStatic(wa_WriteEvent, sizeof(wa_WriteEvent), NORMALPRIO, Write_Save_Event, NULL);
-  thd1 = chThdCreateStatic(wa_ReadEvent, sizeof(wa_ReadEvent), NORMALPRIO, Read_Collect_Event, NULL);
-  thd2 = chThdCreateStatic(wa_ProcessEvent, sizeof(wa_ProcessEvent), NORMALPRIO, ProcessEvent, NULL);
+  //thd1 = chThdCreateStatic(wa_ReadEvent, sizeof(wa_ReadEvent), NORMALPRIO, Read_Collect_Event, NULL);
+  //thd2 = chThdCreateStatic(wa_ProcessEvent, sizeof(wa_ProcessEvent), NORMALPRIO, ProcessEvent, NULL);
 
   while (true) 
   {
