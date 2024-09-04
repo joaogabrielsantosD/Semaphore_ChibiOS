@@ -4,6 +4,7 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
+                //"/usr/bin/avr/include",
                 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3",
                 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include",
                 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/ex/include",
@@ -49,10 +50,16 @@
                 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/lib/fallback/I2C"
             ],
             "defines": [],
-            "compilerPath": "/usr/bin/gcc",
+            //"compilerPath": "/usr/bin/gcc",
+            "compilerPath": "/usr/bin/avr-gcc",
             "cStandard": "c17",
             "cppStandard": "gnu++17",
-            "intelliSenseMode": "linux-gcc-x64"
+            "intelliSenseMode": "linux-gcc-x64",
+            "compilerArgs": [
+                "-mmcu=atmega328p",     // Will ensure MCU defines are set correctly
+                "-DF_CPU=16000000UL",   // Will ensure F_CPU is set correctly
+                "-Os"                   // Will avoid optimization warnings re: _delay
+            ]
         }
     ],
     "version": 4

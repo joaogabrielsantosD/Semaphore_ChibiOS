@@ -27,7 +27,10 @@
         "chcore.h": "c",
         "hal_pwm_lld.h": "c",
         "*.inc": "c",
-        "mcuconf.h": "c"
+        "mcuconf.h": "c",
+        "avr_pins.h": "c",
+        "io.h": "c",
+        "definitions.h": "c"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }
