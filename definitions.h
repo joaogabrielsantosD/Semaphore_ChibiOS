@@ -1,6 +1,8 @@
 #ifndef DEFINITIONS_H
 #define DEFINITIONS_H
 
+#define QUEUE_SIZE 128
+
 /* GPIOs */
 #define EVENT_1 4 // PB4
 #define EVENT_2 3 // PB3
