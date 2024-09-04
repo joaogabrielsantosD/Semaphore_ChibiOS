@@ -221,12 +221,12 @@
   67               		.file 25 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/osal/rt-nil/osal.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 hal.c
-     /tmp/ccIFxAGP.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccIFxAGP.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccIFxAGP.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccIFxAGP.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccIFxAGP.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccIFxAGP.s:13     .text.halInit:0000000000000000 halInit
+     /tmp/cc4lnlE3.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/cc4lnlE3.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/cc4lnlE3.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/cc4lnlE3.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/cc4lnlE3.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/cc4lnlE3.s:13     .text.halInit:0000000000000000 halInit
 
 UNDEFINED SYMBOLS
 hal_lld_init
