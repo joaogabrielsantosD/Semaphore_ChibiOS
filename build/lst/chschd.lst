@@ -2318,23 +2318,23 @@
  1031               		.file 16 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chvt.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 chschd.c
-     /tmp/ccF5Qi5o.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccF5Qi5o.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccF5Qi5o.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccF5Qi5o.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccF5Qi5o.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccF5Qi5o.s:12     .text.__sch_wakeup:0000000000000000 __sch_wakeup
-     /tmp/ccF5Qi5o.s:169    .text.chSchReadyI:0000000000000000 chSchReadyI
-     /tmp/ccF5Qi5o.s:251    .text.chSchGoSleepS:0000000000000000 chSchGoSleepS
-     /tmp/ccF5Qi5o.s:320    .text.chSchGoSleepTimeoutS:0000000000000000 chSchGoSleepTimeoutS
-     /tmp/ccF5Qi5o.s:428    .text.chSchWakeupS:0000000000000000 chSchWakeupS
-     /tmp/ccF5Qi5o.s:582    .text.chSchIsPreemptionRequired:0000000000000000 chSchIsPreemptionRequired
-     /tmp/ccF5Qi5o.s:615    .text.chSchDoPreemption:0000000000000000 chSchDoPreemption
-     /tmp/ccF5Qi5o.s:615    .text.chSchDoPreemption:0000000000000000 __sch_reschedule_ahead
-     /tmp/ccF5Qi5o.s:731    .text.chSchRescheduleS:0000000000000000 chSchRescheduleS
-     /tmp/ccF5Qi5o.s:763    .text.chSchPreemption:0000000000000000 chSchPreemption
-     /tmp/ccF5Qi5o.s:777    .text.chSchDoYieldS:0000000000000000 chSchDoYieldS
-     /tmp/ccF5Qi5o.s:909    .text.chSchSelectFirst:0000000000000000 chSchSelectFirst
+     /tmp/cc2kZuSb.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/cc2kZuSb.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/cc2kZuSb.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/cc2kZuSb.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/cc2kZuSb.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/cc2kZuSb.s:12     .text.__sch_wakeup:0000000000000000 __sch_wakeup
+     /tmp/cc2kZuSb.s:169    .text.chSchReadyI:0000000000000000 chSchReadyI
+     /tmp/cc2kZuSb.s:251    .text.chSchGoSleepS:0000000000000000 chSchGoSleepS
+     /tmp/cc2kZuSb.s:320    .text.chSchGoSleepTimeoutS:0000000000000000 chSchGoSleepTimeoutS
+     /tmp/cc2kZuSb.s:428    .text.chSchWakeupS:0000000000000000 chSchWakeupS
+     /tmp/cc2kZuSb.s:582    .text.chSchIsPreemptionRequired:0000000000000000 chSchIsPreemptionRequired
+     /tmp/cc2kZuSb.s:615    .text.chSchDoPreemption:0000000000000000 chSchDoPreemption
+     /tmp/cc2kZuSb.s:615    .text.chSchDoPreemption:0000000000000000 __sch_reschedule_ahead
+     /tmp/cc2kZuSb.s:731    .text.chSchRescheduleS:0000000000000000 chSchRescheduleS
+     /tmp/cc2kZuSb.s:763    .text.chSchPreemption:0000000000000000 chSchPreemption
+     /tmp/cc2kZuSb.s:777    .text.chSchDoYieldS:0000000000000000 chSchDoYieldS
+     /tmp/cc2kZuSb.s:909    .text.chSchSelectFirst:0000000000000000 chSchSelectFirst
 
 UNDEFINED SYMBOLS
 ch0

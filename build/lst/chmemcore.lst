@@ -1103,19 +1103,19 @@
  436               		.file 16 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/oslib/include/chmemcore
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 chmemcore.c
-     /tmp/cc9s31ly.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/cc9s31ly.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/cc9s31ly.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/cc9s31ly.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/cc9s31ly.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/cc9s31ly.s:13     .text.__core_init:0000000000000000 __core_init
+     /tmp/ccMdVQBq.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccMdVQBq.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccMdVQBq.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccMdVQBq.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccMdVQBq.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccMdVQBq.s:13     .text.__core_init:0000000000000000 __core_init
                             *COM*:0000000000000004 ch_memcore
-     /tmp/cc9s31ly.s:418    .bss.static_heap.3113:0000000000000000 static_heap.3113
-     /tmp/cc9s31ly.s:43     .text.chCoreAllocFromBaseI:0000000000000000 chCoreAllocFromBaseI
-     /tmp/cc9s31ly.s:109    .text.chCoreAllocFromTopI:0000000000000000 chCoreAllocFromTopI
-     /tmp/cc9s31ly.s:168    .text.chCoreAllocFromBase:0000000000000000 chCoreAllocFromBase
-     /tmp/cc9s31ly.s:282    .text.chCoreAllocFromTop:0000000000000000 chCoreAllocFromTop
-     /tmp/cc9s31ly.s:392    .text.chCoreGetStatusX:0000000000000000 chCoreGetStatusX
+     /tmp/ccMdVQBq.s:418    .bss.static_heap.3113:0000000000000000 static_heap.3113
+     /tmp/ccMdVQBq.s:43     .text.chCoreAllocFromBaseI:0000000000000000 chCoreAllocFromBaseI
+     /tmp/ccMdVQBq.s:109    .text.chCoreAllocFromTopI:0000000000000000 chCoreAllocFromTopI
+     /tmp/ccMdVQBq.s:168    .text.chCoreAllocFromBase:0000000000000000 chCoreAllocFromBase
+     /tmp/ccMdVQBq.s:282    .text.chCoreAllocFromTop:0000000000000000 chCoreAllocFromTop
+     /tmp/ccMdVQBq.s:392    .text.chCoreGetStatusX:0000000000000000 chCoreGetStatusX
 
 UNDEFINED SYMBOLS
 __do_clear_bss
