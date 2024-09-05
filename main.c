@@ -26,9 +26,12 @@
 static msg_t queue[QUEUE_SIZE], *rdp, *wrp;
 static size_t qsize;
 static mutex_t qmtx;
-static condition_variable_t qempty;
-static condition_variable_t qfull;
-uint8_t STATE = 0;
+static condition_variable_t qempty, qfull;
+static virtual_timer_t vt;
+uint8_t EVENT = 0;
+state_via_t STATE = PRINCIPAL;
+state_LED_t LED_PRINCIPAL = VERDE;
+uint32_t counter = 0;
 
 /*
   * Global Functions
@@ -38,6 +41,11 @@ void PushBUffer(msg_t msg);
 uint8_t PopBUffer(void);
 int IsBUfferEmpty(void);
 int IsBufferFull(void);
+void PrincipalTimer(void);
+
+/* Virtual Timer */
+static void AvenidaPrincipalSinalVerde(void *arg);
+static void AvenidaPrincipalSinalAmarelo(void *arg);
 
 /* 
   * Thread Write Event 
@@ -71,15 +79,11 @@ static THD_FUNCTION(Write_Save_Event, arg)
 static THD_WORKING_AREA(wa_ReadEvent, 128);
 static THD_FUNCTION(Read_Collect_Event, arg)
 {
-  char r[5];
   chRegSetThreadName("Read/Collect Event");
   while (1)
   {
     if (!IsBUfferEmpty())
-      STATE = PopBUffer();
-
-    snprintf(r, 5, "%d\r\n", STATE);
-    sdWrite(&SD1, &r, sizeof(r));
+      EVENT = PopBUffer();
     chThdSleepMilliseconds(1);
   }
 }
@@ -90,13 +94,23 @@ static THD_FUNCTION(Read_Collect_Event, arg)
 static THD_WORKING_AREA(wa_ProcessEvent, 128);
 static THD_FUNCTION(ProcessEvent, arg)
 {
-  char msg[] = "Maquina de estado\r\n";
+  state_funcion_t state_funcion[1] = {PrincipalTimer};
 
   chRegSetThreadName("Process Event");
   while (1)
   {
-    sdWrite(&SD1, msg, sizeof(msg));
-    chThdSleepMilliseconds(100);
+    switch (STATE)
+    {
+      case IDLE_ST:
+        break;
+    
+      case PRINCIPAL:
+        state_funcion[PRINCIPAL - 1]();
+        STATE = IDLE_ST;
+        break;
+    }
+
+    chThdSleepMilliseconds(1);
   }
 }
 
@@ -109,6 +123,7 @@ int main(void)
   SerialConfig Serial_Configuration = {.sc_brr = UBRR2x(115200), .sc_bits_per_char = USART_CHAR_SIZE_8};
 
   InitBuffer();
+  chVTObjectInit(&vt);
   /*
    * System initializations.
    * - HAL initialization, this also initializes the configured device drivers
@@ -121,14 +136,25 @@ int main(void)
 
   sdStart(&SD1, &Serial_Configuration);
 
+  /* Buttons */
   palSetPadMode(IOPORT2, PEDESTRE, PAL_MODE_INPUT_PULLUP);
   palSetPadMode(IOPORT2, CARRO_SECUNDARIA, PAL_MODE_INPUT_PULLUP);
   palSetPadMode(IOPORT2, AMBULANCIA_PRINCIPAL, PAL_MODE_INPUT_PULLUP);
   palSetPadMode(IOPORT2, AMBULANCIA_SECUNDARIA, PAL_MODE_INPUT_PULLUP);  
 
+  /* LEDs main semaphore */
+  palSetPadMode(IOPORT2, LED_VERDE_PRINCIPAL, PAL_MODE_OUTPUT_PUSHPULL);
+  palClearPad(IOPORT2, LED_VERDE_PRINCIPAL);
+
+  palSetPadMode(IOPORT4, LED_AMARELO_PRINCIPAL, PAL_MODE_OUTPUT_PUSHPULL);
+  palClearPad(IOPORT4, LED_AMARELO_PRINCIPAL);
+
+  palSetPadMode(IOPORT4, LED_VERMELHO_PRINCIPAL, PAL_MODE_OUTPUT_PUSHPULL);
+  palClearPad(IOPORT4, LED_VERMELHO_PRINCIPAL);
+
   thd0 = chThdCreateStatic(wa_WriteEvent, sizeof(wa_WriteEvent), NORMALPRIO, Write_Save_Event, NULL);
   thd1 = chThdCreateStatic(wa_ReadEvent, sizeof(wa_ReadEvent), NORMALPRIO, Read_Collect_Event, NULL);
-  //thd2 = chThdCreateStatic(wa_ProcessEvent, sizeof(wa_ProcessEvent), NORMALPRIO, ProcessEvent, NULL);
+  thd2 = chThdCreateStatic(wa_ProcessEvent, sizeof(wa_ProcessEvent), NORMALPRIO, ProcessEvent, NULL);
 
   while (true) 
   {
@@ -202,4 +228,79 @@ int IsBUfferEmpty()
 int IsBufferFull()
 {
   return qsize >= QUEUE_SIZE;
+}
+
+/*====================== Avenida Principal ===============================*/
+void PrincipalTimer()
+{
+  switch (LED_PRINCIPAL)
+  {
+    case VERDE:
+    {
+      palSetPad(IOPORT2, LED_VERDE_PRINCIPAL);
+      palClearPad(IOPORT4, LED_AMARELO_PRINCIPAL);
+      palClearPad(IOPORT4, LED_VERMELHO_PRINCIPAL);
+      chVTSet(&vt, TIME_MS2I(1000), AvenidaPrincipalSinalVerde, (void*)&vt);
+      break;
+    }
+
+    case AMARELO:
+    {
+      palClearPad(IOPORT2, LED_VERDE_PRINCIPAL);
+      palClearPad(IOPORT4, LED_VERMELHO_PRINCIPAL);
+      palSetPad(IOPORT4, LED_AMARELO_PRINCIPAL);
+      chVTSet(&vt, TIME_MS2I(1000), AvenidaPrincipalSinalAmarelo, (void*)&vt);
+      break;
+    }
+  }  
+}
+
+static void AvenidaPrincipalSinalVerde(void *arg)
+{
+  chSysLockFromISR();
+  
+  counter++;
+
+  while (EVENT == AMBULANCIA_PRINCIPAL)
+    chThdSleepMilliseconds(1);
+
+  if (counter >= 40 && (EVENT == PEDESTRE || EVENT == CARRO_SECUNDARIA))
+  {
+    counter = 0;
+    palClearPad(IOPORT2, LED_VERDE_PRINCIPAL);
+    STATE = PRINCIPAL;
+    LED_PRINCIPAL = AMARELO;
+    chVTReset((virtual_timer_t*)arg);
+  }
+
+  if (counter >= 10 && EVENT == AMBULANCIA_SECUNDARIA)
+  {
+    counter = 0;
+    palClearPad(IOPORT2, LED_VERDE_PRINCIPAL);
+    STATE = PRINCIPAL;
+    LED_PRINCIPAL = AMARELO;
+    chVTReset((virtual_timer_t*)arg);
+  }
+
+  chVTSetI((virtual_timer_t*)arg, TIME_MS2I(1000), AvenidaPrincipalSinalVerde, arg);
+  chSysUnlockFromISR();
+}
+
+static void AvenidaPrincipalSinalAmarelo(void *arg)
+{
+  chSysLockFromISR();
+  
+  counter++;
+
+  if (counter >= 5)
+  {
+    counter = 0;
+    palClearPad(IOPORT2, LED_VERDE_PRINCIPAL);
+    palClearPad(IOPORT4, LED_AMARELO_PRINCIPAL);
+    palSetPad(IOPORT4, LED_VERMELHO_PRINCIPAL);
+    chVTReset((virtual_timer_t*)arg);
+  }
+
+  chVTSetI((virtual_timer_t*)arg, TIME_MS2I(1000), AvenidaPrincipalSinalAmarelo, arg);
+  chSysUnlockFromISR();
 }
