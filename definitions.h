@@ -15,6 +15,10 @@
 #define LED_AMARELO_PRINCIPAL  7 // PD7
 #define LED_VERMELHO_PRINCIPAL 6 // PD6
 
+#define LED_VERDE_SECUNDARIA    5 // PD5
+#define LED_AMARELO_SECUNDARIA  4 // PD4
+#define LED_VERMELHO_SECUNDARIA 3 // PD3
+
 /* Events */
 #define PEDESTRE              EVENT_1
 #define CARRO_SECUNDARIA      EVENT_2
