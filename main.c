@@ -28,10 +28,11 @@ static size_t qsize;
 static mutex_t qmtx;
 static condition_variable_t qempty, qfull;
 static virtual_timer_t vt;
-uint8_t EVENT = 0;
+uint8_t EVENT = 0, BACKUP_EVENT = 0;
 state_via_t STATE = PRINCIPAL;
-state_LED_t LED_PRINCIPAL = VERDE;
+state_LED_t LED_PRINCIPAL = VERDE, LED_SECUNDARIA = VERMELHO;
 uint32_t counter = 0;
+uint8_t amb_sec = 0x00, amb_pri = 0x00;
 
 /*
   * Global Functions
@@ -42,10 +43,13 @@ uint8_t PopBUffer(void);
 int IsBUfferEmpty(void);
 int IsBufferFull(void);
 void PrincipalTimer(void);
+void SecundariaTimer(void);
 
 /* Virtual Timer */
 static void AvenidaPrincipalSinalVerde(void *arg);
 static void AvenidaPrincipalSinalAmarelo(void *arg);
+static void AvenidaSecundariaSinalVerde(void *arg);
+static void AvenidaSecundariaSinalAmarelo(void *arg);
 
 /* 
   * Thread Write Event 
@@ -69,7 +73,7 @@ static THD_FUNCTION(Write_Save_Event, arg)
       PushBUffer(AMBULANCIA_SECUNDARIA);
 
     /* Debouce Delay */
-    chThdSleepMilliseconds(100);
+    chThdSleepMilliseconds(130);
   }
 }
 
@@ -83,7 +87,16 @@ static THD_FUNCTION(Read_Collect_Event, arg)
   while (1)
   {
     if (!IsBUfferEmpty())
+    {
+      BACKUP_EVENT = EVENT;
       EVENT = PopBUffer();
+
+      if (EVENT == AMBULANCIA_PRINCIPAL)
+        amb_pri ^= 1;
+      if (EVENT == AMBULANCIA_SECUNDARIA)
+        amb_sec ^= 1;        
+    }
+
     chThdSleepMilliseconds(1);
   }
 }
@@ -94,7 +107,7 @@ static THD_FUNCTION(Read_Collect_Event, arg)
 static THD_WORKING_AREA(wa_ProcessEvent, 128);
 static THD_FUNCTION(ProcessEvent, arg)
 {
-  state_funcion_t state_funcion[1] = {PrincipalTimer};
+  state_funcion_t state_funcion[] = {PrincipalTimer, SecundariaTimer};
 
   chRegSetThreadName("Process Event");
   while (1)
@@ -106,6 +119,11 @@ static THD_FUNCTION(ProcessEvent, arg)
     
       case PRINCIPAL:
         state_funcion[PRINCIPAL - 1]();
+        STATE = IDLE_ST;
+        break;
+      
+      case SECUNDARIA:
+        state_funcion[SECUNDARIA - 1]();
         STATE = IDLE_ST;
         break;
     }
@@ -151,6 +169,16 @@ int main(void)
 
   palSetPadMode(IOPORT4, LED_VERMELHO_PRINCIPAL, PAL_MODE_OUTPUT_PUSHPULL);
   palClearPad(IOPORT4, LED_VERMELHO_PRINCIPAL);
+
+  /* LEDs Secondary semaphore */
+  palSetPadMode(IOPORT4, LED_VERDE_SECUNDARIA, PAL_MODE_OUTPUT_PUSHPULL);
+  palClearPad(IOPORT4, LED_VERDE_SECUNDARIA);
+
+  palSetPadMode(IOPORT4, LED_AMARELO_SECUNDARIA, PAL_MODE_OUTPUT_PUSHPULL);
+  palClearPad(IOPORT4, LED_AMARELO_SECUNDARIA);
+
+  palSetPadMode(IOPORT4, LED_VERMELHO_SECUNDARIA, PAL_MODE_OUTPUT_PUSHPULL);
+  palSetPad(IOPORT4, LED_VERMELHO_SECUNDARIA);
 
   thd0 = chThdCreateStatic(wa_WriteEvent, sizeof(wa_WriteEvent), NORMALPRIO, Write_Save_Event, NULL);
   thd1 = chThdCreateStatic(wa_ReadEvent, sizeof(wa_ReadEvent), NORMALPRIO, Read_Collect_Event, NULL);
@@ -258,28 +286,30 @@ void PrincipalTimer()
 static void AvenidaPrincipalSinalVerde(void *arg)
 {
   chSysLockFromISR();
-  
-  counter++;
 
-  while (EVENT == AMBULANCIA_PRINCIPAL)
-    chThdSleepMilliseconds(1);
+  if (amb_pri == 0x00)
+  { 
+    palTogglePad(IOPORT2, PORTB_LED1);
+    counter++;
 
-  if (counter >= 40 && (EVENT == PEDESTRE || EVENT == CARRO_SECUNDARIA))
-  {
-    counter = 0;
-    palClearPad(IOPORT2, LED_VERDE_PRINCIPAL);
-    STATE = PRINCIPAL;
-    LED_PRINCIPAL = AMARELO;
-    chVTReset((virtual_timer_t*)arg);
-  }
+    if (counter >= 10 && (EVENT == PEDESTRE || EVENT == CARRO_SECUNDARIA))
+    {
+      counter = 0;
+      palClearPad(IOPORT2, LED_VERDE_PRINCIPAL);
+      STATE = PRINCIPAL;
+      LED_PRINCIPAL = AMARELO;
+      chVTReset((virtual_timer_t*)arg);
+      EVENT = 0;
+    }
 
-  if (counter >= 10 && EVENT == AMBULANCIA_SECUNDARIA)
-  {
-    counter = 0;
-    palClearPad(IOPORT2, LED_VERDE_PRINCIPAL);
-    STATE = PRINCIPAL;
-    LED_PRINCIPAL = AMARELO;
-    chVTReset((virtual_timer_t*)arg);
+    if (counter >= 5 && EVENT == AMBULANCIA_SECUNDARIA)
+    {
+      counter = 0;
+      palClearPad(IOPORT2, LED_VERDE_PRINCIPAL);
+      STATE = PRINCIPAL;
+      LED_PRINCIPAL = AMARELO;
+      chVTReset((virtual_timer_t*)arg);
+    }
   }
 
   chVTSetI((virtual_timer_t*)arg, TIME_MS2I(1000), AvenidaPrincipalSinalVerde, arg);
@@ -292,15 +322,113 @@ static void AvenidaPrincipalSinalAmarelo(void *arg)
   
   counter++;
 
-  if (counter >= 5)
+  if (counter >= 2)
   {
     counter = 0;
     palClearPad(IOPORT2, LED_VERDE_PRINCIPAL);
     palClearPad(IOPORT4, LED_AMARELO_PRINCIPAL);
     palSetPad(IOPORT4, LED_VERMELHO_PRINCIPAL);
+    
+    if (amb_sec == 1)
+    {
+      STATE = SECUNDARIA;
+      LED_SECUNDARIA = VERDE;
+    }
+
+    else
+    {
+      STATE = SECUNDARIA;
+      LED_SECUNDARIA = VERDE;
+    }
+
     chVTReset((virtual_timer_t*)arg);
   }
 
   chVTSetI((virtual_timer_t*)arg, TIME_MS2I(1000), AvenidaPrincipalSinalAmarelo, arg);
+  chSysUnlockFromISR();
+}
+
+/*====================== Avenida Secundaria ===============================*/
+void SecundariaTimer()
+{
+  switch (LED_SECUNDARIA)
+  {
+    case VERDE:
+      palSetPad(IOPORT4, LED_VERDE_SECUNDARIA);
+      palClearPad(IOPORT4, LED_AMARELO_SECUNDARIA);
+      palClearPad(IOPORT4, LED_VERMELHO_SECUNDARIA);
+      chVTSet(&vt, TIME_MS2I(1000), AvenidaSecundariaSinalVerde, (void*)&vt);
+      break;
+    
+    case AMARELO:
+      palClearPad(IOPORT4, LED_VERDE_SECUNDARIA);
+      palSetPad(IOPORT4, LED_AMARELO_SECUNDARIA);
+      palClearPad(IOPORT4, LED_VERMELHO_SECUNDARIA);
+      chVTSet(&vt, TIME_MS2I(1000), AvenidaSecundariaSinalAmarelo, (void*)&vt);
+      break;
+  }
+}
+
+static void AvenidaSecundariaSinalVerde(void *arg)
+{
+  chSysLockFromISR();
+
+  if (amb_sec == 0)
+  {
+    palTogglePad(IOPORT2, PORTB_LED1);
+    counter++;
+
+    if (counter >= 6)
+    {
+      counter = 0;
+      STATE = SECUNDARIA;
+      LED_SECUNDARIA = AMARELO;
+      EVENT = 0;
+      chVTReset((virtual_timer_t*)arg);
+    }
+
+    if (counter >= 5 && EVENT == AMBULANCIA_PRINCIPAL)
+    {
+      counter = 0;
+      palClearPad(IOPORT4, LED_VERDE_SECUNDARIA);
+      STATE = SECUNDARIA;
+      LED_SECUNDARIA = AMARELO;
+      chVTReset((virtual_timer_t*)arg);
+    }
+  }
+
+  chVTSetI((virtual_timer_t*)arg, TIME_MS2I(1000), AvenidaSecundariaSinalVerde, arg);
+  chSysUnlockFromISR();  
+}
+
+static void AvenidaSecundariaSinalAmarelo(void *arg)
+{
+  chSysLockFromISR();
+  
+  counter++;
+
+  if (counter >= 2)
+  {
+    counter = 0;
+    palClearPad(IOPORT4, LED_VERDE_SECUNDARIA);
+    palClearPad(IOPORT4, LED_AMARELO_SECUNDARIA);
+    palSetPad(IOPORT4, LED_VERMELHO_SECUNDARIA);
+
+    if (amb_pri == 1)
+    {
+      STATE = PRINCIPAL;
+      LED_PRINCIPAL = VERDE;
+    }
+
+    else
+    {
+      STATE = PRINCIPAL;
+      LED_PRINCIPAL = VERDE;
+    }
+
+    chVTReset((virtual_timer_t*)arg);
+  }
+
+  chVTSetI((virtual_timer_t*)arg, TIME_MS2I(1000), AvenidaSecundariaSinalAmarelo, arg);
   chSysUnlockFromISR();
 }
