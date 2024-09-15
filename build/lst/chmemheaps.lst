@@ -1304,17 +1304,17 @@
  880               		.file 17 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/oslib/include/chmemheap
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 chmemheaps.c
-     /tmp/ccnRPppT.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccnRPppT.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccnRPppT.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccnRPppT.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccnRPppT.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccnRPppT.s:13     .text.__heap_init:0000000000000000 __heap_init
-     /tmp/ccnRPppT.s:861    .bss.default_heap:0000000000000000 default_heap
-     /tmp/ccnRPppT.s:46     .text.chHeapObjectInit:0000000000000000 chHeapObjectInit
-     /tmp/ccnRPppT.s:107    .text.chHeapAllocAligned:0000000000000000 chHeapAllocAligned
-     /tmp/ccnRPppT.s:515    .text.chHeapFree:0000000000000000 chHeapFree
-     /tmp/ccnRPppT.s:701    .text.chHeapStatus:0000000000000000 chHeapStatus
+     /tmp/ccmrETMW.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccmrETMW.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccmrETMW.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccmrETMW.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccmrETMW.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccmrETMW.s:13     .text.__heap_init:0000000000000000 __heap_init
+     /tmp/ccmrETMW.s:861    .bss.default_heap:0000000000000000 default_heap
+     /tmp/ccmrETMW.s:46     .text.chHeapObjectInit:0000000000000000 chHeapObjectInit
+     /tmp/ccmrETMW.s:107    .text.chHeapAllocAligned:0000000000000000 chHeapAllocAligned
+     /tmp/ccmrETMW.s:515    .text.chHeapFree:0000000000000000 chHeapFree
+     /tmp/ccmrETMW.s:701    .text.chHeapStatus:0000000000000000 chHeapStatus
 
 UNDEFINED SYMBOLS
 chCoreAllocFromTop

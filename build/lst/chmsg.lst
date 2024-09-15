@@ -1946,16 +1946,16 @@
  455               		.file 18 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chschd.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 chmsg.c
-     /tmp/ccDujEOw.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccDujEOw.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccDujEOw.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccDujEOw.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccDujEOw.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccDujEOw.s:13     .text.chMsgSend:0000000000000000 chMsgSend
-     /tmp/ccDujEOw.s:126    .text.chMsgWaitS:0000000000000000 chMsgWaitS
-     /tmp/ccDujEOw.s:215    .text.chMsgWaitTimeoutS:0000000000000000 chMsgWaitTimeoutS
-     /tmp/ccDujEOw.s:315    .text.chMsgPollS:0000000000000000 chMsgPollS
-     /tmp/ccDujEOw.s:392    .text.chMsgRelease:0000000000000000 chMsgRelease
+     /tmp/ccPT9eYE.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccPT9eYE.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccPT9eYE.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccPT9eYE.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccPT9eYE.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccPT9eYE.s:13     .text.chMsgSend:0000000000000000 chMsgSend
+     /tmp/ccPT9eYE.s:126    .text.chMsgWaitS:0000000000000000 chMsgWaitS
+     /tmp/ccPT9eYE.s:215    .text.chMsgWaitTimeoutS:0000000000000000 chMsgWaitTimeoutS
+     /tmp/ccPT9eYE.s:315    .text.chMsgPollS:0000000000000000 chMsgPollS
+     /tmp/ccPT9eYE.s:392    .text.chMsgRelease:0000000000000000 chMsgRelease
 
 UNDEFINED SYMBOLS
 ch0

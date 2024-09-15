@@ -1264,13 +1264,13 @@
  208               		.file 23 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 hal_buffered_serial.c
-     /tmp/ccZ3jEbY.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccZ3jEbY.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccZ3jEbY.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccZ3jEbY.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccZ3jEbY.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccZ3jEbY.s:13     .text.bsIncomingDataI:0000000000000000 bsIncomingDataI
-     /tmp/ccZ3jEbY.s:114    .text.bsRequestDataI:0000000000000000 bsRequestDataI
+     /tmp/ccGNbO2N.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccGNbO2N.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccGNbO2N.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccGNbO2N.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccGNbO2N.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccGNbO2N.s:13     .text.bsIncomingDataI:0000000000000000 bsIncomingDataI
+     /tmp/ccGNbO2N.s:114    .text.bsRequestDataI:0000000000000000 bsRequestDataI
 
 UNDEFINED SYMBOLS
 iqPutI
