@@ -1025,7 +1025,7 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x0000000000000000     0x22be
+.text           0x0000000000000000     0x24e0
  *(.vectors)
  .vectors       0x0000000000000000       0x68 /usr/lib/gcc/avr/7.3.0/../../../avr/lib/avr5/crtatmega328p.o
                 0x0000000000000000                __vectors
@@ -1311,73 +1311,80 @@ END GROUP
  .text._port_thread_start
                 0x0000000000001648        0xc build/obj/chcore.o
                 0x0000000000001648                _port_thread_start
+ .text.AvenidaSecundariaSinalAmarelo
+                0x0000000000001654       0x86 build/obj/main.o
  .text.AvenidaPrincipalSinalAmarelo
-                0x0000000000001654       0x7c build/obj/main.o
+                0x00000000000016da       0x86 build/obj/main.o
+ .text.AvenidaSecundariaSinalVerde
+                0x0000000000001760       0xe4 build/obj/main.o
  .text.AvenidaPrincipalSinalVerde
-                0x00000000000016d0      0x102 build/obj/main.o
+                0x0000000000001844       0xe0 build/obj/main.o
  .text.InitBuffer
-                0x00000000000017d2       0x30 build/obj/main.o
-                0x00000000000017d2                InitBuffer
+                0x0000000000001924       0x30 build/obj/main.o
+                0x0000000000001924                InitBuffer
  .text.startup.main
-                0x0000000000001802       0xcc build/obj/main.o
-                0x0000000000001802                main
+                0x0000000000001954       0xf8 build/obj/main.o
+                0x0000000000001954                main
  .text.PushBUffer
-                0x00000000000018ce       0x72 build/obj/main.o
-                0x00000000000018ce                PushBUffer
+                0x0000000000001a4c       0x72 build/obj/main.o
+                0x0000000000001a4c                PushBUffer
  .text.Write_Save_Event
-                0x0000000000001940       0x4e build/obj/main.o
+                0x0000000000001abe       0x4e build/obj/main.o
  .text.PopBUffer
-                0x000000000000198e       0x6c build/obj/main.o
-                0x000000000000198e                PopBUffer
+                0x0000000000001b0c       0x6c build/obj/main.o
+                0x0000000000001b0c                PopBUffer
  .text.Read_Collect_Event
-                0x00000000000019fa       0x2c build/obj/main.o
+                0x0000000000001b78       0x54 build/obj/main.o
  .text.PrincipalTimer
-                0x0000000000001a26       0x72 build/obj/main.o
-                0x0000000000001a26                PrincipalTimer
+                0x0000000000001bcc       0x72 build/obj/main.o
+                0x0000000000001bcc                PrincipalTimer
+ .text.SecundariaTimer
+                0x0000000000001c3e       0x72 build/obj/main.o
+                0x0000000000001c3e                SecundariaTimer
  .text.ProcessEvent
-                0x0000000000001a98       0x28 build/obj/main.o
+                0x0000000000001cb0       0x32 build/obj/main.o
  .text.avr-libc
-                0x0000000000001ac0      0x220 /usr/lib/gcc/avr/7.3.0/../../../avr/lib/avr5/libprintf_min.a(vfprintf_min.o)
-                0x0000000000001ac0                vfprintf
+                0x0000000000001ce2      0x220 /usr/lib/gcc/avr/7.3.0/../../../avr/lib/avr5/libprintf_min.a(vfprintf_min.o)
+                0x0000000000001ce2                vfprintf
  .text.avr-libc
-                0x0000000000001ce0      0x36a /usr/lib/gcc/avr/7.3.0/../../../avr/lib/avr5/libscanf_min.a(vfscanf_min.o)
-                0x0000000000001e74                vfscanf
+                0x0000000000001f02      0x36a /usr/lib/gcc/avr/7.3.0/../../../avr/lib/avr5/libscanf_min.a(vfscanf_min.o)
+                0x0000000000002096                vfscanf
  .text.libgcc.prologue
-                0x000000000000204a       0x38 /usr/lib/gcc/avr/7.3.0/avr5/libgcc.a(_prologue.o)
-                0x000000000000204a                __prologue_saves__
+                0x000000000000226c       0x38 /usr/lib/gcc/avr/7.3.0/avr5/libgcc.a(_prologue.o)
+                0x000000000000226c                __prologue_saves__
  .text.libgcc.prologue
-                0x0000000000002082       0x36 /usr/lib/gcc/avr/7.3.0/avr5/libgcc.a(_epilogue.o)
-                0x0000000000002082                __epilogue_restores__
+                0x00000000000022a4       0x36 /usr/lib/gcc/avr/7.3.0/avr5/libgcc.a(_epilogue.o)
+                0x00000000000022a4                __epilogue_restores__
  .text.avr-libc
-                0x00000000000020b8       0x10 /usr/lib/gcc/avr/7.3.0/../../../avr/lib/avr5/libc.a(isspace.o)
-                0x00000000000020b8                isspace
+                0x00000000000022da       0x10 /usr/lib/gcc/avr/7.3.0/../../../avr/lib/avr5/libc.a(isspace.o)
+                0x00000000000022da                isspace
  .text.avr-libc
-                0x00000000000020c8       0x16 /usr/lib/gcc/avr/7.3.0/../../../avr/lib/avr5/libc.a(strchr_P.o)
-                0x00000000000020c8                strchr_P
+                0x00000000000022ea       0x16 /usr/lib/gcc/avr/7.3.0/../../../avr/lib/avr5/libc.a(strchr_P.o)
+                0x00000000000022ea                strchr_P
  .text.avr-libc
-                0x00000000000020de       0x12 /usr/lib/gcc/avr/7.3.0/../../../avr/lib/avr5/libc.a(memcpy.o)
-                0x00000000000020de                memcpy
+                0x0000000000002300       0x12 /usr/lib/gcc/avr/7.3.0/../../../avr/lib/avr5/libc.a(memcpy.o)
+                0x0000000000002300                memcpy
  .text.avr-libc
-                0x00000000000020f0       0x78 /usr/lib/gcc/avr/7.3.0/../../../avr/lib/avr5/libc.a(fgetc.o)
-                0x00000000000020f0                fgetc
+                0x0000000000002312       0x78 /usr/lib/gcc/avr/7.3.0/../../../avr/lib/avr5/libc.a(fgetc.o)
+                0x0000000000002312                fgetc
  .text.avr-libc
-                0x0000000000002168       0x60 /usr/lib/gcc/avr/7.3.0/../../../avr/lib/avr5/libc.a(fputc.o)
-                0x0000000000002168                fputc
+                0x000000000000238a       0x60 /usr/lib/gcc/avr/7.3.0/../../../avr/lib/avr5/libc.a(fputc.o)
+                0x000000000000238a                fputc
  .text.avr-libc
-                0x00000000000021c8       0x30 /usr/lib/gcc/avr/7.3.0/../../../avr/lib/avr5/libc.a(ungetc.o)
-                0x00000000000021c8                ungetc
+                0x00000000000023ea       0x30 /usr/lib/gcc/avr/7.3.0/../../../avr/lib/avr5/libc.a(ungetc.o)
+                0x00000000000023ea                ungetc
  .text.avr-libc
-                0x00000000000021f8       0xbc /usr/lib/gcc/avr/7.3.0/../../../avr/lib/avr5/libc.a(ultoa_invert.o)
-                0x00000000000021f8                __ultoa_invert
+                0x000000000000241a       0xbc /usr/lib/gcc/avr/7.3.0/../../../avr/lib/avr5/libc.a(ultoa_invert.o)
+                0x000000000000241a                __ultoa_invert
  .text.avr-libc
-                0x00000000000022b4        0x6 /usr/lib/gcc/avr/7.3.0/../../../avr/lib/avr5/libc.a(cty_isfalse.o)
-                0x00000000000022b4                __ctype_isfalse
-                0x00000000000022b8                __ctype_istrue
-                0x00000000000022ba                . = ALIGN (0x2)
+                0x00000000000024d6        0x6 /usr/lib/gcc/avr/7.3.0/../../../avr/lib/avr5/libc.a(cty_isfalse.o)
+                0x00000000000024d6                __ctype_isfalse
+                0x00000000000024da                __ctype_istrue
+                0x00000000000024dc                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x00000000000022ba        0x0 /usr/lib/gcc/avr/7.3.0/avr5/libgcc.a(_exit.o)
-                0x00000000000022ba                exit
-                0x00000000000022ba                _exit
+ .fini9         0x00000000000024dc        0x0 /usr/lib/gcc/avr/7.3.0/avr5/libgcc.a(_exit.o)
+                0x00000000000024dc                exit
+                0x00000000000024dc                _exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -1396,48 +1403,50 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x00000000000022ba        0x4 /usr/lib/gcc/avr/7.3.0/avr5/libgcc.a(_exit.o)
+ .fini0         0x00000000000024dc        0x4 /usr/lib/gcc/avr/7.3.0/avr5/libgcc.a(_exit.o)
  *(.fini0)
-                0x00000000000022be                _etext = .
+                0x00000000000024e0                _etext = .
 
-.data           0x0000000000800100       0x8e carga com endereço 0x00000000000022be
+.data           0x0000000000800100       0x8e carga com endereço 0x00000000000024e0
                 0x0000000000800100                PROVIDE (__data_start, .)
  *(.data)
  *(.data*)
- .data.STATE    0x0000000000800100        0x1 build/obj/main.o
-                0x0000000000800100                STATE
+ .data.LED_SECUNDARIA
+                0x0000000000800100        0x1 build/obj/main.o
+                0x0000000000800100                LED_SECUNDARIA
+ .data.STATE    0x0000000000800101        0x1 build/obj/main.o
+                0x0000000000800101                STATE
  *(.gnu.linkonce.d*)
  *(.rodata)
  *(.rodata*)
- .rodata.vmt    0x0000000000800101       0x14 build/obj/hal_serial.o
+ .rodata.vmt    0x0000000000800102       0x14 build/obj/hal_serial.o
  .rodata.pal_default_config
-                0x0000000000800115        0x6 build/obj/board.o
-                0x0000000000800115                pal_default_config
+                0x0000000000800116        0x6 build/obj/board.o
+                0x0000000000800116                pal_default_config
  .rodata.str1.1
-                0x000000000080011b        0x3 build/obj/chsys.o
+                0x000000000080011c        0x3 build/obj/chsys.o
  .rodata.ch_core0_cfg
-                0x000000000080011e        0x6 build/obj/chsys.o
-                0x000000000080011e                ch_core0_cfg
+                0x000000000080011f        0x6 build/obj/chsys.o
+                0x000000000080011f                ch_core0_cfg
  .rodata.chInstanceObjectInit.str1.1
-                0x0000000000800124        0x5 build/obj/chinstances.o
+                0x0000000000800125        0x5 build/obj/chinstances.o
  .rodata.chThdCreateStatic.str1.1
-                0x0000000000800129        0x7 build/obj/chthreads.o
+                0x000000000080012a        0x7 build/obj/chthreads.o
  .rodata.ch_debug
-                0x0000000000800130       0x2b build/obj/chregistry.o
-                0x0000000000800130                ch_debug
+                0x0000000000800131       0x2b build/obj/chregistry.o
+                0x0000000000800131                ch_debug
  .rodata.Write_Save_Event.str1.1
-                0x000000000080015b       0x11 build/obj/main.o
+                0x000000000080015c       0x11 build/obj/main.o
  .rodata.Read_Collect_Event.str1.1
-                0x000000000080016c       0x13 build/obj/main.o
+                0x000000000080016d       0x13 build/obj/main.o
  .rodata.ProcessEvent.str1.1
-                0x000000000080017f        0xe build/obj/main.o
+                0x0000000000800180        0xe build/obj/main.o
  *(.gnu.linkonce.r*)
                 0x000000000080018e                . = ALIGN (0x2)
- *fill*         0x000000000080018d        0x1 
                 0x000000000080018e                _edata = .
                 0x000000000080018e                PROVIDE (__data_end, .)
 
-.bss            0x000000000080018e      0x55e
+.bss            0x000000000080018e      0x561
                 0x000000000080018e                PROVIDE (__bss_start, .)
  *(.bss)
  *(.bss*)
@@ -1453,40 +1462,47 @@ END GROUP
                 0x000000000080036a       0xe3 build/obj/main.o
  .bss.wa_WriteEvent
                 0x000000000080044d       0xe3 build/obj/main.o
- .bss.counter   0x0000000000800530        0x4 build/obj/main.o
-                0x0000000000800530                counter
+ .bss.amb_pri   0x0000000000800530        0x1 build/obj/main.o
+                0x0000000000800530                amb_pri
+ .bss.amb_sec   0x0000000000800531        0x1 build/obj/main.o
+                0x0000000000800531                amb_sec
+ .bss.counter   0x0000000000800532        0x4 build/obj/main.o
+                0x0000000000800532                counter
  .bss.LED_PRINCIPAL
-                0x0000000000800534        0x1 build/obj/main.o
-                0x0000000000800534                LED_PRINCIPAL
- .bss.EVENT     0x0000000000800535        0x1 build/obj/main.o
-                0x0000000000800535                EVENT
- .bss.vt        0x0000000000800536        0xc build/obj/main.o
- .bss.qfull     0x0000000000800542        0x4 build/obj/main.o
- .bss.qempty    0x0000000000800546        0x4 build/obj/main.o
- .bss.qmtx      0x000000000080054a        0x8 build/obj/main.o
- .bss.qsize     0x0000000000800552        0x2 build/obj/main.o
- .bss.wrp       0x0000000000800554        0x2 build/obj/main.o
- .bss.rdp       0x0000000000800556        0x2 build/obj/main.o
- .bss.queue     0x0000000000800558      0x100 build/obj/main.o
+                0x0000000000800536        0x1 build/obj/main.o
+                0x0000000000800536                LED_PRINCIPAL
+ .bss.BACKUP_EVENT
+                0x0000000000800537        0x1 build/obj/main.o
+                0x0000000000800537                BACKUP_EVENT
+ .bss.EVENT     0x0000000000800538        0x1 build/obj/main.o
+                0x0000000000800538                EVENT
+ .bss.vt        0x0000000000800539        0xc build/obj/main.o
+ .bss.qfull     0x0000000000800545        0x4 build/obj/main.o
+ .bss.qempty    0x0000000000800549        0x4 build/obj/main.o
+ .bss.qmtx      0x000000000080054d        0x8 build/obj/main.o
+ .bss.qsize     0x0000000000800555        0x2 build/obj/main.o
+ .bss.wrp       0x0000000000800557        0x2 build/obj/main.o
+ .bss.rdp       0x0000000000800559        0x2 build/obj/main.o
+ .bss.queue     0x000000000080055b      0x100 build/obj/main.o
  *(COMMON)
- COMMON         0x0000000000800658       0x49 build/obj/hal_serial_lld.o
-                0x0000000000800658                SD1
- COMMON         0x00000000008006a1       0x46 build/obj/chsys.o
-                0x00000000008006a1                ch_system
-                0x00000000008006a4                ch0
- COMMON         0x00000000008006e7        0x4 build/obj/chmemcore.o
-                0x00000000008006e7                ch_memcore
- COMMON         0x00000000008006eb        0x1 build/obj/chcore.o
-                0x00000000008006eb                __avr_in_isr
-                0x00000000008006ec                PROVIDE (__bss_end, .)
-                0x00000000000022be                __data_load_start = LOADADDR (.data)
-                0x000000000000234c                __data_load_end = (__data_load_start + SIZEOF (.data))
+ COMMON         0x000000000080065b       0x49 build/obj/hal_serial_lld.o
+                0x000000000080065b                SD1
+ COMMON         0x00000000008006a4       0x46 build/obj/chsys.o
+                0x00000000008006a4                ch_system
+                0x00000000008006a7                ch0
+ COMMON         0x00000000008006ea        0x4 build/obj/chmemcore.o
+                0x00000000008006ea                ch_memcore
+ COMMON         0x00000000008006ee        0x1 build/obj/chcore.o
+                0x00000000008006ee                __avr_in_isr
+                0x00000000008006ef                PROVIDE (__bss_end, .)
+                0x00000000000024e0                __data_load_start = LOADADDR (.data)
+                0x000000000000256e                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x00000000008006ec        0x0
+.noinit         0x00000000008006ef        0x0
                 [!provide]                        PROVIDE (__noinit_start, .)
  *(.noinit*)
                 [!provide]                        PROVIDE (__noinit_end, .)
-                0x00000000008006ec                _end = .
+                0x00000000008006ef                _end = .
                 [!provide]                        PROVIDE (__heap_start, .)
 
 .eeprom         0x0000000000810000        0x0
@@ -1577,7 +1593,7 @@ END GROUP
 .debug_sfnames
  *(.debug_sfnames)
 
-.debug_aranges  0x0000000000000000      0x760
+.debug_aranges  0x0000000000000000      0x778
  *(.debug_aranges)
  .debug_aranges
                 0x0000000000000000       0x20 build/obj/hal.o
@@ -1622,12 +1638,12 @@ END GROUP
  .debug_aranges
                 0x00000000000006c0       0x28 build/obj/chcore.o
  .debug_aranges
-                0x00000000000006e8       0x78 build/obj/main.o
+                0x00000000000006e8       0x90 build/obj/main.o
 
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x0000000000000000    0x1af72
+.debug_info     0x0000000000000000    0x1b5fd
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x0000000000000000      0x5f4 /usr/lib/gcc/avr/7.3.0/../../../avr/lib/avr5/crtatmega328p.o
  .debug_info    0x00000000000005f4      0xfa9 build/obj/hal.o
@@ -1651,9 +1667,9 @@ END GROUP
  .debug_info    0x000000000001657c      0xe58 build/obj/chmemcore.o
  .debug_info    0x00000000000173d4      0xf55 build/obj/chmemheaps.o
  .debug_info    0x0000000000018329      0xb4e build/obj/chcore.o
- .debug_info    0x0000000000018e77     0x20fb build/obj/main.o
+ .debug_info    0x0000000000018e77     0x2786 build/obj/main.o
 
-.debug_abbrev   0x0000000000000000     0x4c0f
+.debug_abbrev   0x0000000000000000     0x4c13
  *(.debug_abbrev)
  .debug_abbrev  0x0000000000000000      0x5a2 /usr/lib/gcc/avr/7.3.0/../../../avr/lib/avr5/crtatmega328p.o
  .debug_abbrev  0x00000000000005a2      0x1e3 build/obj/hal.o
@@ -1677,9 +1693,9 @@ END GROUP
  .debug_abbrev  0x0000000000004025      0x2cf build/obj/chmemcore.o
  .debug_abbrev  0x00000000000042f4      0x2ea build/obj/chmemheaps.o
  .debug_abbrev  0x00000000000045de      0x1db build/obj/chcore.o
- .debug_abbrev  0x00000000000047b9      0x456 build/obj/main.o
+ .debug_abbrev  0x00000000000047b9      0x45a build/obj/main.o
 
-.debug_line     0x0000000000000000     0x827c
+.debug_line     0x0000000000000000     0x84e2
  *(.debug_line .debug_line.* .debug_line_end)
  .debug_line    0x0000000000000000       0x1a /usr/lib/gcc/avr/7.3.0/../../../avr/lib/avr5/crtatmega328p.o
  .debug_line    0x000000000000001a      0x56e build/obj/hal.o
@@ -1703,9 +1719,9 @@ END GROUP
  .debug_line    0x0000000000006c87      0x440 build/obj/chmemcore.o
  .debug_line    0x00000000000070c7      0x568 build/obj/chmemheaps.o
  .debug_line    0x000000000000762f      0x3a7 build/obj/chcore.o
- .debug_line    0x00000000000079d6      0x8a6 build/obj/main.o
+ .debug_line    0x00000000000079d6      0xb0c build/obj/main.o
 
-.debug_frame    0x0000000000000000     0x14b4
+.debug_frame    0x0000000000000000     0x14fc
  *(.debug_frame)
  .debug_frame   0x0000000000000000       0x24 build/obj/hal.o
  .debug_frame   0x0000000000000024       0x24 build/obj/hal_st.o
@@ -1728,9 +1744,9 @@ END GROUP
  .debug_frame   0x00000000000011d4       0x74 build/obj/chmemcore.o
  .debug_frame   0x0000000000001248      0x124 build/obj/chmemheaps.o
  .debug_frame   0x000000000000136c       0x34 build/obj/chcore.o
- .debug_frame   0x00000000000013a0      0x114 build/obj/main.o
+ .debug_frame   0x00000000000013a0      0x15c build/obj/main.o
 
-.debug_str      0x0000000000000000     0x24b2
+.debug_str      0x0000000000000000     0x2517
  *(.debug_str)
  .debug_str     0x0000000000000000      0x208 /usr/lib/gcc/avr/7.3.0/../../../avr/lib/avr5/crtatmega328p.o
  .debug_str     0x0000000000000208      0x8cf build/obj/hal.o
@@ -1775,10 +1791,10 @@ END GROUP
                                         0x8d0 (tamanho antes de relaxar)
  .debug_str     0x000000000000223a       0x6e build/obj/chcore.o
                                         0x7f1 (tamanho antes de relaxar)
- .debug_str     0x00000000000022a8      0x20a build/obj/main.o
-                                        0xd64 (tamanho antes de relaxar)
+ .debug_str     0x00000000000022a8      0x26f build/obj/main.o
+                                        0xdda (tamanho antes de relaxar)
 
-.debug_loc      0x0000000000000000     0x6c0b
+.debug_loc      0x0000000000000000     0x6f1b
  *(.debug_loc)
  .debug_loc     0x0000000000000000     0x1245 build/obj/hal_queues.o
  .debug_loc     0x0000000000001245      0x991 build/obj/hal_serial.o
@@ -1796,7 +1812,7 @@ END GROUP
  .debug_loc     0x0000000000005163      0x9c5 build/obj/chevents.o
  .debug_loc     0x0000000000005b28      0x38d build/obj/chmemcore.o
  .debug_loc     0x0000000000005eb5      0x866 build/obj/chmemheaps.o
- .debug_loc     0x000000000000671b      0x4f0 build/obj/main.o
+ .debug_loc     0x000000000000671b      0x800 build/obj/main.o
 
 .debug_macinfo
  *(.debug_macinfo)
@@ -1816,7 +1832,7 @@ END GROUP
 .debug_pubtypes
  *(.debug_pubtypes)
 
-.debug_ranges   0x0000000000000000      0xa80
+.debug_ranges   0x0000000000000000      0xac8
  *(.debug_ranges)
  .debug_ranges  0x0000000000000000       0x10 build/obj/hal.o
  .debug_ranges  0x0000000000000010       0x10 build/obj/hal_st.o
@@ -1839,7 +1855,7 @@ END GROUP
  .debug_ranges  0x00000000000008b8       0x98 build/obj/chmemcore.o
  .debug_ranges  0x0000000000000950       0x50 build/obj/chmemheaps.o
  .debug_ranges  0x00000000000009a0       0x18 build/obj/chcore.o
- .debug_ranges  0x00000000000009b8       0xc8 build/obj/main.o
+ .debug_ranges  0x00000000000009b8      0x110 build/obj/main.o
 
 .debug_macro
  *(.debug_macro)
@@ -1849,17 +1865,20 @@ LOAD linker stubs
 Tabela de referência cruzada
 
 Símbolo                                          Arquivo
+BACKUP_EVENT                                      build/obj/main.o
 EVENT                                             build/obj/main.o
 InitBuffer                                        build/obj/main.o
 IsBUfferEmpty                                     build/obj/main.o
 IsBufferFull                                      build/obj/main.o
 LED_PRINCIPAL                                     build/obj/main.o
+LED_SECUNDARIA                                    build/obj/main.o
 PopBUffer                                         build/obj/main.o
 PrincipalTimer                                    build/obj/main.o
 PushBUffer                                        build/obj/main.o
 SD1                                               build/obj/hal_serial_lld.o
                                                   build/obj/main.o
 STATE                                             build/obj/main.o
+SecundariaTimer                                   build/obj/main.o
 __DATA_REGION_LENGTH__                            /usr/lib/gcc/avr/7.3.0/../../../avr/lib/avr5/crtatmega328p.o
 __DATA_REGION_ORIGIN__                            /usr/lib/gcc/avr/7.3.0/../../../avr/lib/avr5/crtatmega328p.o
 __EEPROM_REGION_LENGTH__                          /usr/lib/gcc/avr/7.3.0/../../../avr/lib/avr5/crtatmega328p.o
@@ -1971,6 +1990,8 @@ _port_switch                                      build/obj/chcore.o
                                                   build/obj/chschd.o
 _port_thread_start                                build/obj/chcore.o
                                                   build/obj/chthreads.o
+amb_pri                                           build/obj/main.o
+amb_sec                                           build/obj/main.o
 boardInit                                         build/obj/board.o
                                                   build/obj/hal.o
 bsIncomingDataI                                   build/obj/hal_buffered_serial.o

@@ -7,9 +7,9 @@
    7               		.text
    8               	.Ltext0:
    9               		.cfi_sections	.debug_frame
-  10               		.section	.text.AvenidaPrincipalSinalAmarelo,"ax",@progbits
-  12               	AvenidaPrincipalSinalAmarelo:
-  13               	.LFB250:
+  10               		.section	.text.AvenidaSecundariaSinalAmarelo,"ax",@progbits
+  12               	AvenidaSecundariaSinalAmarelo:
+  13               	.LFB253:
   14               		.file 1 "main.c"
    1:main.c        **** /*
    2:main.c        ****     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
@@ -41,267 +41,382 @@
   28:main.c        **** static mutex_t qmtx;
   29:main.c        **** static condition_variable_t qempty, qfull;
   30:main.c        **** static virtual_timer_t vt;
-  31:main.c        **** uint8_t EVENT = 0;
+  31:main.c        **** uint8_t EVENT = 0, BACKUP_EVENT = 0;
   32:main.c        **** state_via_t STATE = PRINCIPAL;
-  33:main.c        **** state_LED_t LED_PRINCIPAL = VERDE;
+  33:main.c        **** state_LED_t LED_PRINCIPAL = VERDE, LED_SECUNDARIA = VERMELHO;
   34:main.c        **** uint32_t counter = 0;
-  35:main.c        **** 
-  36:main.c        **** /*
-  37:main.c        ****   * Global Functions
-  38:main.c        **** */
-  39:main.c        **** void InitBuffer(void);
-  40:main.c        **** void PushBUffer(msg_t msg);
-  41:main.c        **** uint8_t PopBUffer(void);
-  42:main.c        **** int IsBUfferEmpty(void);
-  43:main.c        **** int IsBufferFull(void);
-  44:main.c        **** void PrincipalTimer(void);
-  45:main.c        **** 
-  46:main.c        **** /* Virtual Timer */
-  47:main.c        **** static void AvenidaPrincipalSinalVerde(void *arg);
-  48:main.c        **** static void AvenidaPrincipalSinalAmarelo(void *arg);
-  49:main.c        **** 
-  50:main.c        **** /* 
-  51:main.c        ****   * Thread Write Event 
-  52:main.c        **** */
-  53:main.c        **** static THD_WORKING_AREA(wa_WriteEvent, 128);
-  54:main.c        **** static THD_FUNCTION(Write_Save_Event, arg)
-  55:main.c        **** {
-  56:main.c        ****   chRegSetThreadName("Save/Write Event");
-  57:main.c        ****   while (1)
-  58:main.c        ****   {
-  59:main.c        ****     if (palReadPad(IOPORT2, PEDESTRE) == PAL_LOW)
-  60:main.c        ****       PushBUffer(PEDESTRE);
-  61:main.c        **** 
-  62:main.c        ****     if (palReadPad(IOPORT2, CARRO_SECUNDARIA) == PAL_LOW)
-  63:main.c        ****       PushBUffer(CARRO_SECUNDARIA);
-  64:main.c        **** 
-  65:main.c        ****     if (palReadPad(IOPORT2, AMBULANCIA_PRINCIPAL) == PAL_LOW)
-  66:main.c        ****       PushBUffer(AMBULANCIA_PRINCIPAL);
-  67:main.c        **** 
-  68:main.c        ****     if (palReadPad(IOPORT2, AMBULANCIA_SECUNDARIA) == PAL_LOW)
-  69:main.c        ****       PushBUffer(AMBULANCIA_SECUNDARIA);
-  70:main.c        **** 
-  71:main.c        ****     /* Debouce Delay */
-  72:main.c        ****     chThdSleepMilliseconds(100);
-  73:main.c        ****   }
-  74:main.c        **** }
-  75:main.c        **** 
-  76:main.c        **** /* 
-  77:main.c        ****   * Thread Read Event
-  78:main.c        **** */
-  79:main.c        **** static THD_WORKING_AREA(wa_ReadEvent, 128);
-  80:main.c        **** static THD_FUNCTION(Read_Collect_Event, arg)
-  81:main.c        **** {
-  82:main.c        ****   chRegSetThreadName("Read/Collect Event");
-  83:main.c        ****   while (1)
-  84:main.c        ****   {
-  85:main.c        ****     if (!IsBUfferEmpty())
-  86:main.c        ****       EVENT = PopBUffer();
-  87:main.c        ****     chThdSleepMilliseconds(1);
-  88:main.c        ****   }
-  89:main.c        **** }
-  90:main.c        **** 
-  91:main.c        **** /* 
-  92:main.c        ****   * Thread Process Event 
-  93:main.c        **** */
-  94:main.c        **** static THD_WORKING_AREA(wa_ProcessEvent, 128);
-  95:main.c        **** static THD_FUNCTION(ProcessEvent, arg)
-  96:main.c        **** {
-  97:main.c        ****   state_funcion_t state_funcion[1] = {PrincipalTimer};
-  98:main.c        **** 
-  99:main.c        ****   chRegSetThreadName("Process Event");
- 100:main.c        ****   while (1)
- 101:main.c        ****   {
- 102:main.c        ****     switch (STATE)
- 103:main.c        ****     {
- 104:main.c        ****       case IDLE_ST:
- 105:main.c        ****         break;
- 106:main.c        ****     
- 107:main.c        ****       case PRINCIPAL:
- 108:main.c        ****         state_funcion[PRINCIPAL - 1]();
- 109:main.c        ****         STATE = IDLE_ST;
- 110:main.c        ****         break;
- 111:main.c        ****     }
- 112:main.c        **** 
- 113:main.c        ****     chThdSleepMilliseconds(1);
- 114:main.c        ****   }
- 115:main.c        **** }
- 116:main.c        **** 
- 117:main.c        **** /*
- 118:main.c        ****  * Application entry point.
- 119:main.c        ****  */
- 120:main.c        **** int main(void) 
- 121:main.c        **** {
- 122:main.c        ****   thread_t *thd0 = 0, *thd1 = 0, *thd2 = 0;
- 123:main.c        ****   SerialConfig Serial_Configuration = {.sc_brr = UBRR2x(115200), .sc_bits_per_char = USART_CHAR_SIZ
- 124:main.c        **** 
- 125:main.c        ****   InitBuffer();
- 126:main.c        ****   chVTObjectInit(&vt);
- 127:main.c        ****   /*
- 128:main.c        ****    * System initializations.
- 129:main.c        ****    * - HAL initialization, this also initializes the configured device drivers
- 130:main.c        ****    *   and performs the board-specific initializations.
- 131:main.c        ****    * - Kernel initialization, the main() function becomes a thread and the
- 132:main.c        ****    *   RTOS is active.
- 133:main.c        ****    */
- 134:main.c        ****   halInit();
- 135:main.c        ****   chSysInit();
- 136:main.c        **** 
- 137:main.c        ****   sdStart(&SD1, &Serial_Configuration);
- 138:main.c        **** 
- 139:main.c        ****   /* Buttons */
- 140:main.c        ****   palSetPadMode(IOPORT2, PEDESTRE, PAL_MODE_INPUT_PULLUP);
- 141:main.c        ****   palSetPadMode(IOPORT2, CARRO_SECUNDARIA, PAL_MODE_INPUT_PULLUP);
- 142:main.c        ****   palSetPadMode(IOPORT2, AMBULANCIA_PRINCIPAL, PAL_MODE_INPUT_PULLUP);
- 143:main.c        ****   palSetPadMode(IOPORT2, AMBULANCIA_SECUNDARIA, PAL_MODE_INPUT_PULLUP);  
- 144:main.c        **** 
- 145:main.c        ****   /* LEDs main semaphore */
- 146:main.c        ****   palSetPadMode(IOPORT2, LED_VERDE_PRINCIPAL, PAL_MODE_OUTPUT_PUSHPULL);
- 147:main.c        ****   palClearPad(IOPORT2, LED_VERDE_PRINCIPAL);
- 148:main.c        **** 
- 149:main.c        ****   palSetPadMode(IOPORT4, LED_AMARELO_PRINCIPAL, PAL_MODE_OUTPUT_PUSHPULL);
- 150:main.c        ****   palClearPad(IOPORT4, LED_AMARELO_PRINCIPAL);
- 151:main.c        **** 
- 152:main.c        ****   palSetPadMode(IOPORT4, LED_VERMELHO_PRINCIPAL, PAL_MODE_OUTPUT_PUSHPULL);
- 153:main.c        ****   palClearPad(IOPORT4, LED_VERMELHO_PRINCIPAL);
+  35:main.c        **** uint8_t amb_sec = 0x00, amb_pri = 0x00;
+  36:main.c        **** 
+  37:main.c        **** /*
+  38:main.c        ****   * Global Functions
+  39:main.c        **** */
+  40:main.c        **** void InitBuffer(void);
+  41:main.c        **** void PushBUffer(msg_t msg);
+  42:main.c        **** uint8_t PopBUffer(void);
+  43:main.c        **** int IsBUfferEmpty(void);
+  44:main.c        **** int IsBufferFull(void);
+  45:main.c        **** void PrincipalTimer(void);
+  46:main.c        **** void SecundariaTimer(void);
+  47:main.c        **** 
+  48:main.c        **** /* Virtual Timer */
+  49:main.c        **** static void AvenidaPrincipalSinalVerde(void *arg);
+  50:main.c        **** static void AvenidaPrincipalSinalAmarelo(void *arg);
+  51:main.c        **** static void AvenidaSecundariaSinalVerde(void *arg);
+  52:main.c        **** static void AvenidaSecundariaSinalAmarelo(void *arg);
+  53:main.c        **** 
+  54:main.c        **** /* 
+  55:main.c        ****   * Thread Write Event 
+  56:main.c        **** */
+  57:main.c        **** static THD_WORKING_AREA(wa_WriteEvent, 128);
+  58:main.c        **** static THD_FUNCTION(Write_Save_Event, arg)
+  59:main.c        **** {
+  60:main.c        ****   chRegSetThreadName("Save/Write Event");
+  61:main.c        ****   while (1)
+  62:main.c        ****   {
+  63:main.c        ****     if (palReadPad(IOPORT2, PEDESTRE) == PAL_LOW)
+  64:main.c        ****       PushBUffer(PEDESTRE);
+  65:main.c        **** 
+  66:main.c        ****     if (palReadPad(IOPORT2, CARRO_SECUNDARIA) == PAL_LOW)
+  67:main.c        ****       PushBUffer(CARRO_SECUNDARIA);
+  68:main.c        **** 
+  69:main.c        ****     if (palReadPad(IOPORT2, AMBULANCIA_PRINCIPAL) == PAL_LOW)
+  70:main.c        ****       PushBUffer(AMBULANCIA_PRINCIPAL);
+  71:main.c        **** 
+  72:main.c        ****     if (palReadPad(IOPORT2, AMBULANCIA_SECUNDARIA) == PAL_LOW)
+  73:main.c        ****       PushBUffer(AMBULANCIA_SECUNDARIA);
+  74:main.c        **** 
+  75:main.c        ****     /* Debouce Delay */
+  76:main.c        ****     chThdSleepMilliseconds(130);
+  77:main.c        ****   }
+  78:main.c        **** }
+  79:main.c        **** 
+  80:main.c        **** /* 
+  81:main.c        ****   * Thread Read Event
+  82:main.c        **** */
+  83:main.c        **** static THD_WORKING_AREA(wa_ReadEvent, 128);
+  84:main.c        **** static THD_FUNCTION(Read_Collect_Event, arg)
+  85:main.c        **** {
+  86:main.c        ****   chRegSetThreadName("Read/Collect Event");
+  87:main.c        ****   while (1)
+  88:main.c        ****   {
+  89:main.c        ****     if (!IsBUfferEmpty())
+  90:main.c        ****     {
+  91:main.c        ****       BACKUP_EVENT = EVENT;
+  92:main.c        ****       EVENT = PopBUffer();
+  93:main.c        **** 
+  94:main.c        ****       if (EVENT == AMBULANCIA_PRINCIPAL)
+  95:main.c        ****         amb_pri ^= 1;
+  96:main.c        ****       if (EVENT == AMBULANCIA_SECUNDARIA)
+  97:main.c        ****         amb_sec ^= 1;        
+  98:main.c        ****     }
+  99:main.c        **** 
+ 100:main.c        ****     chThdSleepMilliseconds(1);
+ 101:main.c        ****   }
+ 102:main.c        **** }
+ 103:main.c        **** 
+ 104:main.c        **** /* 
+ 105:main.c        ****   * Thread Process Event 
+ 106:main.c        **** */
+ 107:main.c        **** static THD_WORKING_AREA(wa_ProcessEvent, 128);
+ 108:main.c        **** static THD_FUNCTION(ProcessEvent, arg)
+ 109:main.c        **** {
+ 110:main.c        ****   state_funcion_t state_funcion[] = {PrincipalTimer, SecundariaTimer};
+ 111:main.c        **** 
+ 112:main.c        ****   chRegSetThreadName("Process Event");
+ 113:main.c        ****   while (1)
+ 114:main.c        ****   {
+ 115:main.c        ****     switch (STATE)
+ 116:main.c        ****     {
+ 117:main.c        ****       case IDLE_ST:
+ 118:main.c        ****         break;
+ 119:main.c        ****     
+ 120:main.c        ****       case PRINCIPAL:
+ 121:main.c        ****         state_funcion[PRINCIPAL - 1]();
+ 122:main.c        ****         STATE = IDLE_ST;
+ 123:main.c        ****         break;
+ 124:main.c        ****       
+ 125:main.c        ****       case SECUNDARIA:
+ 126:main.c        ****         state_funcion[SECUNDARIA - 1]();
+ 127:main.c        ****         STATE = IDLE_ST;
+ 128:main.c        ****         break;
+ 129:main.c        ****     }
+ 130:main.c        **** 
+ 131:main.c        ****     chThdSleepMilliseconds(1);
+ 132:main.c        ****   }
+ 133:main.c        **** }
+ 134:main.c        **** 
+ 135:main.c        **** /*
+ 136:main.c        ****  * Application entry point.
+ 137:main.c        ****  */
+ 138:main.c        **** int main(void) 
+ 139:main.c        **** {
+ 140:main.c        ****   thread_t *thd0 = 0, *thd1 = 0, *thd2 = 0;
+ 141:main.c        ****   SerialConfig Serial_Configuration = {.sc_brr = UBRR2x(115200), .sc_bits_per_char = USART_CHAR_SIZ
+ 142:main.c        **** 
+ 143:main.c        ****   InitBuffer();
+ 144:main.c        ****   chVTObjectInit(&vt);
+ 145:main.c        ****   /*
+ 146:main.c        ****    * System initializations.
+ 147:main.c        ****    * - HAL initialization, this also initializes the configured device drivers
+ 148:main.c        ****    *   and performs the board-specific initializations.
+ 149:main.c        ****    * - Kernel initialization, the main() function becomes a thread and the
+ 150:main.c        ****    *   RTOS is active.
+ 151:main.c        ****    */
+ 152:main.c        ****   halInit();
+ 153:main.c        ****   chSysInit();
  154:main.c        **** 
- 155:main.c        ****   thd0 = chThdCreateStatic(wa_WriteEvent, sizeof(wa_WriteEvent), NORMALPRIO, Write_Save_Event, NULL
- 156:main.c        ****   thd1 = chThdCreateStatic(wa_ReadEvent, sizeof(wa_ReadEvent), NORMALPRIO, Read_Collect_Event, NULL
- 157:main.c        ****   thd2 = chThdCreateStatic(wa_ProcessEvent, sizeof(wa_ProcessEvent), NORMALPRIO, ProcessEvent, NULL
- 158:main.c        **** 
- 159:main.c        ****   while (true) 
- 160:main.c        ****   {
- 161:main.c        ****     chThdSleepMilliseconds(1);
- 162:main.c        ****   }
- 163:main.c        **** }
- 164:main.c        **** 
- 165:main.c        **** void InitBuffer()
- 166:main.c        **** {
- 167:main.c        ****   chMtxObjectInit(&qmtx);
- 168:main.c        ****   chCondObjectInit(&qempty);
- 169:main.c        ****   chCondObjectInit(&qfull);
- 170:main.c        ****  
- 171:main.c        ****   rdp = wrp = &queue[0];
- 172:main.c        ****   qsize = 0;
- 173:main.c        **** }
- 174:main.c        **** 
- 175:main.c        **** void PushBUffer(msg_t msg)
- 176:main.c        **** {
- 177:main.c        ****   /* Entering monitor.*/
- 178:main.c        ****   chMtxLock(&qmtx);
- 179:main.c        ****  
- 180:main.c        ****   /* Waiting for space in the queue.*/
- 181:main.c        ****   while (IsBufferFull())
- 182:main.c        ****     chCondWait(&qfull);
- 183:main.c        ****  
- 184:main.c        ****   /* Writing the message in the queue.*/  
- 185:main.c        ****   *wrp = msg;
- 186:main.c        ****   if (++wrp >= &queue[QUEUE_SIZE])
- 187:main.c        ****     wrp = &queue[0];
- 188:main.c        ****   qsize++;
- 189:main.c        **** 
- 190:main.c        ****   /* Signaling that there is at least a message.*/
- 191:main.c        ****   chCondSignal(&qempty);
+ 155:main.c        ****   sdStart(&SD1, &Serial_Configuration);
+ 156:main.c        **** 
+ 157:main.c        ****   /* Buttons */
+ 158:main.c        ****   palSetPadMode(IOPORT2, PEDESTRE, PAL_MODE_INPUT_PULLUP);
+ 159:main.c        ****   palSetPadMode(IOPORT2, CARRO_SECUNDARIA, PAL_MODE_INPUT_PULLUP);
+ 160:main.c        ****   palSetPadMode(IOPORT2, AMBULANCIA_PRINCIPAL, PAL_MODE_INPUT_PULLUP);
+ 161:main.c        ****   palSetPadMode(IOPORT2, AMBULANCIA_SECUNDARIA, PAL_MODE_INPUT_PULLUP);  
+ 162:main.c        **** 
+ 163:main.c        ****   /* LEDs main semaphore */
+ 164:main.c        ****   palSetPadMode(IOPORT2, LED_VERDE_PRINCIPAL, PAL_MODE_OUTPUT_PUSHPULL);
+ 165:main.c        ****   palClearPad(IOPORT2, LED_VERDE_PRINCIPAL);
+ 166:main.c        **** 
+ 167:main.c        ****   palSetPadMode(IOPORT4, LED_AMARELO_PRINCIPAL, PAL_MODE_OUTPUT_PUSHPULL);
+ 168:main.c        ****   palClearPad(IOPORT4, LED_AMARELO_PRINCIPAL);
+ 169:main.c        **** 
+ 170:main.c        ****   palSetPadMode(IOPORT4, LED_VERMELHO_PRINCIPAL, PAL_MODE_OUTPUT_PUSHPULL);
+ 171:main.c        ****   palClearPad(IOPORT4, LED_VERMELHO_PRINCIPAL);
+ 172:main.c        **** 
+ 173:main.c        ****   /* LEDs Secondary semaphore */
+ 174:main.c        ****   palSetPadMode(IOPORT4, LED_VERDE_SECUNDARIA, PAL_MODE_OUTPUT_PUSHPULL);
+ 175:main.c        ****   palClearPad(IOPORT4, LED_VERDE_SECUNDARIA);
+ 176:main.c        **** 
+ 177:main.c        ****   palSetPadMode(IOPORT4, LED_AMARELO_SECUNDARIA, PAL_MODE_OUTPUT_PUSHPULL);
+ 178:main.c        ****   palClearPad(IOPORT4, LED_AMARELO_SECUNDARIA);
+ 179:main.c        **** 
+ 180:main.c        ****   palSetPadMode(IOPORT4, LED_VERMELHO_SECUNDARIA, PAL_MODE_OUTPUT_PUSHPULL);
+ 181:main.c        ****   palSetPad(IOPORT4, LED_VERMELHO_SECUNDARIA);
+ 182:main.c        **** 
+ 183:main.c        ****   thd0 = chThdCreateStatic(wa_WriteEvent, sizeof(wa_WriteEvent), NORMALPRIO, Write_Save_Event, NULL
+ 184:main.c        ****   thd1 = chThdCreateStatic(wa_ReadEvent, sizeof(wa_ReadEvent), NORMALPRIO, Read_Collect_Event, NULL
+ 185:main.c        ****   thd2 = chThdCreateStatic(wa_ProcessEvent, sizeof(wa_ProcessEvent), NORMALPRIO, ProcessEvent, NULL
+ 186:main.c        **** 
+ 187:main.c        ****   while (true) 
+ 188:main.c        ****   {
+ 189:main.c        ****     chThdSleepMilliseconds(1);
+ 190:main.c        ****   }
+ 191:main.c        **** }
  192:main.c        **** 
- 193:main.c        ****   /* Leaving monitor.*/
- 194:main.c        ****   chMtxUnlock(&qmtx);
- 195:main.c        **** }
- 196:main.c        **** 
- 197:main.c        **** uint8_t PopBUffer()
- 198:main.c        **** {
- 199:main.c        ****   msg_t msg;
- 200:main.c        ****  
- 201:main.c        ****   /* Entering monitor.*/
- 202:main.c        ****   chMtxLock(&qmtx);
- 203:main.c        ****  
- 204:main.c        ****   /* Waiting for messages in the queue.*/
- 205:main.c        ****   while (IsBUfferEmpty())
- 206:main.c        ****     chCondWait(&qempty);
+ 193:main.c        **** void InitBuffer()
+ 194:main.c        **** {
+ 195:main.c        ****   chMtxObjectInit(&qmtx);
+ 196:main.c        ****   chCondObjectInit(&qempty);
+ 197:main.c        ****   chCondObjectInit(&qfull);
+ 198:main.c        ****  
+ 199:main.c        ****   rdp = wrp = &queue[0];
+ 200:main.c        ****   qsize = 0;
+ 201:main.c        **** }
+ 202:main.c        **** 
+ 203:main.c        **** void PushBUffer(msg_t msg)
+ 204:main.c        **** {
+ 205:main.c        ****   /* Entering monitor.*/
+ 206:main.c        ****   chMtxLock(&qmtx);
  207:main.c        ****  
- 208:main.c        ****   /* Reading the message from the queue.*/  
- 209:main.c        ****   msg = *rdp;
- 210:main.c        ****   if (++rdp >= &queue[QUEUE_SIZE])
- 211:main.c        ****     rdp = &queue[0];
- 212:main.c        ****   qsize--;
- 213:main.c        ****  
- 214:main.c        ****   /* Signaling that there is at least one free slot.*/
- 215:main.c        ****   chCondSignal(&qfull);
- 216:main.c        ****  
- 217:main.c        ****   /* Leaving monitor.*/
- 218:main.c        ****   chMtxUnlock(&qmtx);
- 219:main.c        ****  
- 220:main.c        ****   return (uint8_t)msg;
- 221:main.c        **** }
- 222:main.c        **** 
- 223:main.c        **** int IsBUfferEmpty()
- 224:main.c        **** {
- 225:main.c        ****   return qsize == 0;
- 226:main.c        **** }
- 227:main.c        **** 
- 228:main.c        **** int IsBufferFull()
- 229:main.c        **** {
- 230:main.c        ****   return qsize >= QUEUE_SIZE;
- 231:main.c        **** }
- 232:main.c        **** 
- 233:main.c        **** /*====================== Avenida Principal ===============================*/
- 234:main.c        **** void PrincipalTimer()
- 235:main.c        **** {
- 236:main.c        ****   switch (LED_PRINCIPAL)
- 237:main.c        ****   {
- 238:main.c        ****     case VERDE:
- 239:main.c        ****     {
- 240:main.c        ****       palSetPad(IOPORT2, LED_VERDE_PRINCIPAL);
- 241:main.c        ****       palClearPad(IOPORT4, LED_AMARELO_PRINCIPAL);
- 242:main.c        ****       palClearPad(IOPORT4, LED_VERMELHO_PRINCIPAL);
- 243:main.c        ****       chVTSet(&vt, TIME_MS2I(1000), AvenidaPrincipalSinalVerde, (void*)&vt);
- 244:main.c        ****       break;
- 245:main.c        ****     }
- 246:main.c        **** 
- 247:main.c        ****     case AMARELO:
- 248:main.c        ****     {
- 249:main.c        ****       palClearPad(IOPORT2, LED_VERDE_PRINCIPAL);
- 250:main.c        ****       palClearPad(IOPORT4, LED_VERMELHO_PRINCIPAL);
- 251:main.c        ****       palSetPad(IOPORT4, LED_AMARELO_PRINCIPAL);
- 252:main.c        ****       chVTSet(&vt, TIME_MS2I(1000), AvenidaPrincipalSinalAmarelo, (void*)&vt);
- 253:main.c        ****       break;
- 254:main.c        ****     }
- 255:main.c        ****   }  
- 256:main.c        **** }
- 257:main.c        **** 
- 258:main.c        **** static void AvenidaPrincipalSinalVerde(void *arg)
- 259:main.c        **** {
- 260:main.c        ****   chSysLockFromISR();
- 261:main.c        ****   
- 262:main.c        ****   counter++;
- 263:main.c        **** 
- 264:main.c        ****   while (EVENT == AMBULANCIA_PRINCIPAL)
- 265:main.c        ****     chThdSleepMilliseconds(1);
- 266:main.c        **** 
- 267:main.c        ****   if (counter >= 40 && (EVENT == PEDESTRE || EVENT == CARRO_SECUNDARIA))
- 268:main.c        ****   {
- 269:main.c        ****     counter = 0;
- 270:main.c        ****     palClearPad(IOPORT2, LED_VERDE_PRINCIPAL);
- 271:main.c        ****     STATE = PRINCIPAL;
- 272:main.c        ****     LED_PRINCIPAL = AMARELO;
- 273:main.c        ****     chVTReset((virtual_timer_t*)arg);
- 274:main.c        ****   }
- 275:main.c        **** 
- 276:main.c        ****   if (counter >= 10 && EVENT == AMBULANCIA_SECUNDARIA)
- 277:main.c        ****   {
- 278:main.c        ****     counter = 0;
- 279:main.c        ****     palClearPad(IOPORT2, LED_VERDE_PRINCIPAL);
- 280:main.c        ****     STATE = PRINCIPAL;
- 281:main.c        ****     LED_PRINCIPAL = AMARELO;
- 282:main.c        ****     chVTReset((virtual_timer_t*)arg);
- 283:main.c        ****   }
- 284:main.c        **** 
- 285:main.c        ****   chVTSetI((virtual_timer_t*)arg, TIME_MS2I(1000), AvenidaPrincipalSinalVerde, arg);
- 286:main.c        ****   chSysUnlockFromISR();
- 287:main.c        **** }
- 288:main.c        **** 
- 289:main.c        **** static void AvenidaPrincipalSinalAmarelo(void *arg)
- 290:main.c        **** {
-  15               		.loc 1 290 0
+ 208:main.c        ****   /* Waiting for space in the queue.*/
+ 209:main.c        ****   while (IsBufferFull())
+ 210:main.c        ****     chCondWait(&qfull);
+ 211:main.c        ****  
+ 212:main.c        ****   /* Writing the message in the queue.*/  
+ 213:main.c        ****   *wrp = msg;
+ 214:main.c        ****   if (++wrp >= &queue[QUEUE_SIZE])
+ 215:main.c        ****     wrp = &queue[0];
+ 216:main.c        ****   qsize++;
+ 217:main.c        **** 
+ 218:main.c        ****   /* Signaling that there is at least a message.*/
+ 219:main.c        ****   chCondSignal(&qempty);
+ 220:main.c        **** 
+ 221:main.c        ****   /* Leaving monitor.*/
+ 222:main.c        ****   chMtxUnlock(&qmtx);
+ 223:main.c        **** }
+ 224:main.c        **** 
+ 225:main.c        **** uint8_t PopBUffer()
+ 226:main.c        **** {
+ 227:main.c        ****   msg_t msg;
+ 228:main.c        ****  
+ 229:main.c        ****   /* Entering monitor.*/
+ 230:main.c        ****   chMtxLock(&qmtx);
+ 231:main.c        ****  
+ 232:main.c        ****   /* Waiting for messages in the queue.*/
+ 233:main.c        ****   while (IsBUfferEmpty())
+ 234:main.c        ****     chCondWait(&qempty);
+ 235:main.c        ****  
+ 236:main.c        ****   /* Reading the message from the queue.*/  
+ 237:main.c        ****   msg = *rdp;
+ 238:main.c        ****   if (++rdp >= &queue[QUEUE_SIZE])
+ 239:main.c        ****     rdp = &queue[0];
+ 240:main.c        ****   qsize--;
+ 241:main.c        ****  
+ 242:main.c        ****   /* Signaling that there is at least one free slot.*/
+ 243:main.c        ****   chCondSignal(&qfull);
+ 244:main.c        ****  
+ 245:main.c        ****   /* Leaving monitor.*/
+ 246:main.c        ****   chMtxUnlock(&qmtx);
+ 247:main.c        ****  
+ 248:main.c        ****   return (uint8_t)msg;
+ 249:main.c        **** }
+ 250:main.c        **** 
+ 251:main.c        **** int IsBUfferEmpty()
+ 252:main.c        **** {
+ 253:main.c        ****   return qsize == 0;
+ 254:main.c        **** }
+ 255:main.c        **** 
+ 256:main.c        **** int IsBufferFull()
+ 257:main.c        **** {
+ 258:main.c        ****   return qsize >= QUEUE_SIZE;
+ 259:main.c        **** }
+ 260:main.c        **** 
+ 261:main.c        **** /*====================== Avenida Principal ===============================*/
+ 262:main.c        **** void PrincipalTimer()
+ 263:main.c        **** {
+ 264:main.c        ****   switch (LED_PRINCIPAL)
+ 265:main.c        ****   {
+ 266:main.c        ****     case VERDE:
+ 267:main.c        ****     {
+ 268:main.c        ****       palSetPad(IOPORT2, LED_VERDE_PRINCIPAL);
+ 269:main.c        ****       palClearPad(IOPORT4, LED_AMARELO_PRINCIPAL);
+ 270:main.c        ****       palClearPad(IOPORT4, LED_VERMELHO_PRINCIPAL);
+ 271:main.c        ****       chVTSet(&vt, TIME_MS2I(1000), AvenidaPrincipalSinalVerde, (void*)&vt);
+ 272:main.c        ****       break;
+ 273:main.c        ****     }
+ 274:main.c        **** 
+ 275:main.c        ****     case AMARELO:
+ 276:main.c        ****     {
+ 277:main.c        ****       palClearPad(IOPORT2, LED_VERDE_PRINCIPAL);
+ 278:main.c        ****       palClearPad(IOPORT4, LED_VERMELHO_PRINCIPAL);
+ 279:main.c        ****       palSetPad(IOPORT4, LED_AMARELO_PRINCIPAL);
+ 280:main.c        ****       chVTSet(&vt, TIME_MS2I(1000), AvenidaPrincipalSinalAmarelo, (void*)&vt);
+ 281:main.c        ****       break;
+ 282:main.c        ****     }
+ 283:main.c        ****   }  
+ 284:main.c        **** }
+ 285:main.c        **** 
+ 286:main.c        **** static void AvenidaPrincipalSinalVerde(void *arg)
+ 287:main.c        **** {
+ 288:main.c        ****   chSysLockFromISR();
+ 289:main.c        **** 
+ 290:main.c        ****   if (amb_pri == 0x00)
+ 291:main.c        ****   { 
+ 292:main.c        ****     palTogglePad(IOPORT2, PORTB_LED1);
+ 293:main.c        ****     counter++;
+ 294:main.c        **** 
+ 295:main.c        ****     if (counter >= 10 && (EVENT == PEDESTRE || EVENT == CARRO_SECUNDARIA))
+ 296:main.c        ****     {
+ 297:main.c        ****       counter = 0;
+ 298:main.c        ****       palClearPad(IOPORT2, LED_VERDE_PRINCIPAL);
+ 299:main.c        ****       STATE = PRINCIPAL;
+ 300:main.c        ****       LED_PRINCIPAL = AMARELO;
+ 301:main.c        ****       chVTReset((virtual_timer_t*)arg);
+ 302:main.c        ****       EVENT = 0;
+ 303:main.c        ****     }
+ 304:main.c        **** 
+ 305:main.c        ****     if (counter >= 5 && EVENT == AMBULANCIA_SECUNDARIA)
+ 306:main.c        ****     {
+ 307:main.c        ****       counter = 0;
+ 308:main.c        ****       palClearPad(IOPORT2, LED_VERDE_PRINCIPAL);
+ 309:main.c        ****       STATE = PRINCIPAL;
+ 310:main.c        ****       LED_PRINCIPAL = AMARELO;
+ 311:main.c        ****       chVTReset((virtual_timer_t*)arg);
+ 312:main.c        ****     }
+ 313:main.c        ****   }
+ 314:main.c        **** 
+ 315:main.c        ****   chVTSetI((virtual_timer_t*)arg, TIME_MS2I(1000), AvenidaPrincipalSinalVerde, arg);
+ 316:main.c        ****   chSysUnlockFromISR();
+ 317:main.c        **** }
+ 318:main.c        **** 
+ 319:main.c        **** static void AvenidaPrincipalSinalAmarelo(void *arg)
+ 320:main.c        **** {
+ 321:main.c        ****   chSysLockFromISR();
+ 322:main.c        ****   
+ 323:main.c        ****   counter++;
+ 324:main.c        **** 
+ 325:main.c        ****   if (counter >= 2)
+ 326:main.c        ****   {
+ 327:main.c        ****     counter = 0;
+ 328:main.c        ****     palClearPad(IOPORT2, LED_VERDE_PRINCIPAL);
+ 329:main.c        ****     palClearPad(IOPORT4, LED_AMARELO_PRINCIPAL);
+ 330:main.c        ****     palSetPad(IOPORT4, LED_VERMELHO_PRINCIPAL);
+ 331:main.c        ****     
+ 332:main.c        ****     if (amb_sec == 1)
+ 333:main.c        ****     {
+ 334:main.c        ****       STATE = SECUNDARIA;
+ 335:main.c        ****       LED_SECUNDARIA = VERDE;
+ 336:main.c        ****     }
+ 337:main.c        **** 
+ 338:main.c        ****     else
+ 339:main.c        ****     {
+ 340:main.c        ****       STATE = SECUNDARIA;
+ 341:main.c        ****       LED_SECUNDARIA = VERDE;
+ 342:main.c        ****     }
+ 343:main.c        **** 
+ 344:main.c        ****     chVTReset((virtual_timer_t*)arg);
+ 345:main.c        ****   }
+ 346:main.c        **** 
+ 347:main.c        ****   chVTSetI((virtual_timer_t*)arg, TIME_MS2I(1000), AvenidaPrincipalSinalAmarelo, arg);
+ 348:main.c        ****   chSysUnlockFromISR();
+ 349:main.c        **** }
+ 350:main.c        **** 
+ 351:main.c        **** /*====================== Avenida Secundaria ===============================*/
+ 352:main.c        **** void SecundariaTimer()
+ 353:main.c        **** {
+ 354:main.c        ****   switch (LED_SECUNDARIA)
+ 355:main.c        ****   {
+ 356:main.c        ****     case VERDE:
+ 357:main.c        ****       palSetPad(IOPORT4, LED_VERDE_SECUNDARIA);
+ 358:main.c        ****       palClearPad(IOPORT4, LED_AMARELO_SECUNDARIA);
+ 359:main.c        ****       palClearPad(IOPORT4, LED_VERMELHO_SECUNDARIA);
+ 360:main.c        ****       chVTSet(&vt, TIME_MS2I(1000), AvenidaSecundariaSinalVerde, (void*)&vt);
+ 361:main.c        ****       break;
+ 362:main.c        ****     
+ 363:main.c        ****     case AMARELO:
+ 364:main.c        ****       palClearPad(IOPORT4, LED_VERDE_SECUNDARIA);
+ 365:main.c        ****       palSetPad(IOPORT4, LED_AMARELO_SECUNDARIA);
+ 366:main.c        ****       palClearPad(IOPORT4, LED_VERMELHO_SECUNDARIA);
+ 367:main.c        ****       chVTSet(&vt, TIME_MS2I(1000), AvenidaSecundariaSinalAmarelo, (void*)&vt);
+ 368:main.c        ****       break;
+ 369:main.c        ****   }
+ 370:main.c        **** }
+ 371:main.c        **** 
+ 372:main.c        **** static void AvenidaSecundariaSinalVerde(void *arg)
+ 373:main.c        **** {
+ 374:main.c        ****   chSysLockFromISR();
+ 375:main.c        **** 
+ 376:main.c        ****   if (amb_sec == 0)
+ 377:main.c        ****   {
+ 378:main.c        ****     palTogglePad(IOPORT2, PORTB_LED1);
+ 379:main.c        ****     counter++;
+ 380:main.c        **** 
+ 381:main.c        ****     if (counter >= 6)
+ 382:main.c        ****     {
+ 383:main.c        ****       counter = 0;
+ 384:main.c        ****       STATE = SECUNDARIA;
+ 385:main.c        ****       LED_SECUNDARIA = AMARELO;
+ 386:main.c        ****       EVENT = 0;
+ 387:main.c        ****       chVTReset((virtual_timer_t*)arg);
+ 388:main.c        ****     }
+ 389:main.c        **** 
+ 390:main.c        ****     if (counter >= 5 && EVENT == AMBULANCIA_PRINCIPAL)
+ 391:main.c        ****     {
+ 392:main.c        ****       counter = 0;
+ 393:main.c        ****       palClearPad(IOPORT4, LED_VERDE_SECUNDARIA);
+ 394:main.c        ****       STATE = SECUNDARIA;
+ 395:main.c        ****       LED_SECUNDARIA = AMARELO;
+ 396:main.c        ****       chVTReset((virtual_timer_t*)arg);
+ 397:main.c        ****     }
+ 398:main.c        ****   }
+ 399:main.c        **** 
+ 400:main.c        ****   chVTSetI((virtual_timer_t*)arg, TIME_MS2I(1000), AvenidaSecundariaSinalVerde, arg);
+ 401:main.c        ****   chSysUnlockFromISR();  
+ 402:main.c        **** }
+ 403:main.c        **** 
+ 404:main.c        **** static void AvenidaSecundariaSinalAmarelo(void *arg)
+ 405:main.c        **** {
+  15               		.loc 1 405 0
   16               		.cfi_startproc
   17               	.LVL0:
   18 0000 CF93      		push r28
@@ -317,10 +432,10 @@
   28               	/* stack size = 2 */
   29               	.L__stack_usage = 2
   30 0004 EC01      		movw r28,r24
- 291:main.c        ****   chSysLockFromISR();
- 292:main.c        ****   
- 293:main.c        ****   counter++;
-  31               		.loc 1 293 0
+ 406:main.c        ****   chSysLockFromISR();
+ 407:main.c        ****   
+ 408:main.c        ****   counter++;
+  31               		.loc 1 408 0
   32 0006 8091 0000 		lds r24,counter
   33 000a 9091 0000 		lds r25,counter+1
   34 000e A091 0000 		lds r26,counter+2
@@ -329,36 +444,46 @@
   37 0016 0196      		adiw r24,1
   38 0018 A11D      		adc r26,__zero_reg__
   39 001a B11D      		adc r27,__zero_reg__
- 294:main.c        **** 
- 295:main.c        ****   if (counter >= 5)
-  40               		.loc 1 295 0
-  41 001c 8530      		cpi r24,5
+ 409:main.c        **** 
+ 410:main.c        ****   if (counter >= 2)
+  40               		.loc 1 410 0
+  41 001c 8230      		cpi r24,2
   42 001e 9105      		cpc r25,__zero_reg__
   43 0020 A105      		cpc r26,__zero_reg__
   44 0022 B105      		cpc r27,__zero_reg__
   45 0024 00F0      		brlo .L13
- 296:main.c        ****   {
- 297:main.c        ****     counter = 0;
-  46               		.loc 1 297 0
+ 411:main.c        ****   {
+ 412:main.c        ****     counter = 0;
+  46               		.loc 1 412 0
   47 0026 1092 0000 		sts counter,__zero_reg__
   48 002a 1092 0000 		sts counter+1,__zero_reg__
   49 002e 1092 0000 		sts counter+2,__zero_reg__
   50 0032 1092 0000 		sts counter+3,__zero_reg__
- 298:main.c        ****     palClearPad(IOPORT2, LED_VERDE_PRINCIPAL);
-  51               		.loc 1 298 0
-  52 0036 2898      		cbi 0x5,0
- 299:main.c        ****     palClearPad(IOPORT4, LED_AMARELO_PRINCIPAL);
-  53               		.loc 1 299 0
-  54 0038 5F98      		cbi 0xb,7
- 300:main.c        ****     palSetPad(IOPORT4, LED_VERMELHO_PRINCIPAL);
-  55               		.loc 1 300 0
-  56 003a 5E9A      		sbi 0xb,6
-  57               	.LVL2:
-  58               	.LBB139:
-  59               	.LBB140:
-  60               	.LBB141:
-  61               	.LBB142:
-  62               		.file 2 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.
+ 413:main.c        ****     palClearPad(IOPORT4, LED_VERDE_SECUNDARIA);
+  51               		.loc 1 413 0
+  52 0036 5D98      		cbi 0xb,5
+ 414:main.c        ****     palClearPad(IOPORT4, LED_AMARELO_SECUNDARIA);
+  53               		.loc 1 414 0
+  54 0038 5C98      		cbi 0xb,4
+ 415:main.c        ****     palSetPad(IOPORT4, LED_VERMELHO_SECUNDARIA);
+  55               		.loc 1 415 0
+  56 003a 5B9A      		sbi 0xb,3
+ 416:main.c        **** 
+ 417:main.c        ****     if (amb_pri == 1)
+ 418:main.c        ****     {
+ 419:main.c        ****       STATE = PRINCIPAL;
+  57               		.loc 1 419 0
+  58 003c 81E0      		ldi r24,lo8(1)
+  59 003e 8093 0000 		sts STATE,r24
+ 420:main.c        ****       LED_PRINCIPAL = VERDE;
+  60               		.loc 1 420 0
+  61 0042 1092 0000 		sts LED_PRINCIPAL,__zero_reg__
+  62               	.LVL2:
+  63               	.LBB216:
+  64               	.LBB217:
+  65               	.LBB218:
+  66               	.LBB219:
+  67               		.file 2 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.
    1:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.h **** /*
    2:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.h ****     ChibiOS - Copyright (C) 2006,2007,2008,2009,2010,2011,2012,2013,2014,
    3:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.h ****               2015,2016,2017,2018,2019,2020,2021 Giovanni Di Sirio.
@@ -789,19 +914,19 @@
  428:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.h **** static inline void port_lock(void) {
  429:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.h **** 
  430:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.h ****   asm volatile ("cli" : : : "memory");
-  63               		.loc 2 430 0
-  64               	/* #APP */
-  65               	 ;  430 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.h
-  66 003c F894      		cli
-  67               	 ;  0 "" 2
-  68               	.LVL3:
-  69               	/* #NOAPP */
-  70               	.LBE142:
-  71               	.LBE141:
-  72               	.LBE140:
-  73               	.LBB143:
-  74               	.LBB144:
-  75               		.file 3 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chvt.h"
+  68               		.loc 2 430 0
+  69               	/* #APP */
+  70               	 ;  430 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.h
+  71 0046 F894      		cli
+  72               	 ;  0 "" 2
+  73               	.LVL3:
+  74               	/* #NOAPP */
+  75               	.LBE219:
+  76               	.LBE218:
+  77               	.LBE217:
+  78               	.LBB220:
+  79               	.LBB221:
+  80               		.file 3 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chvt.h"
    1:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chvt.h **** /*
    2:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chvt.h ****     ChibiOS - Copyright (C) 2006,2007,2008,2009,2010,2011,2012,2013,2014,
    3:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chvt.h ****               2015,2016,2017,2018,2019,2020,2021 Giovanni Di Sirio.
@@ -1089,23 +1214,23 @@
  285:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chvt.h **** static inline void chVTResetI(virtual_timer_t *vtp) {
  286:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chvt.h **** 
  287:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chvt.h ****   if (chVTIsArmedI(vtp)) {
-  76               		.loc 3 287 0
-  77 003e 8881      		ld r24,Y
-  78 0040 9981      		ldd r25,Y+1
-  79 0042 892B      		or r24,r25
-  80 0044 01F0      		breq .L4
+  81               		.loc 3 287 0
+  82 0048 8881      		ld r24,Y
+  83 004a 9981      		ldd r25,Y+1
+  84 004c 892B      		or r24,r25
+  85 004e 01F0      		breq .L4
  288:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chvt.h ****     chVTDoResetI(vtp);
-  81               		.loc 3 288 0
-  82 0046 CE01      		movw r24,r28
-  83 0048 0E94 0000 		call chVTDoResetI
-  84               	.LVL4:
-  85               	.L4:
-  86               	.LBE144:
-  87               	.LBE143:
-  88               	.LBB145:
-  89               	.LBB146:
-  90               	.LBB147:
-  91               	.LBB148:
+  86               		.loc 3 288 0
+  87 0050 CE01      		movw r24,r28
+  88 0052 0E94 0000 		call chVTDoResetI
+  89               	.LVL4:
+  90               	.L4:
+  91               	.LBE221:
+  92               	.LBE220:
+  93               	.LBB222:
+  94               	.LBB223:
+  95               	.LBB224:
+  96               	.LBB225:
  431:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.h **** }
  432:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.h **** 
  433:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.h **** /**
@@ -1116,36 +1241,36 @@
  438:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.h **** static inline void port_unlock(void) {
  439:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.h **** 
  440:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.h ****   asm volatile ("sei" : : : "memory");
-  92               		.loc 2 440 0
-  93               	/* #APP */
-  94               	 ;  440 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.h
-  95 004c 7894      		sei
-  96               	 ;  0 "" 2
-  97               	.LVL5:
-  98               	/* #NOAPP */
-  99               	.L3:
- 100               	.LBE148:
- 101               	.LBE147:
- 102               	.LBE146:
- 103               	.LBE145:
- 104               	.LBE139:
- 105               	.LBB149:
- 106               	.LBB150:
- 107               	.LBB151:
- 108               	.LBB152:
+  97               		.loc 2 440 0
+  98               	/* #APP */
+  99               	 ;  440 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.h
+ 100 0056 7894      		sei
+ 101               	 ;  0 "" 2
+ 102               	.LVL5:
+ 103               	/* #NOAPP */
+ 104               	.L3:
+ 105               	.LBE225:
+ 106               	.LBE224:
+ 107               	.LBE223:
+ 108               	.LBE222:
+ 109               	.LBE216:
+ 110               	.LBB226:
+ 111               	.LBB227:
+ 112               	.LBB228:
+ 113               	.LBB229:
  287:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chvt.h ****     chVTDoResetI(vtp);
- 109               		.loc 3 287 0
- 110 004e 8881      		ld r24,Y
- 111 0050 9981      		ldd r25,Y+1
- 112 0052 892B      		or r24,r25
- 113 0054 01F0      		breq .L5
- 114               		.loc 3 288 0
- 115 0056 CE01      		movw r24,r28
- 116 0058 0E94 0000 		call chVTDoResetI
- 117               	.LVL6:
- 118               	.L5:
- 119               	.LBE152:
- 120               	.LBE151:
+ 114               		.loc 3 287 0
+ 115 0058 8881      		ld r24,Y
+ 116 005a 9981      		ldd r25,Y+1
+ 117 005c 892B      		or r24,r25
+ 118 005e 01F0      		breq .L5
+ 119               		.loc 3 288 0
+ 120 0060 CE01      		movw r24,r28
+ 121 0062 0E94 0000 		call chVTDoResetI
+ 122               	.LVL6:
+ 123               	.L5:
+ 124               	.LBE229:
+ 125               	.LBE228:
  289:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chvt.h ****   }
  290:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chvt.h **** }
  291:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chvt.h **** 
@@ -1193,662 +1318,1096 @@
  333:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chvt.h **** 
  334:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chvt.h ****   chVTResetI(vtp);
  335:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chvt.h ****   chVTDoSetI(vtp, delay, vtfunc, par);
- 121               		.loc 3 335 0
- 122 005c 9E01      		movw r18,r28
- 123 005e 40E0      		ldi r20,lo8(gs(AvenidaPrincipalSinalAmarelo))
- 124 0060 50E0      		ldi r21,hi8(gs(AvenidaPrincipalSinalAmarelo))
- 125 0062 68E0      		ldi r22,lo8(8)
- 126 0064 7DE3      		ldi r23,lo8(61)
- 127 0066 CE01      		movw r24,r28
- 128               	/* epilogue start */
- 129               	.LBE150:
- 130               	.LBE149:
- 301:main.c        ****     chVTReset((virtual_timer_t*)arg);
- 302:main.c        ****   }
- 303:main.c        **** 
- 304:main.c        ****   chVTSetI((virtual_timer_t*)arg, TIME_MS2I(1000), AvenidaPrincipalSinalAmarelo, arg);
- 305:main.c        ****   chSysUnlockFromISR();
- 306:main.c        **** }
- 131               		.loc 1 306 0
- 132 0068 DF91      		pop r29
- 133 006a CF91      		pop r28
- 134               	.LVL7:
- 135               	.LBB154:
- 136               	.LBB153:
- 137               		.loc 3 335 0
- 138 006c 0C94 0000 		jmp chVTDoSetI
- 139               	.LVL8:
- 140               	.L13:
- 141               	.LBE153:
- 142               	.LBE154:
- 293:main.c        **** 
- 143               		.loc 1 293 0
- 144 0070 8093 0000 		sts counter,r24
- 145 0074 9093 0000 		sts counter+1,r25
- 146 0078 A093 0000 		sts counter+2,r26
- 147 007c B093 0000 		sts counter+3,r27
- 148 0080 00C0      		rjmp .L3
- 149               		.cfi_endproc
- 150               	.LFE250:
- 152               		.section	.text.AvenidaPrincipalSinalVerde,"ax",@progbits
- 154               	AvenidaPrincipalSinalVerde:
- 155               	.LFB249:
- 259:main.c        ****   chSysLockFromISR();
- 156               		.loc 1 259 0
- 157               		.cfi_startproc
- 158               	.LVL9:
- 159 0000 CF93      		push r28
- 160               	.LCFI2:
- 161               		.cfi_def_cfa_offset 3
- 162               		.cfi_offset 28, -2
- 163 0002 DF93      		push r29
- 164               	.LCFI3:
- 165               		.cfi_def_cfa_offset 4
- 166               		.cfi_offset 29, -3
- 167               	/* prologue: function */
- 168               	/* frame size = 0 */
- 169               	/* stack size = 2 */
- 170               	.L__stack_usage = 2
- 171 0004 EC01      		movw r28,r24
- 262:main.c        **** 
- 172               		.loc 1 262 0
- 173 0006 4091 0000 		lds r20,counter
- 174 000a 5091 0000 		lds r21,counter+1
- 175 000e 6091 0000 		lds r22,counter+2
- 176 0012 7091 0000 		lds r23,counter+3
- 177 0016 4F5F      		subi r20,-1
- 178 0018 5F4F      		sbci r21,-1
- 179 001a 6F4F      		sbci r22,-1
- 180 001c 7F4F      		sbci r23,-1
- 181 001e 4093 0000 		sts counter,r20
- 182 0022 5093 0000 		sts counter+1,r21
- 183 0026 6093 0000 		sts counter+2,r22
- 184 002a 7093 0000 		sts counter+3,r23
- 264:main.c        ****     chThdSleepMilliseconds(1);
- 185               		.loc 1 264 0
- 186 002e 8091 0000 		lds r24,EVENT
- 187               	.LVL10:
- 188 0032 8230      		cpi r24,lo8(2)
- 189 0034 01F4      		brne .L15
- 190               	.L16:
- 265:main.c        **** 
- 191               		.loc 1 265 0
- 192 0036 80E1      		ldi r24,lo8(16)
- 193 0038 90E0      		ldi r25,0
- 194 003a 0E94 0000 		call chThdSleep
- 195               	.LVL11:
- 264:main.c        ****     chThdSleepMilliseconds(1);
- 196               		.loc 1 264 0
- 197 003e 8091 0000 		lds r24,EVENT
- 198 0042 8230      		cpi r24,lo8(2)
- 199 0044 01F0      		breq .L16
- 200 0046 4091 0000 		lds r20,counter
- 201 004a 5091 0000 		lds r21,counter+1
- 202 004e 6091 0000 		lds r22,counter+2
- 203 0052 7091 0000 		lds r23,counter+3
- 204               	.L15:
- 267:main.c        ****   {
- 205               		.loc 1 267 0
- 206 0056 4832      		cpi r20,40
- 207 0058 5105      		cpc r21,__zero_reg__
- 208 005a 6105      		cpc r22,__zero_reg__
- 209 005c 7105      		cpc r23,__zero_reg__
- 210 005e 00F0      		brlo .L17
- 267:main.c        ****   {
- 211               		.loc 1 267 0 is_stmt 0 discriminator 1
- 212 0060 9DEF      		ldi r25,lo8(-3)
- 213 0062 980F      		add r25,r24
- 214 0064 9230      		cpi r25,lo8(2)
- 215 0066 00F0      		brlo .L34
- 276:main.c        ****   {
- 216               		.loc 1 276 0 is_stmt 1 discriminator 1
- 217 0068 8130      		cpi r24,lo8(1)
- 218 006a 01F0      		breq .L35
- 219               	.L20:
- 220               	.LVL12:
- 221               	.LBB179:
- 222               	.LBB180:
- 223               	.LBB181:
- 224               	.LBB182:
+ 126               		.loc 3 335 0
+ 127 0066 9E01      		movw r18,r28
+ 128 0068 40E0      		ldi r20,lo8(gs(AvenidaSecundariaSinalAmarelo))
+ 129 006a 50E0      		ldi r21,hi8(gs(AvenidaSecundariaSinalAmarelo))
+ 130 006c 68E0      		ldi r22,lo8(8)
+ 131 006e 7DE3      		ldi r23,lo8(61)
+ 132 0070 CE01      		movw r24,r28
+ 133               	/* epilogue start */
+ 134               	.LBE227:
+ 135               	.LBE226:
+ 421:main.c        ****     }
+ 422:main.c        **** 
+ 423:main.c        ****     else
+ 424:main.c        ****     {
+ 425:main.c        ****       STATE = PRINCIPAL;
+ 426:main.c        ****       LED_PRINCIPAL = VERDE;
+ 427:main.c        ****     }
+ 428:main.c        **** 
+ 429:main.c        ****     chVTReset((virtual_timer_t*)arg);
+ 430:main.c        ****   }
+ 431:main.c        **** 
+ 432:main.c        ****   chVTSetI((virtual_timer_t*)arg, TIME_MS2I(1000), AvenidaSecundariaSinalAmarelo, arg);
+ 433:main.c        ****   chSysUnlockFromISR();
+ 434:main.c        **** }
+ 136               		.loc 1 434 0
+ 137 0072 DF91      		pop r29
+ 138 0074 CF91      		pop r28
+ 139               	.LVL7:
+ 140               	.LBB231:
+ 141               	.LBB230:
+ 142               		.loc 3 335 0
+ 143 0076 0C94 0000 		jmp chVTDoSetI
+ 144               	.LVL8:
+ 145               	.L13:
+ 146               	.LBE230:
+ 147               	.LBE231:
+ 408:main.c        **** 
+ 148               		.loc 1 408 0
+ 149 007a 8093 0000 		sts counter,r24
+ 150 007e 9093 0000 		sts counter+1,r25
+ 151 0082 A093 0000 		sts counter+2,r26
+ 152 0086 B093 0000 		sts counter+3,r27
+ 153 008a 00C0      		rjmp .L3
+ 154               		.cfi_endproc
+ 155               	.LFE253:
+ 157               		.section	.text.AvenidaPrincipalSinalAmarelo,"ax",@progbits
+ 159               	AvenidaPrincipalSinalAmarelo:
+ 160               	.LFB250:
+ 320:main.c        ****   chSysLockFromISR();
+ 161               		.loc 1 320 0
+ 162               		.cfi_startproc
+ 163               	.LVL9:
+ 164 0000 CF93      		push r28
+ 165               	.LCFI2:
+ 166               		.cfi_def_cfa_offset 3
+ 167               		.cfi_offset 28, -2
+ 168 0002 DF93      		push r29
+ 169               	.LCFI3:
+ 170               		.cfi_def_cfa_offset 4
+ 171               		.cfi_offset 29, -3
+ 172               	/* prologue: function */
+ 173               	/* frame size = 0 */
+ 174               	/* stack size = 2 */
+ 175               	.L__stack_usage = 2
+ 176 0004 EC01      		movw r28,r24
+ 323:main.c        **** 
+ 177               		.loc 1 323 0
+ 178 0006 8091 0000 		lds r24,counter
+ 179 000a 9091 0000 		lds r25,counter+1
+ 180 000e A091 0000 		lds r26,counter+2
+ 181 0012 B091 0000 		lds r27,counter+3
+ 182               	.LVL10:
+ 183 0016 0196      		adiw r24,1
+ 184 0018 A11D      		adc r26,__zero_reg__
+ 185 001a B11D      		adc r27,__zero_reg__
+ 325:main.c        ****   {
+ 186               		.loc 1 325 0
+ 187 001c 8230      		cpi r24,2
+ 188 001e 9105      		cpc r25,__zero_reg__
+ 189 0020 A105      		cpc r26,__zero_reg__
+ 190 0022 B105      		cpc r27,__zero_reg__
+ 191 0024 00F0      		brlo .L25
+ 327:main.c        ****     palClearPad(IOPORT2, LED_VERDE_PRINCIPAL);
+ 192               		.loc 1 327 0
+ 193 0026 1092 0000 		sts counter,__zero_reg__
+ 194 002a 1092 0000 		sts counter+1,__zero_reg__
+ 195 002e 1092 0000 		sts counter+2,__zero_reg__
+ 196 0032 1092 0000 		sts counter+3,__zero_reg__
+ 328:main.c        ****     palClearPad(IOPORT4, LED_AMARELO_PRINCIPAL);
+ 197               		.loc 1 328 0
+ 198 0036 2898      		cbi 0x5,0
+ 329:main.c        ****     palSetPad(IOPORT4, LED_VERMELHO_PRINCIPAL);
+ 199               		.loc 1 329 0
+ 200 0038 5F98      		cbi 0xb,7
+ 330:main.c        ****     
+ 201               		.loc 1 330 0
+ 202 003a 5E9A      		sbi 0xb,6
+ 334:main.c        ****       LED_SECUNDARIA = VERDE;
+ 203               		.loc 1 334 0
+ 204 003c 82E0      		ldi r24,lo8(2)
+ 205 003e 8093 0000 		sts STATE,r24
+ 335:main.c        ****     }
+ 206               		.loc 1 335 0
+ 207 0042 1092 0000 		sts LED_SECUNDARIA,__zero_reg__
+ 208               	.LVL11:
+ 209               	.LBB246:
+ 210               	.LBB247:
+ 211               	.LBB248:
+ 212               	.LBB249:
+ 430:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.h **** }
+ 213               		.loc 2 430 0
+ 214               	/* #APP */
+ 215               	 ;  430 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.h
+ 216 0046 F894      		cli
+ 217               	 ;  0 "" 2
+ 218               	.LVL12:
+ 219               	/* #NOAPP */
+ 220               	.LBE249:
+ 221               	.LBE248:
+ 222               	.LBE247:
+ 223               	.LBB250:
+ 224               	.LBB251:
  287:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chvt.h ****     chVTDoResetI(vtp);
  225               		.loc 3 287 0
- 226 006c 8881      		ld r24,Y
- 227 006e 9981      		ldd r25,Y+1
- 228 0070 892B      		or r24,r25
- 229 0072 01F0      		breq .L22
+ 226 0048 8881      		ld r24,Y
+ 227 004a 9981      		ldd r25,Y+1
+ 228 004c 892B      		or r24,r25
+ 229 004e 01F0      		breq .L17
  288:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chvt.h ****   }
  230               		.loc 3 288 0
- 231 0074 CE01      		movw r24,r28
- 232 0076 0E94 0000 		call chVTDoResetI
+ 231 0050 CE01      		movw r24,r28
+ 232 0052 0E94 0000 		call chVTDoResetI
  233               	.LVL13:
- 234               	.L22:
- 235               	.LBE182:
- 236               	.LBE181:
- 237               		.loc 3 335 0
- 238 007a 9E01      		movw r18,r28
- 239 007c 40E0      		ldi r20,lo8(gs(AvenidaPrincipalSinalVerde))
- 240 007e 50E0      		ldi r21,hi8(gs(AvenidaPrincipalSinalVerde))
- 241 0080 68E0      		ldi r22,lo8(8)
- 242 0082 7DE3      		ldi r23,lo8(61)
- 243 0084 CE01      		movw r24,r28
- 244               	/* epilogue start */
- 245               	.LBE180:
- 246               	.LBE179:
- 287:main.c        **** 
- 247               		.loc 1 287 0
- 248 0086 DF91      		pop r29
- 249 0088 CF91      		pop r28
- 250               	.LVL14:
- 251               	.LBB184:
- 252               	.LBB183:
- 253               		.loc 3 335 0
- 254 008a 0C94 0000 		jmp chVTDoSetI
- 255               	.LVL15:
- 256               	.L34:
- 257               	.LBE183:
- 258               	.LBE184:
- 269:main.c        ****     palClearPad(IOPORT2, LED_VERDE_PRINCIPAL);
- 259               		.loc 1 269 0
- 260 008e 1092 0000 		sts counter,__zero_reg__
- 261 0092 1092 0000 		sts counter+1,__zero_reg__
- 262 0096 1092 0000 		sts counter+2,__zero_reg__
- 263 009a 1092 0000 		sts counter+3,__zero_reg__
- 270:main.c        ****     STATE = PRINCIPAL;
- 264               		.loc 1 270 0
- 265 009e 2898      		cbi 0x5,0
- 271:main.c        ****     LED_PRINCIPAL = AMARELO;
- 266               		.loc 1 271 0
- 267 00a0 81E0      		ldi r24,lo8(1)
- 268 00a2 8093 0000 		sts STATE,r24
- 272:main.c        ****     chVTReset((virtual_timer_t*)arg);
- 269               		.loc 1 272 0
- 270 00a6 8093 0000 		sts LED_PRINCIPAL,r24
- 271               	.LVL16:
- 272               	.LBB185:
- 273               	.LBB186:
- 274               	.LBB187:
- 275               	.LBB188:
- 430:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.h **** }
- 276               		.loc 2 430 0
- 277               	/* #APP */
- 278               	 ;  430 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.h
- 279 00aa F894      		cli
- 280               	 ;  0 "" 2
- 281               	.LVL17:
- 282               	/* #NOAPP */
- 283               	.LBE188:
- 284               	.LBE187:
- 285               	.LBE186:
- 286               	.LBB189:
- 287               	.LBB190:
+ 234               	.L17:
+ 235               	.LBE251:
+ 236               	.LBE250:
+ 237               	.LBB252:
+ 238               	.LBB253:
+ 239               	.LBB254:
+ 240               	.LBB255:
+ 241               		.loc 2 440 0
+ 242               	/* #APP */
+ 243               	 ;  440 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.h
+ 244 0056 7894      		sei
+ 245               	 ;  0 "" 2
+ 246               	.LVL14:
+ 247               	/* #NOAPP */
+ 248               	.L16:
+ 249               	.LBE255:
+ 250               	.LBE254:
+ 251               	.LBE253:
+ 252               	.LBE252:
+ 253               	.LBE246:
+ 254               	.LBB256:
+ 255               	.LBB257:
+ 256               	.LBB258:
+ 257               	.LBB259:
  287:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chvt.h ****     chVTDoResetI(vtp);
- 288               		.loc 3 287 0
- 289 00ac 8881      		ld r24,Y
- 290 00ae 9981      		ldd r25,Y+1
- 291 00b0 892B      		or r24,r25
- 292 00b2 01F0      		breq .L19
+ 258               		.loc 3 287 0
+ 259 0058 8881      		ld r24,Y
+ 260 005a 9981      		ldd r25,Y+1
+ 261 005c 892B      		or r24,r25
+ 262 005e 01F0      		breq .L18
  288:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chvt.h ****   }
- 293               		.loc 3 288 0
- 294 00b4 CE01      		movw r24,r28
- 295 00b6 0E94 0000 		call chVTDoResetI
- 296               	.LVL18:
- 297               	.L19:
- 298               	.LBE190:
- 299               	.LBE189:
- 300               	.LBB191:
- 301               	.LBB192:
- 302               	.LBB193:
- 303               	.LBB194:
- 304               		.loc 2 440 0
- 305               	/* #APP */
- 306               	 ;  440 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.h
- 307 00ba 7894      		sei
- 308               	 ;  0 "" 2
- 309               	/* #NOAPP */
- 310 00bc 4091 0000 		lds r20,counter
- 311 00c0 5091 0000 		lds r21,counter+1
- 312 00c4 6091 0000 		lds r22,counter+2
- 313 00c8 7091 0000 		lds r23,counter+3
- 314               	.LVL19:
- 315               	.L17:
- 316               	.LBE194:
- 317               	.LBE193:
- 318               	.LBE192:
- 319               	.LBE191:
- 320               	.LBE185:
- 276:main.c        ****   {
- 321               		.loc 1 276 0
- 322 00cc 4A30      		cpi r20,10
- 323 00ce 5105      		cpc r21,__zero_reg__
- 324 00d0 6105      		cpc r22,__zero_reg__
- 325 00d2 7105      		cpc r23,__zero_reg__
- 326 00d4 00F0      		brlo .L20
- 327 00d6 8091 0000 		lds r24,EVENT
- 328 00da 8130      		cpi r24,lo8(1)
- 329 00dc 01F4      		brne .L20
- 330               	.L35:
- 278:main.c        ****     palClearPad(IOPORT2, LED_VERDE_PRINCIPAL);
- 331               		.loc 1 278 0
- 332 00de 1092 0000 		sts counter,__zero_reg__
- 333 00e2 1092 0000 		sts counter+1,__zero_reg__
- 334 00e6 1092 0000 		sts counter+2,__zero_reg__
- 335 00ea 1092 0000 		sts counter+3,__zero_reg__
- 279:main.c        ****     STATE = PRINCIPAL;
- 336               		.loc 1 279 0
- 337 00ee 2898      		cbi 0x5,0
- 280:main.c        ****     LED_PRINCIPAL = AMARELO;
- 338               		.loc 1 280 0
- 339 00f0 8093 0000 		sts STATE,r24
- 281:main.c        ****     chVTReset((virtual_timer_t*)arg);
- 340               		.loc 1 281 0
- 341 00f4 8093 0000 		sts LED_PRINCIPAL,r24
- 342               	.LVL20:
- 343               	.LBB195:
- 344               	.LBB196:
- 345               	.LBB197:
- 346               	.LBB198:
- 430:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.h **** }
- 347               		.loc 2 430 0
- 348               	/* #APP */
- 349               	 ;  430 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.h
- 350 00f8 F894      		cli
- 351               	 ;  0 "" 2
- 352               	.LVL21:
- 353               	/* #NOAPP */
- 354               	.LBE198:
- 355               	.LBE197:
- 356               	.LBE196:
- 357               	.LBB199:
- 358               	.LBB200:
+ 263               		.loc 3 288 0
+ 264 0060 CE01      		movw r24,r28
+ 265 0062 0E94 0000 		call chVTDoResetI
+ 266               	.LVL15:
+ 267               	.L18:
+ 268               	.LBE259:
+ 269               	.LBE258:
+ 270               		.loc 3 335 0
+ 271 0066 9E01      		movw r18,r28
+ 272 0068 40E0      		ldi r20,lo8(gs(AvenidaPrincipalSinalAmarelo))
+ 273 006a 50E0      		ldi r21,hi8(gs(AvenidaPrincipalSinalAmarelo))
+ 274 006c 68E0      		ldi r22,lo8(8)
+ 275 006e 7DE3      		ldi r23,lo8(61)
+ 276 0070 CE01      		movw r24,r28
+ 277               	/* epilogue start */
+ 278               	.LBE257:
+ 279               	.LBE256:
+ 349:main.c        **** 
+ 280               		.loc 1 349 0
+ 281 0072 DF91      		pop r29
+ 282 0074 CF91      		pop r28
+ 283               	.LVL16:
+ 284               	.LBB261:
+ 285               	.LBB260:
+ 286               		.loc 3 335 0
+ 287 0076 0C94 0000 		jmp chVTDoSetI
+ 288               	.LVL17:
+ 289               	.L25:
+ 290               	.LBE260:
+ 291               	.LBE261:
+ 323:main.c        **** 
+ 292               		.loc 1 323 0
+ 293 007a 8093 0000 		sts counter,r24
+ 294 007e 9093 0000 		sts counter+1,r25
+ 295 0082 A093 0000 		sts counter+2,r26
+ 296 0086 B093 0000 		sts counter+3,r27
+ 297 008a 00C0      		rjmp .L16
+ 298               		.cfi_endproc
+ 299               	.LFE250:
+ 301               		.section	.text.AvenidaSecundariaSinalVerde,"ax",@progbits
+ 303               	AvenidaSecundariaSinalVerde:
+ 304               	.LFB252:
+ 373:main.c        ****   chSysLockFromISR();
+ 305               		.loc 1 373 0
+ 306               		.cfi_startproc
+ 307               	.LVL18:
+ 308 0000 CF93      		push r28
+ 309               	.LCFI4:
+ 310               		.cfi_def_cfa_offset 3
+ 311               		.cfi_offset 28, -2
+ 312 0002 DF93      		push r29
+ 313               	.LCFI5:
+ 314               		.cfi_def_cfa_offset 4
+ 315               		.cfi_offset 29, -3
+ 316               	/* prologue: function */
+ 317               	/* frame size = 0 */
+ 318               	/* stack size = 2 */
+ 319               	.L__stack_usage = 2
+ 320 0004 EC01      		movw r28,r24
+ 376:main.c        ****   {
+ 321               		.loc 1 376 0
+ 322 0006 8091 0000 		lds r24,amb_sec
+ 323               	.LVL19:
+ 324 000a 8111      		cpse r24,__zero_reg__
+ 325 000c 00C0      		rjmp .L28
+ 378:main.c        ****     counter++;
+ 326               		.loc 1 378 0
+ 327 000e 85B1      		in r24,0x5
+ 328 0010 90E2      		ldi r25,lo8(32)
+ 329 0012 8927      		eor r24,r25
+ 330 0014 85B9      		out 0x5,r24
+ 379:main.c        **** 
+ 331               		.loc 1 379 0
+ 332 0016 8091 0000 		lds r24,counter
+ 333 001a 9091 0000 		lds r25,counter+1
+ 334 001e A091 0000 		lds r26,counter+2
+ 335 0022 B091 0000 		lds r27,counter+3
+ 336 0026 0196      		adiw r24,1
+ 337 0028 A11D      		adc r26,__zero_reg__
+ 338 002a B11D      		adc r27,__zero_reg__
+ 381:main.c        ****     {
+ 339               		.loc 1 381 0
+ 340 002c 8630      		cpi r24,6
+ 341 002e 9105      		cpc r25,__zero_reg__
+ 342 0030 A105      		cpc r26,__zero_reg__
+ 343 0032 B105      		cpc r27,__zero_reg__
+ 344 0034 00F4      		brsh .L29
+ 379:main.c        **** 
+ 345               		.loc 1 379 0
+ 346 0036 8093 0000 		sts counter,r24
+ 347 003a 9093 0000 		sts counter+1,r25
+ 348 003e A093 0000 		sts counter+2,r26
+ 349 0042 B093 0000 		sts counter+3,r27
+ 350               	.L30:
+ 390:main.c        ****     {
+ 351               		.loc 1 390 0
+ 352 0046 0597      		sbiw r24,5
+ 353 0048 A105      		cpc r26,__zero_reg__
+ 354 004a B105      		cpc r27,__zero_reg__
+ 355 004c 00F0      		brlo .L28
+ 390:main.c        ****     {
+ 356               		.loc 1 390 0 is_stmt 0 discriminator 1
+ 357 004e 8091 0000 		lds r24,EVENT
+ 358 0052 8230      		cpi r24,lo8(2)
+ 359 0054 01F0      		breq .L44
+ 360               	.L28:
+ 361               	.LVL20:
+ 362               	.LBB286:
+ 363               	.LBB287:
+ 364               	.LBB288:
+ 365               	.LBB289:
  287:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chvt.h ****     chVTDoResetI(vtp);
- 359               		.loc 3 287 0
- 360 00fa 8881      		ld r24,Y
- 361 00fc 9981      		ldd r25,Y+1
- 362 00fe 892B      		or r24,r25
- 363 0100 01F0      		breq .L21
+ 366               		.loc 3 287 0 is_stmt 1
+ 367 0056 8881      		ld r24,Y
+ 368 0058 9981      		ldd r25,Y+1
+ 369 005a 892B      		or r24,r25
+ 370 005c 01F0      		breq .L34
  288:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chvt.h ****   }
- 364               		.loc 3 288 0
- 365 0102 CE01      		movw r24,r28
- 366 0104 0E94 0000 		call chVTDoResetI
- 367               	.LVL22:
- 368               	.L21:
- 369               	.LBE200:
- 370               	.LBE199:
- 371               	.LBB201:
- 372               	.LBB202:
- 373               	.LBB203:
- 374               	.LBB204:
- 375               		.loc 2 440 0
- 376               	/* #APP */
- 377               	 ;  440 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.h
- 378 0108 7894      		sei
- 379               	 ;  0 "" 2
- 380               	/* #NOAPP */
- 381 010a 00C0      		rjmp .L20
- 382               	.LBE204:
- 383               	.LBE203:
- 384               	.LBE202:
- 385               	.LBE201:
- 386               	.LBE195:
- 387               		.cfi_endproc
- 388               	.LFE249:
- 390               		.section	.text.InitBuffer,"ax",@progbits
- 391               	.global	InitBuffer
- 393               	InitBuffer:
- 394               	.LFB243:
- 166:main.c        ****   chMtxObjectInit(&qmtx);
- 395               		.loc 1 166 0
- 396               		.cfi_startproc
- 397               	/* prologue: function */
- 398               	/* frame size = 0 */
- 399               	/* stack size = 0 */
- 400               	.L__stack_usage = 0
- 167:main.c        ****   chCondObjectInit(&qempty);
- 401               		.loc 1 167 0
- 402 0000 80E0      		ldi r24,lo8(qmtx)
- 403 0002 90E0      		ldi r25,hi8(qmtx)
- 404 0004 0E94 0000 		call chMtxObjectInit
- 405               	.LVL23:
- 168:main.c        ****   chCondObjectInit(&qfull);
- 406               		.loc 1 168 0
- 407 0008 80E0      		ldi r24,lo8(qempty)
- 408 000a 90E0      		ldi r25,hi8(qempty)
- 409 000c 0E94 0000 		call chCondObjectInit
- 410               	.LVL24:
- 169:main.c        ****  
- 411               		.loc 1 169 0
- 412 0010 80E0      		ldi r24,lo8(qfull)
- 413 0012 90E0      		ldi r25,hi8(qfull)
- 414 0014 0E94 0000 		call chCondObjectInit
- 415               	.LVL25:
- 171:main.c        ****   qsize = 0;
- 416               		.loc 1 171 0
- 417 0018 80E0      		ldi r24,lo8(queue)
- 418 001a 90E0      		ldi r25,hi8(queue)
- 419 001c 9093 0000 		sts wrp+1,r25
- 420 0020 8093 0000 		sts wrp,r24
- 421 0024 9093 0000 		sts rdp+1,r25
- 422 0028 8093 0000 		sts rdp,r24
- 172:main.c        **** }
- 423               		.loc 1 172 0
- 424 002c 1092 0000 		sts qsize+1,__zero_reg__
- 425 0030 1092 0000 		sts qsize,__zero_reg__
- 426               	/* epilogue start */
- 173:main.c        **** 
- 427               		.loc 1 173 0
- 428 0034 0895      		ret
- 429               		.cfi_endproc
- 430               	.LFE243:
- 432               		.section	.text.startup.main,"ax",@progbits
- 433               	.global	main
- 435               	main:
- 436               	.LFB242:
- 121:main.c        ****   thread_t *thd0 = 0, *thd1 = 0, *thd2 = 0;
- 437               		.loc 1 121 0
- 438               		.cfi_startproc
- 439 0000 CF93      		push r28
- 440               	.LCFI4:
- 441               		.cfi_def_cfa_offset 3
- 442               		.cfi_offset 28, -2
- 443 0002 DF93      		push r29
- 444               	.LCFI5:
- 445               		.cfi_def_cfa_offset 4
- 446               		.cfi_offset 29, -3
- 447 0004 00D0      		rcall .
- 448 0006 1F92      		push __zero_reg__
- 449               	.LCFI6:
- 450               		.cfi_def_cfa_offset 7
- 451 0008 CDB7      		in r28,__SP_L__
- 452 000a DEB7      		in r29,__SP_H__
- 453               	.LCFI7:
- 454               		.cfi_def_cfa_register 28
- 455               	/* prologue: function */
- 456               	/* frame size = 3 */
- 457               	/* stack size = 5 */
- 458               	.L__stack_usage = 5
- 459               	.LVL26:
- 123:main.c        **** 
- 460               		.loc 1 123 0
- 461 000c 80E1      		ldi r24,lo8(16)
- 462 000e 90E0      		ldi r25,0
- 463 0010 9A83      		std Y+2,r25
- 464 0012 8983      		std Y+1,r24
- 465 0014 83E0      		ldi r24,lo8(3)
- 466 0016 8B83      		std Y+3,r24
- 125:main.c        ****   chVTObjectInit(&vt);
- 467               		.loc 1 125 0
- 468 0018 0E94 0000 		call InitBuffer
- 469               	.LVL27:
- 470               	.LBB205:
- 471               	.LBB206:
+ 371               		.loc 3 288 0
+ 372 005e CE01      		movw r24,r28
+ 373 0060 0E94 0000 		call chVTDoResetI
+ 374               	.LVL21:
+ 375               	.L34:
+ 376               	.LBE289:
+ 377               	.LBE288:
+ 378               		.loc 3 335 0
+ 379 0064 9E01      		movw r18,r28
+ 380 0066 40E0      		ldi r20,lo8(gs(AvenidaSecundariaSinalVerde))
+ 381 0068 50E0      		ldi r21,hi8(gs(AvenidaSecundariaSinalVerde))
+ 382 006a 68E0      		ldi r22,lo8(8)
+ 383 006c 7DE3      		ldi r23,lo8(61)
+ 384 006e CE01      		movw r24,r28
+ 385               	/* epilogue start */
+ 386               	.LBE287:
+ 387               	.LBE286:
+ 402:main.c        **** 
+ 388               		.loc 1 402 0
+ 389 0070 DF91      		pop r29
+ 390 0072 CF91      		pop r28
+ 391               	.LVL22:
+ 392               	.LBB291:
+ 393               	.LBB290:
+ 394               		.loc 3 335 0
+ 395 0074 0C94 0000 		jmp chVTDoSetI
+ 396               	.LVL23:
+ 397               	.L29:
+ 398               	.LBE290:
+ 399               	.LBE291:
+ 383:main.c        ****       STATE = SECUNDARIA;
+ 400               		.loc 1 383 0
+ 401 0078 1092 0000 		sts counter,__zero_reg__
+ 402 007c 1092 0000 		sts counter+1,__zero_reg__
+ 403 0080 1092 0000 		sts counter+2,__zero_reg__
+ 404 0084 1092 0000 		sts counter+3,__zero_reg__
+ 384:main.c        ****       LED_SECUNDARIA = AMARELO;
+ 405               		.loc 1 384 0
+ 406 0088 82E0      		ldi r24,lo8(2)
+ 407 008a 8093 0000 		sts STATE,r24
+ 385:main.c        ****       EVENT = 0;
+ 408               		.loc 1 385 0
+ 409 008e 81E0      		ldi r24,lo8(1)
+ 410 0090 8093 0000 		sts LED_SECUNDARIA,r24
+ 386:main.c        ****       chVTReset((virtual_timer_t*)arg);
+ 411               		.loc 1 386 0
+ 412 0094 1092 0000 		sts EVENT,__zero_reg__
+ 413               	.LVL24:
+ 414               	.LBB292:
+ 415               	.LBB293:
+ 416               	.LBB294:
+ 417               	.LBB295:
+ 430:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.h **** }
+ 418               		.loc 2 430 0
+ 419               	/* #APP */
+ 420               	 ;  430 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.h
+ 421 0098 F894      		cli
+ 422               	 ;  0 "" 2
+ 423               	.LVL25:
+ 424               	/* #NOAPP */
+ 425               	.LBE295:
+ 426               	.LBE294:
+ 427               	.LBE293:
+ 428               	.LBB296:
+ 429               	.LBB297:
+ 287:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chvt.h ****     chVTDoResetI(vtp);
+ 430               		.loc 3 287 0
+ 431 009a 8881      		ld r24,Y
+ 432 009c 9981      		ldd r25,Y+1
+ 433 009e 892B      		or r24,r25
+ 434 00a0 01F0      		breq .L31
+ 288:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chvt.h ****   }
+ 435               		.loc 3 288 0
+ 436 00a2 CE01      		movw r24,r28
+ 437 00a4 0E94 0000 		call chVTDoResetI
+ 438               	.LVL26:
+ 439               	.L31:
+ 440               	.LBE297:
+ 441               	.LBE296:
+ 442               	.LBB298:
+ 443               	.LBB299:
+ 444               	.LBB300:
+ 445               	.LBB301:
+ 446               		.loc 2 440 0
+ 447               	/* #APP */
+ 448               	 ;  440 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.h
+ 449 00a8 7894      		sei
+ 450               	 ;  0 "" 2
+ 451               	/* #NOAPP */
+ 452 00aa 8091 0000 		lds r24,counter
+ 453 00ae 9091 0000 		lds r25,counter+1
+ 454 00b2 A091 0000 		lds r26,counter+2
+ 455 00b6 B091 0000 		lds r27,counter+3
+ 456 00ba 00C0      		rjmp .L30
+ 457               	.LVL27:
+ 458               	.L44:
+ 459               	.LBE301:
+ 460               	.LBE300:
+ 461               	.LBE299:
+ 462               	.LBE298:
+ 463               	.LBE292:
+ 392:main.c        ****       palClearPad(IOPORT4, LED_VERDE_SECUNDARIA);
+ 464               		.loc 1 392 0
+ 465 00bc 1092 0000 		sts counter,__zero_reg__
+ 466 00c0 1092 0000 		sts counter+1,__zero_reg__
+ 467 00c4 1092 0000 		sts counter+2,__zero_reg__
+ 468 00c8 1092 0000 		sts counter+3,__zero_reg__
+ 393:main.c        ****       STATE = SECUNDARIA;
+ 469               		.loc 1 393 0
+ 470 00cc 5D98      		cbi 0xb,5
+ 394:main.c        ****       LED_SECUNDARIA = AMARELO;
+ 471               		.loc 1 394 0
+ 472 00ce 8093 0000 		sts STATE,r24
+ 395:main.c        ****       chVTReset((virtual_timer_t*)arg);
+ 473               		.loc 1 395 0
+ 474 00d2 81E0      		ldi r24,lo8(1)
+ 475 00d4 8093 0000 		sts LED_SECUNDARIA,r24
+ 476               	.LVL28:
+ 477               	.LBB302:
+ 478               	.LBB303:
+ 479               	.LBB304:
+ 480               	.LBB305:
+ 430:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.h **** }
+ 481               		.loc 2 430 0
+ 482               	/* #APP */
+ 483               	 ;  430 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.h
+ 484 00d8 F894      		cli
+ 485               	 ;  0 "" 2
+ 486               	.LVL29:
+ 487               	/* #NOAPP */
+ 488               	.LBE305:
+ 489               	.LBE304:
+ 490               	.LBE303:
+ 491               	.LBB306:
+ 492               	.LBB307:
+ 287:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chvt.h ****     chVTDoResetI(vtp);
+ 493               		.loc 3 287 0
+ 494 00da 8881      		ld r24,Y
+ 495 00dc 9981      		ldd r25,Y+1
+ 496 00de 892B      		or r24,r25
+ 497 00e0 01F0      		breq .L33
+ 288:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chvt.h ****   }
+ 498               		.loc 3 288 0
+ 499 00e2 CE01      		movw r24,r28
+ 500 00e4 0E94 0000 		call chVTDoResetI
+ 501               	.LVL30:
+ 502               	.L33:
+ 503               	.LBE307:
+ 504               	.LBE306:
+ 505               	.LBB308:
+ 506               	.LBB309:
+ 507               	.LBB310:
+ 508               	.LBB311:
+ 509               		.loc 2 440 0
+ 510               	/* #APP */
+ 511               	 ;  440 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.h
+ 512 00e8 7894      		sei
+ 513               	 ;  0 "" 2
+ 514               	/* #NOAPP */
+ 515 00ea 00C0      		rjmp .L28
+ 516               	.LBE311:
+ 517               	.LBE310:
+ 518               	.LBE309:
+ 519               	.LBE308:
+ 520               	.LBE302:
+ 521               		.cfi_endproc
+ 522               	.LFE252:
+ 524               		.section	.text.AvenidaPrincipalSinalVerde,"ax",@progbits
+ 526               	AvenidaPrincipalSinalVerde:
+ 527               	.LFB249:
+ 287:main.c        ****   chSysLockFromISR();
+ 528               		.loc 1 287 0
+ 529               		.cfi_startproc
+ 530               	.LVL31:
+ 531 0000 CF93      		push r28
+ 532               	.LCFI6:
+ 533               		.cfi_def_cfa_offset 3
+ 534               		.cfi_offset 28, -2
+ 535 0002 DF93      		push r29
+ 536               	.LCFI7:
+ 537               		.cfi_def_cfa_offset 4
+ 538               		.cfi_offset 29, -3
+ 539               	/* prologue: function */
+ 540               	/* frame size = 0 */
+ 541               	/* stack size = 2 */
+ 542               	.L__stack_usage = 2
+ 543 0004 EC01      		movw r28,r24
+ 290:main.c        ****   { 
+ 544               		.loc 1 290 0
+ 545 0006 8091 0000 		lds r24,amb_pri
+ 546               	.LVL32:
+ 547 000a 8111      		cpse r24,__zero_reg__
+ 548 000c 00C0      		rjmp .L47
+ 292:main.c        ****     counter++;
+ 549               		.loc 1 292 0
+ 550 000e 85B1      		in r24,0x5
+ 551 0010 90E2      		ldi r25,lo8(32)
+ 552 0012 8927      		eor r24,r25
+ 553 0014 85B9      		out 0x5,r24
+ 293:main.c        **** 
+ 554               		.loc 1 293 0
+ 555 0016 8091 0000 		lds r24,counter
+ 556 001a 9091 0000 		lds r25,counter+1
+ 557 001e A091 0000 		lds r26,counter+2
+ 558 0022 B091 0000 		lds r27,counter+3
+ 559 0026 0196      		adiw r24,1
+ 560 0028 A11D      		adc r26,__zero_reg__
+ 561 002a B11D      		adc r27,__zero_reg__
+ 562 002c 8093 0000 		sts counter,r24
+ 563 0030 9093 0000 		sts counter+1,r25
+ 564 0034 A093 0000 		sts counter+2,r26
+ 565 0038 B093 0000 		sts counter+3,r27
+ 295:main.c        ****     {
+ 566               		.loc 1 295 0
+ 567 003c 8A30      		cpi r24,10
+ 568 003e 9105      		cpc r25,__zero_reg__
+ 569 0040 A105      		cpc r26,__zero_reg__
+ 570 0042 B105      		cpc r27,__zero_reg__
+ 571 0044 00F0      		brlo .L48
+ 295:main.c        ****     {
+ 572               		.loc 1 295 0 is_stmt 0 discriminator 1
+ 573 0046 8091 0000 		lds r24,EVENT
+ 574 004a 9DEF      		ldi r25,lo8(-3)
+ 575 004c 980F      		add r25,r24
+ 576 004e 9230      		cpi r25,lo8(2)
+ 577 0050 00F0      		brlo .L63
+ 578               	.L49:
+ 305:main.c        ****     {
+ 579               		.loc 1 305 0 is_stmt 1 discriminator 1
+ 580 0052 8130      		cpi r24,lo8(1)
+ 581 0054 01F0      		breq .L64
+ 582               	.L47:
+ 583               	.LVL33:
+ 584               	.LBB336:
+ 585               	.LBB337:
+ 586               	.LBB338:
+ 587               	.LBB339:
+ 287:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chvt.h ****     chVTDoResetI(vtp);
+ 588               		.loc 3 287 0
+ 589 0056 8881      		ld r24,Y
+ 590 0058 9981      		ldd r25,Y+1
+ 591 005a 892B      		or r24,r25
+ 592 005c 01F0      		breq .L53
+ 288:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chvt.h ****   }
+ 593               		.loc 3 288 0
+ 594 005e CE01      		movw r24,r28
+ 595 0060 0E94 0000 		call chVTDoResetI
+ 596               	.LVL34:
+ 597               	.L53:
+ 598               	.LBE339:
+ 599               	.LBE338:
+ 600               		.loc 3 335 0
+ 601 0064 9E01      		movw r18,r28
+ 602 0066 40E0      		ldi r20,lo8(gs(AvenidaPrincipalSinalVerde))
+ 603 0068 50E0      		ldi r21,hi8(gs(AvenidaPrincipalSinalVerde))
+ 604 006a 68E0      		ldi r22,lo8(8)
+ 605 006c 7DE3      		ldi r23,lo8(61)
+ 606 006e CE01      		movw r24,r28
+ 607               	/* epilogue start */
+ 608               	.LBE337:
+ 609               	.LBE336:
+ 317:main.c        **** 
+ 610               		.loc 1 317 0
+ 611 0070 DF91      		pop r29
+ 612 0072 CF91      		pop r28
+ 613               	.LVL35:
+ 614               	.LBB341:
+ 615               	.LBB340:
+ 616               		.loc 3 335 0
+ 617 0074 0C94 0000 		jmp chVTDoSetI
+ 618               	.LVL36:
+ 619               	.L48:
+ 620               	.LBE340:
+ 621               	.LBE341:
+ 305:main.c        ****     {
+ 622               		.loc 1 305 0
+ 623 0078 0597      		sbiw r24,5
+ 624 007a A105      		cpc r26,__zero_reg__
+ 625 007c B105      		cpc r27,__zero_reg__
+ 626 007e 00F0      		brlo .L47
+ 627 0080 8091 0000 		lds r24,EVENT
+ 628 0084 00C0      		rjmp .L49
+ 629               	.L64:
+ 307:main.c        ****       palClearPad(IOPORT2, LED_VERDE_PRINCIPAL);
+ 630               		.loc 1 307 0
+ 631 0086 1092 0000 		sts counter,__zero_reg__
+ 632 008a 1092 0000 		sts counter+1,__zero_reg__
+ 633 008e 1092 0000 		sts counter+2,__zero_reg__
+ 634 0092 1092 0000 		sts counter+3,__zero_reg__
+ 308:main.c        ****       STATE = PRINCIPAL;
+ 635               		.loc 1 308 0
+ 636 0096 2898      		cbi 0x5,0
+ 309:main.c        ****       LED_PRINCIPAL = AMARELO;
+ 637               		.loc 1 309 0
+ 638 0098 8093 0000 		sts STATE,r24
+ 310:main.c        ****       chVTReset((virtual_timer_t*)arg);
+ 639               		.loc 1 310 0
+ 640 009c 8093 0000 		sts LED_PRINCIPAL,r24
+ 641               	.LVL37:
+ 642               	.LBB342:
+ 643               	.LBB343:
+ 644               	.LBB344:
+ 645               	.LBB345:
+ 430:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.h **** }
+ 646               		.loc 2 430 0
+ 647               	/* #APP */
+ 648               	 ;  430 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.h
+ 649 00a0 F894      		cli
+ 650               	 ;  0 "" 2
+ 651               	.LVL38:
+ 652               	/* #NOAPP */
+ 653               	.LBE345:
+ 654               	.LBE344:
+ 655               	.LBE343:
+ 656               	.LBB346:
+ 657               	.LBB347:
+ 287:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chvt.h ****     chVTDoResetI(vtp);
+ 658               		.loc 3 287 0
+ 659 00a2 8881      		ld r24,Y
+ 660 00a4 9981      		ldd r25,Y+1
+ 661 00a6 892B      		or r24,r25
+ 662 00a8 01F0      		breq .L52
+ 288:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chvt.h ****   }
+ 663               		.loc 3 288 0
+ 664 00aa CE01      		movw r24,r28
+ 665 00ac 0E94 0000 		call chVTDoResetI
+ 666               	.LVL39:
+ 667               	.L52:
+ 668               	.LBE347:
+ 669               	.LBE346:
+ 670               	.LBB348:
+ 671               	.LBB349:
+ 672               	.LBB350:
+ 673               	.LBB351:
+ 674               		.loc 2 440 0
+ 675               	/* #APP */
+ 676               	 ;  440 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.h
+ 677 00b0 7894      		sei
+ 678               	 ;  0 "" 2
+ 679               	/* #NOAPP */
+ 680 00b2 00C0      		rjmp .L47
+ 681               	.LVL40:
+ 682               	.L63:
+ 683               	.LBE351:
+ 684               	.LBE350:
+ 685               	.LBE349:
+ 686               	.LBE348:
+ 687               	.LBE342:
+ 297:main.c        ****       palClearPad(IOPORT2, LED_VERDE_PRINCIPAL);
+ 688               		.loc 1 297 0
+ 689 00b4 1092 0000 		sts counter,__zero_reg__
+ 690 00b8 1092 0000 		sts counter+1,__zero_reg__
+ 691 00bc 1092 0000 		sts counter+2,__zero_reg__
+ 692 00c0 1092 0000 		sts counter+3,__zero_reg__
+ 298:main.c        ****       STATE = PRINCIPAL;
+ 693               		.loc 1 298 0
+ 694 00c4 2898      		cbi 0x5,0
+ 299:main.c        ****       LED_PRINCIPAL = AMARELO;
+ 695               		.loc 1 299 0
+ 696 00c6 81E0      		ldi r24,lo8(1)
+ 697 00c8 8093 0000 		sts STATE,r24
+ 300:main.c        ****       chVTReset((virtual_timer_t*)arg);
+ 698               		.loc 1 300 0
+ 699 00cc 8093 0000 		sts LED_PRINCIPAL,r24
+ 700               	.LVL41:
+ 701               	.LBB352:
+ 702               	.LBB353:
+ 703               	.LBB354:
+ 704               	.LBB355:
+ 430:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.h **** }
+ 705               		.loc 2 430 0
+ 706               	/* #APP */
+ 707               	 ;  430 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.h
+ 708 00d0 F894      		cli
+ 709               	 ;  0 "" 2
+ 710               	.LVL42:
+ 711               	/* #NOAPP */
+ 712               	.LBE355:
+ 713               	.LBE354:
+ 714               	.LBE353:
+ 715               	.LBB356:
+ 716               	.LBB357:
+ 287:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chvt.h ****     chVTDoResetI(vtp);
+ 717               		.loc 3 287 0
+ 718 00d2 8881      		ld r24,Y
+ 719 00d4 9981      		ldd r25,Y+1
+ 720 00d6 892B      		or r24,r25
+ 721 00d8 01F0      		breq .L50
+ 288:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chvt.h ****   }
+ 722               		.loc 3 288 0
+ 723 00da CE01      		movw r24,r28
+ 724 00dc 0E94 0000 		call chVTDoResetI
+ 725               	.LVL43:
+ 726               	.L50:
+ 727               	.LBE357:
+ 728               	.LBE356:
+ 729               	.LBB358:
+ 730               	.LBB359:
+ 731               	.LBB360:
+ 732               	.LBB361:
+ 733               		.loc 2 440 0
+ 734               	/* #APP */
+ 735               	 ;  440 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.h
+ 736 00e0 7894      		sei
+ 737               	 ;  0 "" 2
+ 738               	.LVL44:
+ 739               	/* #NOAPP */
+ 740               	.LBE361:
+ 741               	.LBE360:
+ 742               	.LBE359:
+ 743               	.LBE358:
+ 744               	.LBE352:
+ 302:main.c        ****     }
+ 745               		.loc 1 302 0
+ 746 00e2 1092 0000 		sts EVENT,__zero_reg__
+ 747 00e6 00C0      		rjmp .L47
+ 748               		.cfi_endproc
+ 749               	.LFE249:
+ 751               		.section	.text.InitBuffer,"ax",@progbits
+ 752               	.global	InitBuffer
+ 754               	InitBuffer:
+ 755               	.LFB243:
+ 194:main.c        ****   chMtxObjectInit(&qmtx);
+ 756               		.loc 1 194 0
+ 757               		.cfi_startproc
+ 758               	/* prologue: function */
+ 759               	/* frame size = 0 */
+ 760               	/* stack size = 0 */
+ 761               	.L__stack_usage = 0
+ 195:main.c        ****   chCondObjectInit(&qempty);
+ 762               		.loc 1 195 0
+ 763 0000 80E0      		ldi r24,lo8(qmtx)
+ 764 0002 90E0      		ldi r25,hi8(qmtx)
+ 765 0004 0E94 0000 		call chMtxObjectInit
+ 766               	.LVL45:
+ 196:main.c        ****   chCondObjectInit(&qfull);
+ 767               		.loc 1 196 0
+ 768 0008 80E0      		ldi r24,lo8(qempty)
+ 769 000a 90E0      		ldi r25,hi8(qempty)
+ 770 000c 0E94 0000 		call chCondObjectInit
+ 771               	.LVL46:
+ 197:main.c        ****  
+ 772               		.loc 1 197 0
+ 773 0010 80E0      		ldi r24,lo8(qfull)
+ 774 0012 90E0      		ldi r25,hi8(qfull)
+ 775 0014 0E94 0000 		call chCondObjectInit
+ 776               	.LVL47:
+ 199:main.c        ****   qsize = 0;
+ 777               		.loc 1 199 0
+ 778 0018 80E0      		ldi r24,lo8(queue)
+ 779 001a 90E0      		ldi r25,hi8(queue)
+ 780 001c 9093 0000 		sts wrp+1,r25
+ 781 0020 8093 0000 		sts wrp,r24
+ 782 0024 9093 0000 		sts rdp+1,r25
+ 783 0028 8093 0000 		sts rdp,r24
+ 200:main.c        **** }
+ 784               		.loc 1 200 0
+ 785 002c 1092 0000 		sts qsize+1,__zero_reg__
+ 786 0030 1092 0000 		sts qsize,__zero_reg__
+ 787               	/* epilogue start */
+ 201:main.c        **** 
+ 788               		.loc 1 201 0
+ 789 0034 0895      		ret
+ 790               		.cfi_endproc
+ 791               	.LFE243:
+ 793               		.section	.text.startup.main,"ax",@progbits
+ 794               	.global	main
+ 796               	main:
+ 797               	.LFB242:
+ 139:main.c        ****   thread_t *thd0 = 0, *thd1 = 0, *thd2 = 0;
+ 798               		.loc 1 139 0
+ 799               		.cfi_startproc
+ 800 0000 CF93      		push r28
+ 801               	.LCFI8:
+ 802               		.cfi_def_cfa_offset 3
+ 803               		.cfi_offset 28, -2
+ 804 0002 DF93      		push r29
+ 805               	.LCFI9:
+ 806               		.cfi_def_cfa_offset 4
+ 807               		.cfi_offset 29, -3
+ 808 0004 00D0      		rcall .
+ 809 0006 1F92      		push __zero_reg__
+ 810               	.LCFI10:
+ 811               		.cfi_def_cfa_offset 7
+ 812 0008 CDB7      		in r28,__SP_L__
+ 813 000a DEB7      		in r29,__SP_H__
+ 814               	.LCFI11:
+ 815               		.cfi_def_cfa_register 28
+ 816               	/* prologue: function */
+ 817               	/* frame size = 3 */
+ 818               	/* stack size = 5 */
+ 819               	.L__stack_usage = 5
+ 820               	.LVL48:
+ 141:main.c        **** 
+ 821               		.loc 1 141 0
+ 822 000c 80E1      		ldi r24,lo8(16)
+ 823 000e 90E0      		ldi r25,0
+ 824 0010 9A83      		std Y+2,r25
+ 825 0012 8983      		std Y+1,r24
+ 826 0014 83E0      		ldi r24,lo8(3)
+ 827 0016 8B83      		std Y+3,r24
+ 143:main.c        ****   chVTObjectInit(&vt);
+ 828               		.loc 1 143 0
+ 829 0018 0E94 0000 		call InitBuffer
+ 830               	.LVL49:
+ 831               	.LBB362:
+ 832               	.LBB363:
  106:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chvt.h **** }
- 472               		.loc 3 106 0
- 473 001c 1092 0000 		sts vt+1,__zero_reg__
- 474 0020 1092 0000 		sts vt,__zero_reg__
- 475               	.LBE206:
- 476               	.LBE205:
- 134:main.c        ****   chSysInit();
- 477               		.loc 1 134 0
- 478 0024 0E94 0000 		call halInit
- 479               	.LVL28:
- 135:main.c        **** 
- 480               		.loc 1 135 0
- 481 0028 0E94 0000 		call chSysInit
- 482               	.LVL29:
- 137:main.c        **** 
- 483               		.loc 1 137 0
- 484 002c BE01      		movw r22,r28
- 485 002e 6F5F      		subi r22,-1
- 486 0030 7F4F      		sbci r23,-1
- 487 0032 80E0      		ldi r24,lo8(SD1)
- 488 0034 90E0      		ldi r25,hi8(SD1)
- 489 0036 0E94 0000 		call sdStart
- 490               	.LVL30:
- 140:main.c        ****   palSetPadMode(IOPORT2, CARRO_SECUNDARIA, PAL_MODE_INPUT_PULLUP);
- 491               		.loc 1 140 0
- 492 003a 43E0      		ldi r20,lo8(3)
- 493 003c 60E1      		ldi r22,lo8(16)
- 494 003e 83E2      		ldi r24,lo8(35)
- 495 0040 90E0      		ldi r25,0
- 496 0042 0E94 0000 		call _pal_lld_setgroupmode
- 497               	.LVL31:
- 141:main.c        ****   palSetPadMode(IOPORT2, AMBULANCIA_PRINCIPAL, PAL_MODE_INPUT_PULLUP);
- 498               		.loc 1 141 0
- 499 0046 43E0      		ldi r20,lo8(3)
- 500 0048 68E0      		ldi r22,lo8(8)
- 501 004a 83E2      		ldi r24,lo8(35)
- 502 004c 90E0      		ldi r25,0
- 503 004e 0E94 0000 		call _pal_lld_setgroupmode
- 504               	.LVL32:
- 142:main.c        ****   palSetPadMode(IOPORT2, AMBULANCIA_SECUNDARIA, PAL_MODE_INPUT_PULLUP);  
- 505               		.loc 1 142 0
- 506 0052 43E0      		ldi r20,lo8(3)
- 507 0054 64E0      		ldi r22,lo8(4)
- 508 0056 83E2      		ldi r24,lo8(35)
- 509 0058 90E0      		ldi r25,0
- 510 005a 0E94 0000 		call _pal_lld_setgroupmode
- 511               	.LVL33:
- 143:main.c        **** 
- 512               		.loc 1 143 0
- 513 005e 43E0      		ldi r20,lo8(3)
- 514 0060 62E0      		ldi r22,lo8(2)
- 515 0062 83E2      		ldi r24,lo8(35)
- 516 0064 90E0      		ldi r25,0
- 517 0066 0E94 0000 		call _pal_lld_setgroupmode
- 518               	.LVL34:
- 146:main.c        ****   palClearPad(IOPORT2, LED_VERDE_PRINCIPAL);
- 519               		.loc 1 146 0
- 520 006a 46E0      		ldi r20,lo8(6)
- 521 006c 61E0      		ldi r22,lo8(1)
- 522 006e 83E2      		ldi r24,lo8(35)
- 523 0070 90E0      		ldi r25,0
- 524 0072 0E94 0000 		call _pal_lld_setgroupmode
- 525               	.LVL35:
- 147:main.c        **** 
- 526               		.loc 1 147 0
- 527 0076 2898      		cbi 0x5,0
- 149:main.c        ****   palClearPad(IOPORT4, LED_AMARELO_PRINCIPAL);
- 528               		.loc 1 149 0
- 529 0078 46E0      		ldi r20,lo8(6)
- 530 007a 60E8      		ldi r22,lo8(-128)
- 531 007c 89E2      		ldi r24,lo8(41)
- 532 007e 90E0      		ldi r25,0
- 533 0080 0E94 0000 		call _pal_lld_setgroupmode
- 534               	.LVL36:
- 150:main.c        **** 
- 535               		.loc 1 150 0
- 536 0084 5F98      		cbi 0xb,7
- 152:main.c        ****   palClearPad(IOPORT4, LED_VERMELHO_PRINCIPAL);
- 537               		.loc 1 152 0
- 538 0086 46E0      		ldi r20,lo8(6)
- 539 0088 60E4      		ldi r22,lo8(64)
- 540 008a 89E2      		ldi r24,lo8(41)
- 541 008c 90E0      		ldi r25,0
- 542 008e 0E94 0000 		call _pal_lld_setgroupmode
- 543               	.LVL37:
+ 833               		.loc 3 106 0
+ 834 001c 1092 0000 		sts vt+1,__zero_reg__
+ 835 0020 1092 0000 		sts vt,__zero_reg__
+ 836               	.LBE363:
+ 837               	.LBE362:
+ 152:main.c        ****   chSysInit();
+ 838               		.loc 1 152 0
+ 839 0024 0E94 0000 		call halInit
+ 840               	.LVL50:
  153:main.c        **** 
- 544               		.loc 1 153 0
- 545 0092 5E98      		cbi 0xb,6
- 155:main.c        ****   thd1 = chThdCreateStatic(wa_ReadEvent, sizeof(wa_ReadEvent), NORMALPRIO, Read_Collect_Event, NULL
- 546               		.loc 1 155 0
- 547 0094 10E0      		ldi r17,0
- 548 0096 00E0      		ldi r16,0
- 549 0098 20E0      		ldi r18,lo8(gs(Write_Save_Event))
- 550 009a 30E0      		ldi r19,hi8(gs(Write_Save_Event))
- 551 009c 40E8      		ldi r20,lo8(-128)
- 552 009e 63EE      		ldi r22,lo8(-29)
- 553 00a0 70E0      		ldi r23,0
- 554 00a2 80E0      		ldi r24,lo8(wa_WriteEvent)
- 555 00a4 90E0      		ldi r25,hi8(wa_WriteEvent)
- 556 00a6 0E94 0000 		call chThdCreateStatic
- 557               	.LVL38:
- 156:main.c        ****   thd2 = chThdCreateStatic(wa_ProcessEvent, sizeof(wa_ProcessEvent), NORMALPRIO, ProcessEvent, NULL
- 558               		.loc 1 156 0
- 559 00aa 20E0      		ldi r18,lo8(gs(Read_Collect_Event))
- 560 00ac 30E0      		ldi r19,hi8(gs(Read_Collect_Event))
- 561 00ae 40E8      		ldi r20,lo8(-128)
- 562 00b0 63EE      		ldi r22,lo8(-29)
- 563 00b2 70E0      		ldi r23,0
- 564 00b4 80E0      		ldi r24,lo8(wa_ReadEvent)
- 565 00b6 90E0      		ldi r25,hi8(wa_ReadEvent)
- 566 00b8 0E94 0000 		call chThdCreateStatic
- 567               	.LVL39:
- 157:main.c        **** 
- 568               		.loc 1 157 0
- 569 00bc 20E0      		ldi r18,lo8(gs(ProcessEvent))
- 570 00be 30E0      		ldi r19,hi8(gs(ProcessEvent))
- 571 00c0 40E8      		ldi r20,lo8(-128)
- 572 00c2 63EE      		ldi r22,lo8(-29)
- 573 00c4 70E0      		ldi r23,0
- 574 00c6 80E0      		ldi r24,lo8(wa_ProcessEvent)
- 575 00c8 90E0      		ldi r25,hi8(wa_ProcessEvent)
- 576 00ca 0E94 0000 		call chThdCreateStatic
- 577               	.LVL40:
- 578               	.L38:
- 161:main.c        ****   }
- 579               		.loc 1 161 0 discriminator 1
- 580 00ce 80E1      		ldi r24,lo8(16)
- 581 00d0 90E0      		ldi r25,0
- 582 00d2 0E94 0000 		call chThdSleep
- 583               	.LVL41:
- 584 00d6 00C0      		rjmp .L38
- 585               		.cfi_endproc
- 586               	.LFE242:
- 588               		.section	.text.PushBUffer,"ax",@progbits
- 589               	.global	PushBUffer
- 591               	PushBUffer:
- 592               	.LFB244:
- 176:main.c        ****   /* Entering monitor.*/
- 593               		.loc 1 176 0
- 594               		.cfi_startproc
- 595               	.LVL42:
- 596 0000 CF93      		push r28
- 597               	.LCFI8:
- 598               		.cfi_def_cfa_offset 3
- 599               		.cfi_offset 28, -2
- 600 0002 DF93      		push r29
- 601               	.LCFI9:
- 602               		.cfi_def_cfa_offset 4
- 603               		.cfi_offset 29, -3
- 604               	/* prologue: function */
- 605               	/* frame size = 0 */
- 606               	/* stack size = 2 */
- 607               	.L__stack_usage = 2
- 608 0004 EC01      		movw r28,r24
- 178:main.c        ****  
- 609               		.loc 1 178 0
- 610 0006 80E0      		ldi r24,lo8(qmtx)
- 611 0008 90E0      		ldi r25,hi8(qmtx)
- 612               	.LVL43:
- 613 000a 0E94 0000 		call chMtxLock
- 614               	.LVL44:
- 615               	.LBB207:
- 616               	.LBB208:
- 230:main.c        **** }
- 617               		.loc 1 230 0
- 618 000e 8091 0000 		lds r24,qsize
- 619 0012 9091 0000 		lds r25,qsize+1
- 620               	.LBE208:
- 621               	.LBE207:
- 181:main.c        ****     chCondWait(&qfull);
- 622               		.loc 1 181 0
- 623 0016 8038      		cpi r24,-128
- 624 0018 9105      		cpc r25,__zero_reg__
- 625 001a 00F0      		brlo .L40
- 626               	.L41:
- 182:main.c        ****  
- 627               		.loc 1 182 0
- 628 001c 80E0      		ldi r24,lo8(qfull)
- 629 001e 90E0      		ldi r25,hi8(qfull)
- 630 0020 0E94 0000 		call chCondWait
- 631               	.LVL45:
- 632               	.LBB210:
- 633               	.LBB209:
- 230:main.c        **** }
- 634               		.loc 1 230 0
- 635 0024 8091 0000 		lds r24,qsize
- 636 0028 9091 0000 		lds r25,qsize+1
- 637               	.LBE209:
- 638               	.LBE210:
- 181:main.c        ****     chCondWait(&qfull);
- 639               		.loc 1 181 0
- 640 002c 8038      		cpi r24,-128
- 641 002e 9105      		cpc r25,__zero_reg__
- 642 0030 00F4      		brsh .L41
- 643               	.L40:
- 185:main.c        ****   if (++wrp >= &queue[QUEUE_SIZE])
- 644               		.loc 1 185 0
- 645 0032 E091 0000 		lds r30,wrp
- 646 0036 F091 0000 		lds r31,wrp+1
- 647 003a C193      		st Z+,r28
- 648 003c D193      		st Z+,r29
- 186:main.c        ****     wrp = &queue[0];
- 649               		.loc 1 186 0
- 650 003e 20E0      		ldi r18,hi8(queue+256)
- 651 0040 E030      		cpi r30,lo8(queue+256)
- 652 0042 F207      		cpc r31,r18
- 653 0044 00F0      		brlo .L45
- 187:main.c        ****   qsize++;
- 654               		.loc 1 187 0
- 655 0046 20E0      		ldi r18,lo8(queue)
- 656 0048 30E0      		ldi r19,hi8(queue)
- 657 004a 3093 0000 		sts wrp+1,r19
- 658 004e 2093 0000 		sts wrp,r18
- 659               	.L43:
- 188:main.c        **** 
- 660               		.loc 1 188 0
- 661 0052 0196      		adiw r24,1
- 662 0054 9093 0000 		sts qsize+1,r25
- 663 0058 8093 0000 		sts qsize,r24
- 191:main.c        **** 
- 664               		.loc 1 191 0
- 665 005c 80E0      		ldi r24,lo8(qempty)
- 666 005e 90E0      		ldi r25,hi8(qempty)
- 667 0060 0E94 0000 		call chCondSignal
- 668               	.LVL46:
- 194:main.c        **** }
- 669               		.loc 1 194 0
- 670 0064 80E0      		ldi r24,lo8(qmtx)
- 671 0066 90E0      		ldi r25,hi8(qmtx)
- 672               	/* epilogue start */
- 195:main.c        **** 
- 673               		.loc 1 195 0
- 674 0068 DF91      		pop r29
- 675 006a CF91      		pop r28
- 676               	.LVL47:
- 194:main.c        **** }
- 677               		.loc 1 194 0
- 678 006c 0C94 0000 		jmp chMtxUnlock
- 679               	.LVL48:
- 680               	.L45:
- 186:main.c        ****     wrp = &queue[0];
- 681               		.loc 1 186 0
- 682 0070 F093 0000 		sts wrp+1,r31
- 683 0074 E093 0000 		sts wrp,r30
- 684 0078 00C0      		rjmp .L43
- 685               		.cfi_endproc
- 686               	.LFE244:
- 688               		.section	.rodata.Write_Save_Event.str1.1,"aMS",@progbits,1
- 689               	.LC0:
- 690 0000 5361 7665 		.string	"Save/Write Event"
- 690      2F57 7269 
- 690      7465 2045 
- 690      7665 6E74 
- 690      00
- 691               		.section	.text.Write_Save_Event,"ax",@progbits
- 693               	Write_Save_Event:
- 694               	.LFB239:
-  55:main.c        ****   chRegSetThreadName("Save/Write Event");
- 695               		.loc 1 55 0
- 696               		.cfi_startproc
- 697               	.LVL49:
- 698               	/* prologue: function */
- 699               	/* frame size = 0 */
- 700               	/* stack size = 0 */
- 701               	.L__stack_usage = 0
- 702               	.LBB211:
- 703               	.LBB212:
- 704               		.file 4 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h"
+ 841               		.loc 1 153 0
+ 842 0028 0E94 0000 		call chSysInit
+ 843               	.LVL51:
+ 155:main.c        **** 
+ 844               		.loc 1 155 0
+ 845 002c BE01      		movw r22,r28
+ 846 002e 6F5F      		subi r22,-1
+ 847 0030 7F4F      		sbci r23,-1
+ 848 0032 80E0      		ldi r24,lo8(SD1)
+ 849 0034 90E0      		ldi r25,hi8(SD1)
+ 850 0036 0E94 0000 		call sdStart
+ 851               	.LVL52:
+ 158:main.c        ****   palSetPadMode(IOPORT2, CARRO_SECUNDARIA, PAL_MODE_INPUT_PULLUP);
+ 852               		.loc 1 158 0
+ 853 003a 43E0      		ldi r20,lo8(3)
+ 854 003c 60E1      		ldi r22,lo8(16)
+ 855 003e 83E2      		ldi r24,lo8(35)
+ 856 0040 90E0      		ldi r25,0
+ 857 0042 0E94 0000 		call _pal_lld_setgroupmode
+ 858               	.LVL53:
+ 159:main.c        ****   palSetPadMode(IOPORT2, AMBULANCIA_PRINCIPAL, PAL_MODE_INPUT_PULLUP);
+ 859               		.loc 1 159 0
+ 860 0046 43E0      		ldi r20,lo8(3)
+ 861 0048 68E0      		ldi r22,lo8(8)
+ 862 004a 83E2      		ldi r24,lo8(35)
+ 863 004c 90E0      		ldi r25,0
+ 864 004e 0E94 0000 		call _pal_lld_setgroupmode
+ 865               	.LVL54:
+ 160:main.c        ****   palSetPadMode(IOPORT2, AMBULANCIA_SECUNDARIA, PAL_MODE_INPUT_PULLUP);  
+ 866               		.loc 1 160 0
+ 867 0052 43E0      		ldi r20,lo8(3)
+ 868 0054 64E0      		ldi r22,lo8(4)
+ 869 0056 83E2      		ldi r24,lo8(35)
+ 870 0058 90E0      		ldi r25,0
+ 871 005a 0E94 0000 		call _pal_lld_setgroupmode
+ 872               	.LVL55:
+ 161:main.c        **** 
+ 873               		.loc 1 161 0
+ 874 005e 43E0      		ldi r20,lo8(3)
+ 875 0060 62E0      		ldi r22,lo8(2)
+ 876 0062 83E2      		ldi r24,lo8(35)
+ 877 0064 90E0      		ldi r25,0
+ 878 0066 0E94 0000 		call _pal_lld_setgroupmode
+ 879               	.LVL56:
+ 164:main.c        ****   palClearPad(IOPORT2, LED_VERDE_PRINCIPAL);
+ 880               		.loc 1 164 0
+ 881 006a 46E0      		ldi r20,lo8(6)
+ 882 006c 61E0      		ldi r22,lo8(1)
+ 883 006e 83E2      		ldi r24,lo8(35)
+ 884 0070 90E0      		ldi r25,0
+ 885 0072 0E94 0000 		call _pal_lld_setgroupmode
+ 886               	.LVL57:
+ 165:main.c        **** 
+ 887               		.loc 1 165 0
+ 888 0076 2898      		cbi 0x5,0
+ 167:main.c        ****   palClearPad(IOPORT4, LED_AMARELO_PRINCIPAL);
+ 889               		.loc 1 167 0
+ 890 0078 46E0      		ldi r20,lo8(6)
+ 891 007a 60E8      		ldi r22,lo8(-128)
+ 892 007c 89E2      		ldi r24,lo8(41)
+ 893 007e 90E0      		ldi r25,0
+ 894 0080 0E94 0000 		call _pal_lld_setgroupmode
+ 895               	.LVL58:
+ 168:main.c        **** 
+ 896               		.loc 1 168 0
+ 897 0084 5F98      		cbi 0xb,7
+ 170:main.c        ****   palClearPad(IOPORT4, LED_VERMELHO_PRINCIPAL);
+ 898               		.loc 1 170 0
+ 899 0086 46E0      		ldi r20,lo8(6)
+ 900 0088 60E4      		ldi r22,lo8(64)
+ 901 008a 89E2      		ldi r24,lo8(41)
+ 902 008c 90E0      		ldi r25,0
+ 903 008e 0E94 0000 		call _pal_lld_setgroupmode
+ 904               	.LVL59:
+ 171:main.c        **** 
+ 905               		.loc 1 171 0
+ 906 0092 5E98      		cbi 0xb,6
+ 174:main.c        ****   palClearPad(IOPORT4, LED_VERDE_SECUNDARIA);
+ 907               		.loc 1 174 0
+ 908 0094 46E0      		ldi r20,lo8(6)
+ 909 0096 60E2      		ldi r22,lo8(32)
+ 910 0098 89E2      		ldi r24,lo8(41)
+ 911 009a 90E0      		ldi r25,0
+ 912 009c 0E94 0000 		call _pal_lld_setgroupmode
+ 913               	.LVL60:
+ 175:main.c        **** 
+ 914               		.loc 1 175 0
+ 915 00a0 5D98      		cbi 0xb,5
+ 177:main.c        ****   palClearPad(IOPORT4, LED_AMARELO_SECUNDARIA);
+ 916               		.loc 1 177 0
+ 917 00a2 46E0      		ldi r20,lo8(6)
+ 918 00a4 60E1      		ldi r22,lo8(16)
+ 919 00a6 89E2      		ldi r24,lo8(41)
+ 920 00a8 90E0      		ldi r25,0
+ 921 00aa 0E94 0000 		call _pal_lld_setgroupmode
+ 922               	.LVL61:
+ 178:main.c        **** 
+ 923               		.loc 1 178 0
+ 924 00ae 5C98      		cbi 0xb,4
+ 180:main.c        ****   palSetPad(IOPORT4, LED_VERMELHO_SECUNDARIA);
+ 925               		.loc 1 180 0
+ 926 00b0 46E0      		ldi r20,lo8(6)
+ 927 00b2 68E0      		ldi r22,lo8(8)
+ 928 00b4 89E2      		ldi r24,lo8(41)
+ 929 00b6 90E0      		ldi r25,0
+ 930 00b8 0E94 0000 		call _pal_lld_setgroupmode
+ 931               	.LVL62:
+ 181:main.c        **** 
+ 932               		.loc 1 181 0
+ 933 00bc 5B9A      		sbi 0xb,3
+ 183:main.c        ****   thd1 = chThdCreateStatic(wa_ReadEvent, sizeof(wa_ReadEvent), NORMALPRIO, Read_Collect_Event, NULL
+ 934               		.loc 1 183 0
+ 935 00be 10E0      		ldi r17,0
+ 936 00c0 00E0      		ldi r16,0
+ 937 00c2 20E0      		ldi r18,lo8(gs(Write_Save_Event))
+ 938 00c4 30E0      		ldi r19,hi8(gs(Write_Save_Event))
+ 939 00c6 40E8      		ldi r20,lo8(-128)
+ 940 00c8 63EE      		ldi r22,lo8(-29)
+ 941 00ca 70E0      		ldi r23,0
+ 942 00cc 80E0      		ldi r24,lo8(wa_WriteEvent)
+ 943 00ce 90E0      		ldi r25,hi8(wa_WriteEvent)
+ 944 00d0 0E94 0000 		call chThdCreateStatic
+ 945               	.LVL63:
+ 184:main.c        ****   thd2 = chThdCreateStatic(wa_ProcessEvent, sizeof(wa_ProcessEvent), NORMALPRIO, ProcessEvent, NULL
+ 946               		.loc 1 184 0
+ 947 00d4 20E0      		ldi r18,lo8(gs(Read_Collect_Event))
+ 948 00d6 30E0      		ldi r19,hi8(gs(Read_Collect_Event))
+ 949 00d8 40E8      		ldi r20,lo8(-128)
+ 950 00da 63EE      		ldi r22,lo8(-29)
+ 951 00dc 70E0      		ldi r23,0
+ 952 00de 80E0      		ldi r24,lo8(wa_ReadEvent)
+ 953 00e0 90E0      		ldi r25,hi8(wa_ReadEvent)
+ 954 00e2 0E94 0000 		call chThdCreateStatic
+ 955               	.LVL64:
+ 185:main.c        **** 
+ 956               		.loc 1 185 0
+ 957 00e6 20E0      		ldi r18,lo8(gs(ProcessEvent))
+ 958 00e8 30E0      		ldi r19,hi8(gs(ProcessEvent))
+ 959 00ea 40E8      		ldi r20,lo8(-128)
+ 960 00ec 63EE      		ldi r22,lo8(-29)
+ 961 00ee 70E0      		ldi r23,0
+ 962 00f0 80E0      		ldi r24,lo8(wa_ProcessEvent)
+ 963 00f2 90E0      		ldi r25,hi8(wa_ProcessEvent)
+ 964 00f4 0E94 0000 		call chThdCreateStatic
+ 965               	.LVL65:
+ 966               	.L67:
+ 189:main.c        ****   }
+ 967               		.loc 1 189 0 discriminator 1
+ 968 00f8 80E1      		ldi r24,lo8(16)
+ 969 00fa 90E0      		ldi r25,0
+ 970 00fc 0E94 0000 		call chThdSleep
+ 971               	.LVL66:
+ 972 0100 00C0      		rjmp .L67
+ 973               		.cfi_endproc
+ 974               	.LFE242:
+ 976               		.section	.text.PushBUffer,"ax",@progbits
+ 977               	.global	PushBUffer
+ 979               	PushBUffer:
+ 980               	.LFB244:
+ 204:main.c        ****   /* Entering monitor.*/
+ 981               		.loc 1 204 0
+ 982               		.cfi_startproc
+ 983               	.LVL67:
+ 984 0000 CF93      		push r28
+ 985               	.LCFI12:
+ 986               		.cfi_def_cfa_offset 3
+ 987               		.cfi_offset 28, -2
+ 988 0002 DF93      		push r29
+ 989               	.LCFI13:
+ 990               		.cfi_def_cfa_offset 4
+ 991               		.cfi_offset 29, -3
+ 992               	/* prologue: function */
+ 993               	/* frame size = 0 */
+ 994               	/* stack size = 2 */
+ 995               	.L__stack_usage = 2
+ 996 0004 EC01      		movw r28,r24
+ 206:main.c        ****  
+ 997               		.loc 1 206 0
+ 998 0006 80E0      		ldi r24,lo8(qmtx)
+ 999 0008 90E0      		ldi r25,hi8(qmtx)
+ 1000               	.LVL68:
+ 1001 000a 0E94 0000 		call chMtxLock
+ 1002               	.LVL69:
+ 1003               	.LBB364:
+ 1004               	.LBB365:
+ 258:main.c        **** }
+ 1005               		.loc 1 258 0
+ 1006 000e 8091 0000 		lds r24,qsize
+ 1007 0012 9091 0000 		lds r25,qsize+1
+ 1008               	.LBE365:
+ 1009               	.LBE364:
+ 209:main.c        ****     chCondWait(&qfull);
+ 1010               		.loc 1 209 0
+ 1011 0016 8038      		cpi r24,-128
+ 1012 0018 9105      		cpc r25,__zero_reg__
+ 1013 001a 00F0      		brlo .L69
+ 1014               	.L70:
+ 210:main.c        ****  
+ 1015               		.loc 1 210 0
+ 1016 001c 80E0      		ldi r24,lo8(qfull)
+ 1017 001e 90E0      		ldi r25,hi8(qfull)
+ 1018 0020 0E94 0000 		call chCondWait
+ 1019               	.LVL70:
+ 1020               	.LBB367:
+ 1021               	.LBB366:
+ 258:main.c        **** }
+ 1022               		.loc 1 258 0
+ 1023 0024 8091 0000 		lds r24,qsize
+ 1024 0028 9091 0000 		lds r25,qsize+1
+ 1025               	.LBE366:
+ 1026               	.LBE367:
+ 209:main.c        ****     chCondWait(&qfull);
+ 1027               		.loc 1 209 0
+ 1028 002c 8038      		cpi r24,-128
+ 1029 002e 9105      		cpc r25,__zero_reg__
+ 1030 0030 00F4      		brsh .L70
+ 1031               	.L69:
+ 213:main.c        ****   if (++wrp >= &queue[QUEUE_SIZE])
+ 1032               		.loc 1 213 0
+ 1033 0032 E091 0000 		lds r30,wrp
+ 1034 0036 F091 0000 		lds r31,wrp+1
+ 1035 003a C193      		st Z+,r28
+ 1036 003c D193      		st Z+,r29
+ 214:main.c        ****     wrp = &queue[0];
+ 1037               		.loc 1 214 0
+ 1038 003e 20E0      		ldi r18,hi8(queue+256)
+ 1039 0040 E030      		cpi r30,lo8(queue+256)
+ 1040 0042 F207      		cpc r31,r18
+ 1041 0044 00F0      		brlo .L74
+ 215:main.c        ****   qsize++;
+ 1042               		.loc 1 215 0
+ 1043 0046 20E0      		ldi r18,lo8(queue)
+ 1044 0048 30E0      		ldi r19,hi8(queue)
+ 1045 004a 3093 0000 		sts wrp+1,r19
+ 1046 004e 2093 0000 		sts wrp,r18
+ 1047               	.L72:
+ 216:main.c        **** 
+ 1048               		.loc 1 216 0
+ 1049 0052 0196      		adiw r24,1
+ 1050 0054 9093 0000 		sts qsize+1,r25
+ 1051 0058 8093 0000 		sts qsize,r24
+ 219:main.c        **** 
+ 1052               		.loc 1 219 0
+ 1053 005c 80E0      		ldi r24,lo8(qempty)
+ 1054 005e 90E0      		ldi r25,hi8(qempty)
+ 1055 0060 0E94 0000 		call chCondSignal
+ 1056               	.LVL71:
+ 222:main.c        **** }
+ 1057               		.loc 1 222 0
+ 1058 0064 80E0      		ldi r24,lo8(qmtx)
+ 1059 0066 90E0      		ldi r25,hi8(qmtx)
+ 1060               	/* epilogue start */
+ 223:main.c        **** 
+ 1061               		.loc 1 223 0
+ 1062 0068 DF91      		pop r29
+ 1063 006a CF91      		pop r28
+ 1064               	.LVL72:
+ 222:main.c        **** }
+ 1065               		.loc 1 222 0
+ 1066 006c 0C94 0000 		jmp chMtxUnlock
+ 1067               	.LVL73:
+ 1068               	.L74:
+ 214:main.c        ****     wrp = &queue[0];
+ 1069               		.loc 1 214 0
+ 1070 0070 F093 0000 		sts wrp+1,r31
+ 1071 0074 E093 0000 		sts wrp,r30
+ 1072 0078 00C0      		rjmp .L72
+ 1073               		.cfi_endproc
+ 1074               	.LFE244:
+ 1076               		.section	.rodata.Write_Save_Event.str1.1,"aMS",@progbits,1
+ 1077               	.LC0:
+ 1078 0000 5361 7665 		.string	"Save/Write Event"
+ 1078      2F57 7269 
+ 1078      7465 2045 
+ 1078      7665 6E74 
+ 1078      00
+ 1079               		.section	.text.Write_Save_Event,"ax",@progbits
+ 1081               	Write_Save_Event:
+ 1082               	.LFB239:
+  59:main.c        ****   chRegSetThreadName("Save/Write Event");
+ 1083               		.loc 1 59 0
+ 1084               		.cfi_startproc
+ 1085               	.LVL74:
+ 1086               	/* prologue: function */
+ 1087               	/* frame size = 0 */
+ 1088               	/* stack size = 0 */
+ 1089               	.L__stack_usage = 0
+ 1090               	.LBB368:
+ 1091               	.LBB369:
+ 1092               		.file 4 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h"
    1:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** /*
    2:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****     ChibiOS - Copyright (C) 2006,2007,2008,2009,2010,2011,2012,2013,2014,
    3:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****               2015,2016,2017,2018,2019,2020,2021 Giovanni Di Sirio.
@@ -2017,666 +2576,902 @@
  166:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** 
  167:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h **** #if CH_CFG_USE_REGISTRY == TRUE
  168:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chregistry.h ****   __sch_get_currthread()->name = name;
- 705               		.loc 4 168 0
- 706 0000 E091 0000 		lds r30,ch0+5
- 707 0004 F091 0000 		lds r31,ch0+5+1
- 708 0008 80E0      		ldi r24,lo8(.LC0)
- 709 000a 90E0      		ldi r25,hi8(.LC0)
- 710               	.LVL50:
- 711 000c 9687      		std Z+14,r25
- 712 000e 8587      		std Z+13,r24
- 713 0010 00C0      		rjmp .L51
- 714               	.L47:
- 715               	.LBE212:
- 716               	.LBE211:
-  62:main.c        ****       PushBUffer(CARRO_SECUNDARIA);
- 717               		.loc 1 62 0
- 718 0012 1B9B      		sbis 0x3,3
- 719 0014 00C0      		rjmp .L52
- 720               	.L48:
-  65:main.c        ****       PushBUffer(AMBULANCIA_PRINCIPAL);
- 721               		.loc 1 65 0
- 722 0016 1A9B      		sbis 0x3,2
- 723 0018 00C0      		rjmp .L53
- 724               	.L49:
-  68:main.c        ****       PushBUffer(AMBULANCIA_SECUNDARIA);
- 725               		.loc 1 68 0
- 726 001a 199B      		sbis 0x3,1
- 727 001c 00C0      		rjmp .L54
- 728               	.L50:
-  72:main.c        ****   }
- 729               		.loc 1 72 0
- 730 001e 8BE1      		ldi r24,lo8(27)
- 731 0020 96E0      		ldi r25,lo8(6)
- 732 0022 0E94 0000 		call chThdSleep
- 733               	.LVL51:
- 734               	.L51:
-  59:main.c        ****       PushBUffer(PEDESTRE);
- 735               		.loc 1 59 0
- 736 0026 1C99      		sbic 0x3,4
- 737 0028 00C0      		rjmp .L47
-  60:main.c        **** 
- 738               		.loc 1 60 0
- 739 002a 84E0      		ldi r24,lo8(4)
- 740 002c 90E0      		ldi r25,0
- 741 002e 0E94 0000 		call PushBUffer
- 742               	.LVL52:
-  62:main.c        ****       PushBUffer(CARRO_SECUNDARIA);
- 743               		.loc 1 62 0
- 744 0032 1B99      		sbic 0x3,3
- 745 0034 00C0      		rjmp .L48
- 746               	.L52:
-  63:main.c        **** 
- 747               		.loc 1 63 0
- 748 0036 83E0      		ldi r24,lo8(3)
- 749 0038 90E0      		ldi r25,0
- 750 003a 0E94 0000 		call PushBUffer
- 751               	.LVL53:
-  65:main.c        ****       PushBUffer(AMBULANCIA_PRINCIPAL);
- 752               		.loc 1 65 0
- 753 003e 1A99      		sbic 0x3,2
- 754 0040 00C0      		rjmp .L49
- 755               	.L53:
-  66:main.c        **** 
- 756               		.loc 1 66 0
- 757 0042 82E0      		ldi r24,lo8(2)
- 758 0044 90E0      		ldi r25,0
- 759 0046 0E94 0000 		call PushBUffer
- 760               	.LVL54:
-  68:main.c        ****       PushBUffer(AMBULANCIA_SECUNDARIA);
- 761               		.loc 1 68 0
- 762 004a 1999      		sbic 0x3,1
- 763 004c 00C0      		rjmp .L50
- 764               	.L54:
-  69:main.c        **** 
- 765               		.loc 1 69 0
- 766 004e 81E0      		ldi r24,lo8(1)
- 767 0050 90E0      		ldi r25,0
- 768 0052 0E94 0000 		call PushBUffer
- 769               	.LVL55:
- 770 0056 00C0      		rjmp .L50
- 771               		.cfi_endproc
- 772               	.LFE239:
- 774               		.section	.text.PopBUffer,"ax",@progbits
- 775               	.global	PopBUffer
- 777               	PopBUffer:
- 778               	.LFB245:
- 198:main.c        ****   msg_t msg;
- 779               		.loc 1 198 0
- 780               		.cfi_startproc
- 781 0000 CF93      		push r28
- 782               	.LCFI10:
- 783               		.cfi_def_cfa_offset 3
- 784               		.cfi_offset 28, -2
- 785               	/* prologue: function */
- 786               	/* frame size = 0 */
- 787               	/* stack size = 1 */
- 788               	.L__stack_usage = 1
- 202:main.c        ****  
- 789               		.loc 1 202 0
- 790 0002 80E0      		ldi r24,lo8(qmtx)
- 791 0004 90E0      		ldi r25,hi8(qmtx)
- 792 0006 0E94 0000 		call chMtxLock
- 793               	.LVL56:
- 794               	.LBB213:
- 795               	.LBB214:
- 225:main.c        **** }
- 796               		.loc 1 225 0
- 797 000a 8091 0000 		lds r24,qsize
- 798 000e 9091 0000 		lds r25,qsize+1
- 799               	.LBE214:
- 800               	.LBE213:
- 205:main.c        ****     chCondWait(&qempty);
- 801               		.loc 1 205 0
- 802 0012 0097      		sbiw r24,0
- 803 0014 01F4      		brne .L56
- 804               	.L57:
- 206:main.c        ****  
- 805               		.loc 1 206 0
- 806 0016 80E0      		ldi r24,lo8(qempty)
- 807 0018 90E0      		ldi r25,hi8(qempty)
- 808 001a 0E94 0000 		call chCondWait
- 809               	.LVL57:
- 810               	.LBB216:
- 811               	.LBB215:
- 225:main.c        **** }
- 812               		.loc 1 225 0
- 813 001e 8091 0000 		lds r24,qsize
- 814 0022 9091 0000 		lds r25,qsize+1
- 815               	.LBE215:
- 816               	.LBE216:
- 205:main.c        ****     chCondWait(&qempty);
- 817               		.loc 1 205 0
- 818 0026 0097      		sbiw r24,0
- 819 0028 01F0      		breq .L57
- 820               	.L56:
- 209:main.c        ****   if (++rdp >= &queue[QUEUE_SIZE])
- 821               		.loc 1 209 0
- 822 002a E091 0000 		lds r30,rdp
- 823 002e F091 0000 		lds r31,rdp+1
- 824 0032 C081      		ld r28,Z
- 825               	.LVL58:
- 210:main.c        ****     rdp = &queue[0];
- 826               		.loc 1 210 0
- 827 0034 3296      		adiw r30,2
- 828               	.LVL59:
- 829 0036 20E0      		ldi r18,hi8(queue+256)
- 830 0038 E030      		cpi r30,lo8(queue+256)
- 831 003a F207      		cpc r31,r18
- 832 003c 00F0      		brlo .L62
- 211:main.c        ****   qsize--;
- 833               		.loc 1 211 0
- 834 003e 20E0      		ldi r18,lo8(queue)
- 835 0040 30E0      		ldi r19,hi8(queue)
- 836 0042 3093 0000 		sts rdp+1,r19
- 837 0046 2093 0000 		sts rdp,r18
- 838               	.LVL60:
- 839               	.L59:
- 212:main.c        ****  
- 840               		.loc 1 212 0
- 841 004a 0197      		sbiw r24,1
- 842 004c 9093 0000 		sts qsize+1,r25
- 843 0050 8093 0000 		sts qsize,r24
- 215:main.c        ****  
- 844               		.loc 1 215 0
- 845 0054 80E0      		ldi r24,lo8(qfull)
- 846 0056 90E0      		ldi r25,hi8(qfull)
- 847 0058 0E94 0000 		call chCondSignal
- 848               	.LVL61:
- 218:main.c        ****  
- 849               		.loc 1 218 0
- 850 005c 80E0      		ldi r24,lo8(qmtx)
- 851 005e 90E0      		ldi r25,hi8(qmtx)
- 852 0060 0E94 0000 		call chMtxUnlock
- 853               	.LVL62:
- 221:main.c        **** 
- 854               		.loc 1 221 0
- 855 0064 8C2F      		mov r24,r28
- 856               	/* epilogue start */
- 857 0066 CF91      		pop r28
- 858 0068 0895      		ret
- 859               	.LVL63:
- 860               	.L62:
- 210:main.c        ****     rdp = &queue[0];
- 861               		.loc 1 210 0
- 862 006a F093 0000 		sts rdp+1,r31
- 863 006e E093 0000 		sts rdp,r30
- 864               	.LVL64:
- 865 0072 00C0      		rjmp .L59
- 866               		.cfi_endproc
- 867               	.LFE245:
- 869               		.section	.rodata.Read_Collect_Event.str1.1,"aMS",@progbits,1
- 870               	.LC1:
- 871 0000 5265 6164 		.string	"Read/Collect Event"
- 871      2F43 6F6C 
- 871      6C65 6374 
- 871      2045 7665 
- 871      6E74 00
- 872               		.section	.text.Read_Collect_Event,"ax",@progbits
- 874               	Read_Collect_Event:
- 875               	.LFB240:
-  81:main.c        ****   chRegSetThreadName("Read/Collect Event");
- 876               		.loc 1 81 0
- 877               		.cfi_startproc
- 878               	.LVL65:
- 879               	/* prologue: function */
- 880               	/* frame size = 0 */
- 881               	/* stack size = 0 */
- 882               	.L__stack_usage = 0
- 883               	.LBB217:
- 884               	.LBB218:
- 885               		.loc 4 168 0
- 886 0000 E091 0000 		lds r30,ch0+5
- 887 0004 F091 0000 		lds r31,ch0+5+1
- 888 0008 80E0      		ldi r24,lo8(.LC1)
- 889 000a 90E0      		ldi r25,hi8(.LC1)
- 890               	.LVL66:
- 891 000c 9687      		std Z+14,r25
- 892 000e 8587      		std Z+13,r24
- 893 0010 00C0      		rjmp .L65
- 894               	.L64:
- 895               	.LBE218:
- 896               	.LBE217:
-  87:main.c        ****   }
- 897               		.loc 1 87 0
- 898 0012 80E1      		ldi r24,lo8(16)
- 899 0014 90E0      		ldi r25,0
- 900 0016 0E94 0000 		call chThdSleep
- 901               	.LVL67:
- 902               	.L65:
-  85:main.c        ****       EVENT = PopBUffer();
- 903               		.loc 1 85 0
- 904 001a 8091 0000 		lds r24,qsize
- 905 001e 9091 0000 		lds r25,qsize+1
- 906 0022 892B      		or r24,r25
- 907 0024 01F0      		breq .L64
-  86:main.c        ****     chThdSleepMilliseconds(1);
- 908               		.loc 1 86 0
- 909 0026 0E94 0000 		call PopBUffer
- 910               	.LVL68:
- 911 002a 8093 0000 		sts EVENT,r24
- 912 002e 00C0      		rjmp .L64
- 913               		.cfi_endproc
- 914               	.LFE240:
- 916               		.section	.text.IsBUfferEmpty,"ax",@progbits
- 917               	.global	IsBUfferEmpty
- 919               	IsBUfferEmpty:
- 920               	.LFB246:
- 224:main.c        ****   return qsize == 0;
- 921               		.loc 1 224 0
- 922               		.cfi_startproc
- 923               	/* prologue: function */
- 924               	/* frame size = 0 */
- 925               	/* stack size = 0 */
- 926               	.L__stack_usage = 0
- 225:main.c        **** }
- 927               		.loc 1 225 0
- 928 0000 81E0      		ldi r24,lo8(1)
- 929 0002 90E0      		ldi r25,0
- 930 0004 2091 0000 		lds r18,qsize
- 931 0008 3091 0000 		lds r19,qsize+1
- 932 000c 232B      		or r18,r19
- 933 000e 01F0      		breq .L70
- 934 0010 90E0      		ldi r25,0
- 935 0012 80E0      		ldi r24,0
- 936               	.L70:
- 937               	/* epilogue start */
- 226:main.c        **** 
- 938               		.loc 1 226 0
- 939 0014 0895      		ret
- 940               		.cfi_endproc
- 941               	.LFE246:
- 943               		.section	.text.IsBufferFull,"ax",@progbits
- 944               	.global	IsBufferFull
- 946               	IsBufferFull:
- 947               	.LFB247:
- 229:main.c        ****   return qsize >= QUEUE_SIZE;
- 948               		.loc 1 229 0
- 949               		.cfi_startproc
- 950               	/* prologue: function */
- 951               	/* frame size = 0 */
- 952               	/* stack size = 0 */
- 953               	.L__stack_usage = 0
- 230:main.c        **** }
- 954               		.loc 1 230 0
- 955 0000 81E0      		ldi r24,lo8(1)
- 956 0002 90E0      		ldi r25,0
- 957 0004 2091 0000 		lds r18,qsize
- 958 0008 3091 0000 		lds r19,qsize+1
- 959 000c 2038      		cpi r18,-128
- 960 000e 3105      		cpc r19,__zero_reg__
- 961 0010 00F4      		brsh .L75
- 962 0012 90E0      		ldi r25,0
- 963 0014 80E0      		ldi r24,0
- 964               	.L75:
- 965               	/* epilogue start */
- 231:main.c        **** 
- 966               		.loc 1 231 0
- 967 0016 0895      		ret
- 968               		.cfi_endproc
- 969               	.LFE247:
- 971               		.section	.text.PrincipalTimer,"ax",@progbits
- 972               	.global	PrincipalTimer
- 974               	PrincipalTimer:
- 975               	.LFB248:
- 235:main.c        ****   switch (LED_PRINCIPAL)
- 976               		.loc 1 235 0
- 977               		.cfi_startproc
- 978               	/* prologue: function */
- 979               	/* frame size = 0 */
- 980               	/* stack size = 0 */
- 981               	.L__stack_usage = 0
- 236:main.c        ****   {
- 982               		.loc 1 236 0
- 983 0000 8091 0000 		lds r24,LED_PRINCIPAL
- 984 0004 8823      		tst r24
- 985 0006 01F0      		breq .L78
- 986 0008 8130      		cpi r24,lo8(1)
- 987 000a 01F4      		brne .L88
- 249:main.c        ****       palClearPad(IOPORT4, LED_VERMELHO_PRINCIPAL);
- 988               		.loc 1 249 0
- 989 000c 2898      		cbi 0x5,0
- 250:main.c        ****       palSetPad(IOPORT4, LED_AMARELO_PRINCIPAL);
- 990               		.loc 1 250 0
- 991 000e 5E98      		cbi 0xb,6
- 251:main.c        ****       chVTSet(&vt, TIME_MS2I(1000), AvenidaPrincipalSinalAmarelo, (void*)&vt);
- 992               		.loc 1 251 0
- 993 0010 5F9A      		sbi 0xb,7
- 994               	.LVL69:
- 995               	.LBB256:
- 996               	.LBB257:
- 997               	.LBB258:
- 998               	.LBB259:
+ 1093               		.loc 4 168 0
+ 1094 0000 E091 0000 		lds r30,ch0+5
+ 1095 0004 F091 0000 		lds r31,ch0+5+1
+ 1096 0008 80E0      		ldi r24,lo8(.LC0)
+ 1097 000a 90E0      		ldi r25,hi8(.LC0)
+ 1098               	.LVL75:
+ 1099 000c 9687      		std Z+14,r25
+ 1100 000e 8587      		std Z+13,r24
+ 1101 0010 00C0      		rjmp .L80
+ 1102               	.L76:
+ 1103               	.LBE369:
+ 1104               	.LBE368:
+  66:main.c        ****       PushBUffer(CARRO_SECUNDARIA);
+ 1105               		.loc 1 66 0
+ 1106 0012 1B9B      		sbis 0x3,3
+ 1107 0014 00C0      		rjmp .L81
+ 1108               	.L77:
+  69:main.c        ****       PushBUffer(AMBULANCIA_PRINCIPAL);
+ 1109               		.loc 1 69 0
+ 1110 0016 1A9B      		sbis 0x3,2
+ 1111 0018 00C0      		rjmp .L82
+ 1112               	.L78:
+  72:main.c        ****       PushBUffer(AMBULANCIA_SECUNDARIA);
+ 1113               		.loc 1 72 0
+ 1114 001a 199B      		sbis 0x3,1
+ 1115 001c 00C0      		rjmp .L83
+ 1116               	.L79:
+  76:main.c        ****   }
+ 1117               		.loc 1 76 0
+ 1118 001e 80EF      		ldi r24,lo8(-16)
+ 1119 0020 97E0      		ldi r25,lo8(7)
+ 1120 0022 0E94 0000 		call chThdSleep
+ 1121               	.LVL76:
+ 1122               	.L80:
+  63:main.c        ****       PushBUffer(PEDESTRE);
+ 1123               		.loc 1 63 0
+ 1124 0026 1C99      		sbic 0x3,4
+ 1125 0028 00C0      		rjmp .L76
+  64:main.c        **** 
+ 1126               		.loc 1 64 0
+ 1127 002a 84E0      		ldi r24,lo8(4)
+ 1128 002c 90E0      		ldi r25,0
+ 1129 002e 0E94 0000 		call PushBUffer
+ 1130               	.LVL77:
+  66:main.c        ****       PushBUffer(CARRO_SECUNDARIA);
+ 1131               		.loc 1 66 0
+ 1132 0032 1B99      		sbic 0x3,3
+ 1133 0034 00C0      		rjmp .L77
+ 1134               	.L81:
+  67:main.c        **** 
+ 1135               		.loc 1 67 0
+ 1136 0036 83E0      		ldi r24,lo8(3)
+ 1137 0038 90E0      		ldi r25,0
+ 1138 003a 0E94 0000 		call PushBUffer
+ 1139               	.LVL78:
+  69:main.c        ****       PushBUffer(AMBULANCIA_PRINCIPAL);
+ 1140               		.loc 1 69 0
+ 1141 003e 1A99      		sbic 0x3,2
+ 1142 0040 00C0      		rjmp .L78
+ 1143               	.L82:
+  70:main.c        **** 
+ 1144               		.loc 1 70 0
+ 1145 0042 82E0      		ldi r24,lo8(2)
+ 1146 0044 90E0      		ldi r25,0
+ 1147 0046 0E94 0000 		call PushBUffer
+ 1148               	.LVL79:
+  72:main.c        ****       PushBUffer(AMBULANCIA_SECUNDARIA);
+ 1149               		.loc 1 72 0
+ 1150 004a 1999      		sbic 0x3,1
+ 1151 004c 00C0      		rjmp .L79
+ 1152               	.L83:
+  73:main.c        **** 
+ 1153               		.loc 1 73 0
+ 1154 004e 81E0      		ldi r24,lo8(1)
+ 1155 0050 90E0      		ldi r25,0
+ 1156 0052 0E94 0000 		call PushBUffer
+ 1157               	.LVL80:
+ 1158 0056 00C0      		rjmp .L79
+ 1159               		.cfi_endproc
+ 1160               	.LFE239:
+ 1162               		.section	.text.PopBUffer,"ax",@progbits
+ 1163               	.global	PopBUffer
+ 1165               	PopBUffer:
+ 1166               	.LFB245:
+ 226:main.c        ****   msg_t msg;
+ 1167               		.loc 1 226 0
+ 1168               		.cfi_startproc
+ 1169 0000 CF93      		push r28
+ 1170               	.LCFI14:
+ 1171               		.cfi_def_cfa_offset 3
+ 1172               		.cfi_offset 28, -2
+ 1173               	/* prologue: function */
+ 1174               	/* frame size = 0 */
+ 1175               	/* stack size = 1 */
+ 1176               	.L__stack_usage = 1
+ 230:main.c        ****  
+ 1177               		.loc 1 230 0
+ 1178 0002 80E0      		ldi r24,lo8(qmtx)
+ 1179 0004 90E0      		ldi r25,hi8(qmtx)
+ 1180 0006 0E94 0000 		call chMtxLock
+ 1181               	.LVL81:
+ 1182               	.LBB370:
+ 1183               	.LBB371:
+ 253:main.c        **** }
+ 1184               		.loc 1 253 0
+ 1185 000a 8091 0000 		lds r24,qsize
+ 1186 000e 9091 0000 		lds r25,qsize+1
+ 1187               	.LBE371:
+ 1188               	.LBE370:
+ 233:main.c        ****     chCondWait(&qempty);
+ 1189               		.loc 1 233 0
+ 1190 0012 0097      		sbiw r24,0
+ 1191 0014 01F4      		brne .L85
+ 1192               	.L86:
+ 234:main.c        ****  
+ 1193               		.loc 1 234 0
+ 1194 0016 80E0      		ldi r24,lo8(qempty)
+ 1195 0018 90E0      		ldi r25,hi8(qempty)
+ 1196 001a 0E94 0000 		call chCondWait
+ 1197               	.LVL82:
+ 1198               	.LBB373:
+ 1199               	.LBB372:
+ 253:main.c        **** }
+ 1200               		.loc 1 253 0
+ 1201 001e 8091 0000 		lds r24,qsize
+ 1202 0022 9091 0000 		lds r25,qsize+1
+ 1203               	.LBE372:
+ 1204               	.LBE373:
+ 233:main.c        ****     chCondWait(&qempty);
+ 1205               		.loc 1 233 0
+ 1206 0026 0097      		sbiw r24,0
+ 1207 0028 01F0      		breq .L86
+ 1208               	.L85:
+ 237:main.c        ****   if (++rdp >= &queue[QUEUE_SIZE])
+ 1209               		.loc 1 237 0
+ 1210 002a E091 0000 		lds r30,rdp
+ 1211 002e F091 0000 		lds r31,rdp+1
+ 1212 0032 C081      		ld r28,Z
+ 1213               	.LVL83:
+ 238:main.c        ****     rdp = &queue[0];
+ 1214               		.loc 1 238 0
+ 1215 0034 3296      		adiw r30,2
+ 1216               	.LVL84:
+ 1217 0036 20E0      		ldi r18,hi8(queue+256)
+ 1218 0038 E030      		cpi r30,lo8(queue+256)
+ 1219 003a F207      		cpc r31,r18
+ 1220 003c 00F0      		brlo .L91
+ 239:main.c        ****   qsize--;
+ 1221               		.loc 1 239 0
+ 1222 003e 20E0      		ldi r18,lo8(queue)
+ 1223 0040 30E0      		ldi r19,hi8(queue)
+ 1224 0042 3093 0000 		sts rdp+1,r19
+ 1225 0046 2093 0000 		sts rdp,r18
+ 1226               	.LVL85:
+ 1227               	.L88:
+ 240:main.c        ****  
+ 1228               		.loc 1 240 0
+ 1229 004a 0197      		sbiw r24,1
+ 1230 004c 9093 0000 		sts qsize+1,r25
+ 1231 0050 8093 0000 		sts qsize,r24
+ 243:main.c        ****  
+ 1232               		.loc 1 243 0
+ 1233 0054 80E0      		ldi r24,lo8(qfull)
+ 1234 0056 90E0      		ldi r25,hi8(qfull)
+ 1235 0058 0E94 0000 		call chCondSignal
+ 1236               	.LVL86:
+ 246:main.c        ****  
+ 1237               		.loc 1 246 0
+ 1238 005c 80E0      		ldi r24,lo8(qmtx)
+ 1239 005e 90E0      		ldi r25,hi8(qmtx)
+ 1240 0060 0E94 0000 		call chMtxUnlock
+ 1241               	.LVL87:
+ 249:main.c        **** 
+ 1242               		.loc 1 249 0
+ 1243 0064 8C2F      		mov r24,r28
+ 1244               	/* epilogue start */
+ 1245 0066 CF91      		pop r28
+ 1246 0068 0895      		ret
+ 1247               	.LVL88:
+ 1248               	.L91:
+ 238:main.c        ****     rdp = &queue[0];
+ 1249               		.loc 1 238 0
+ 1250 006a F093 0000 		sts rdp+1,r31
+ 1251 006e E093 0000 		sts rdp,r30
+ 1252               	.LVL89:
+ 1253 0072 00C0      		rjmp .L88
+ 1254               		.cfi_endproc
+ 1255               	.LFE245:
+ 1257               		.section	.rodata.Read_Collect_Event.str1.1,"aMS",@progbits,1
+ 1258               	.LC1:
+ 1259 0000 5265 6164 		.string	"Read/Collect Event"
+ 1259      2F43 6F6C 
+ 1259      6C65 6374 
+ 1259      2045 7665 
+ 1259      6E74 00
+ 1260               		.section	.text.Read_Collect_Event,"ax",@progbits
+ 1262               	Read_Collect_Event:
+ 1263               	.LFB240:
+  85:main.c        ****   chRegSetThreadName("Read/Collect Event");
+ 1264               		.loc 1 85 0
+ 1265               		.cfi_startproc
+ 1266               	.LVL90:
+ 1267               	/* prologue: function */
+ 1268               	/* frame size = 0 */
+ 1269               	/* stack size = 0 */
+ 1270               	.L__stack_usage = 0
+ 1271               	.LBB374:
+ 1272               	.LBB375:
+ 1273               		.loc 4 168 0
+ 1274 0000 E091 0000 		lds r30,ch0+5
+ 1275 0004 F091 0000 		lds r31,ch0+5+1
+ 1276 0008 80E0      		ldi r24,lo8(.LC1)
+ 1277 000a 90E0      		ldi r25,hi8(.LC1)
+ 1278               	.LVL91:
+ 1279 000c 9687      		std Z+14,r25
+ 1280 000e 8587      		std Z+13,r24
+ 1281               	.LBE375:
+ 1282               	.LBE374:
+  95:main.c        ****       if (EVENT == AMBULANCIA_SECUNDARIA)
+ 1283               		.loc 1 95 0
+ 1284 0010 C1E0      		ldi r28,lo8(1)
+ 1285 0012 00C0      		rjmp .L97
+ 1286               	.L94:
+ 100:main.c        ****   }
+ 1287               		.loc 1 100 0
+ 1288 0014 80E1      		ldi r24,lo8(16)
+ 1289 0016 90E0      		ldi r25,0
+ 1290 0018 0E94 0000 		call chThdSleep
+ 1291               	.LVL92:
+ 1292               	.L97:
+  89:main.c        ****     {
+ 1293               		.loc 1 89 0
+ 1294 001c 8091 0000 		lds r24,qsize
+ 1295 0020 9091 0000 		lds r25,qsize+1
+ 1296 0024 892B      		or r24,r25
+ 1297 0026 01F0      		breq .L94
+  91:main.c        ****       EVENT = PopBUffer();
+ 1298               		.loc 1 91 0
+ 1299 0028 8091 0000 		lds r24,EVENT
+ 1300 002c 8093 0000 		sts BACKUP_EVENT,r24
+  92:main.c        **** 
+ 1301               		.loc 1 92 0
+ 1302 0030 0E94 0000 		call PopBUffer
+ 1303               	.LVL93:
+ 1304 0034 8093 0000 		sts EVENT,r24
+  94:main.c        ****         amb_pri ^= 1;
+ 1305               		.loc 1 94 0
+ 1306 0038 8230      		cpi r24,lo8(2)
+ 1307 003a 01F0      		breq .L98
+  96:main.c        ****         amb_sec ^= 1;        
+ 1308               		.loc 1 96 0
+ 1309 003c 8130      		cpi r24,lo8(1)
+ 1310 003e 01F4      		brne .L94
+  97:main.c        ****     }
+ 1311               		.loc 1 97 0
+ 1312 0040 9091 0000 		lds r25,amb_sec
+ 1313 0044 8927      		eor r24,r25
+ 1314 0046 8093 0000 		sts amb_sec,r24
+ 1315 004a 00C0      		rjmp .L94
+ 1316               	.L98:
+  95:main.c        ****       if (EVENT == AMBULANCIA_SECUNDARIA)
+ 1317               		.loc 1 95 0
+ 1318 004c 8091 0000 		lds r24,amb_pri
+ 1319 0050 8C27      		eor r24,r28
+ 1320 0052 8093 0000 		sts amb_pri,r24
+ 1321 0056 00C0      		rjmp .L94
+ 1322               		.cfi_endproc
+ 1323               	.LFE240:
+ 1325               		.section	.text.IsBUfferEmpty,"ax",@progbits
+ 1326               	.global	IsBUfferEmpty
+ 1328               	IsBUfferEmpty:
+ 1329               	.LFB246:
+ 252:main.c        ****   return qsize == 0;
+ 1330               		.loc 1 252 0
+ 1331               		.cfi_startproc
+ 1332               	/* prologue: function */
+ 1333               	/* frame size = 0 */
+ 1334               	/* stack size = 0 */
+ 1335               	.L__stack_usage = 0
+ 253:main.c        **** }
+ 1336               		.loc 1 253 0
+ 1337 0000 81E0      		ldi r24,lo8(1)
+ 1338 0002 90E0      		ldi r25,0
+ 1339 0004 2091 0000 		lds r18,qsize
+ 1340 0008 3091 0000 		lds r19,qsize+1
+ 1341 000c 232B      		or r18,r19
+ 1342 000e 01F0      		breq .L100
+ 1343 0010 90E0      		ldi r25,0
+ 1344 0012 80E0      		ldi r24,0
+ 1345               	.L100:
+ 1346               	/* epilogue start */
+ 254:main.c        **** 
+ 1347               		.loc 1 254 0
+ 1348 0014 0895      		ret
+ 1349               		.cfi_endproc
+ 1350               	.LFE246:
+ 1352               		.section	.text.IsBufferFull,"ax",@progbits
+ 1353               	.global	IsBufferFull
+ 1355               	IsBufferFull:
+ 1356               	.LFB247:
+ 257:main.c        ****   return qsize >= QUEUE_SIZE;
+ 1357               		.loc 1 257 0
+ 1358               		.cfi_startproc
+ 1359               	/* prologue: function */
+ 1360               	/* frame size = 0 */
+ 1361               	/* stack size = 0 */
+ 1362               	.L__stack_usage = 0
+ 258:main.c        **** }
+ 1363               		.loc 1 258 0
+ 1364 0000 81E0      		ldi r24,lo8(1)
+ 1365 0002 90E0      		ldi r25,0
+ 1366 0004 2091 0000 		lds r18,qsize
+ 1367 0008 3091 0000 		lds r19,qsize+1
+ 1368 000c 2038      		cpi r18,-128
+ 1369 000e 3105      		cpc r19,__zero_reg__
+ 1370 0010 00F4      		brsh .L105
+ 1371 0012 90E0      		ldi r25,0
+ 1372 0014 80E0      		ldi r24,0
+ 1373               	.L105:
+ 1374               	/* epilogue start */
+ 259:main.c        **** 
+ 1375               		.loc 1 259 0
+ 1376 0016 0895      		ret
+ 1377               		.cfi_endproc
+ 1378               	.LFE247:
+ 1380               		.section	.text.PrincipalTimer,"ax",@progbits
+ 1381               	.global	PrincipalTimer
+ 1383               	PrincipalTimer:
+ 1384               	.LFB248:
+ 263:main.c        ****   switch (LED_PRINCIPAL)
+ 1385               		.loc 1 263 0
+ 1386               		.cfi_startproc
+ 1387               	/* prologue: function */
+ 1388               	/* frame size = 0 */
+ 1389               	/* stack size = 0 */
+ 1390               	.L__stack_usage = 0
+ 264:main.c        ****   {
+ 1391               		.loc 1 264 0
+ 1392 0000 8091 0000 		lds r24,LED_PRINCIPAL
+ 1393 0004 8823      		tst r24
+ 1394 0006 01F0      		breq .L108
+ 1395 0008 8130      		cpi r24,lo8(1)
+ 1396 000a 01F4      		brne .L118
+ 277:main.c        ****       palClearPad(IOPORT4, LED_VERMELHO_PRINCIPAL);
+ 1397               		.loc 1 277 0
+ 1398 000c 2898      		cbi 0x5,0
+ 278:main.c        ****       palSetPad(IOPORT4, LED_AMARELO_PRINCIPAL);
+ 1399               		.loc 1 278 0
+ 1400 000e 5E98      		cbi 0xb,6
+ 279:main.c        ****       chVTSet(&vt, TIME_MS2I(1000), AvenidaPrincipalSinalAmarelo, (void*)&vt);
+ 1401               		.loc 1 279 0
+ 1402 0010 5F9A      		sbi 0xb,7
+ 1403               	.LVL94:
+ 1404               	.LBB413:
+ 1405               	.LBB414:
+ 1406               	.LBB415:
+ 1407               	.LBB416:
  430:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.h **** }
- 999               		.loc 2 430 0
- 1000               	/* #APP */
- 1001               	 ;  430 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.h
- 1002 0012 F894      		cli
- 1003               	 ;  0 "" 2
- 1004               	.LVL70:
- 1005               	/* #NOAPP */
- 1006               	.LBE259:
- 1007               	.LBE258:
- 1008               	.LBE257:
- 1009               	.LBB260:
- 1010               	.LBB261:
- 1011               	.LBB262:
- 1012               	.LBB263:
+ 1408               		.loc 2 430 0
+ 1409               	/* #APP */
+ 1410               	 ;  430 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.h
+ 1411 0012 F894      		cli
+ 1412               	 ;  0 "" 2
+ 1413               	.LVL95:
+ 1414               	/* #NOAPP */
+ 1415               	.LBE416:
+ 1416               	.LBE415:
+ 1417               	.LBE414:
+ 1418               	.LBB417:
+ 1419               	.LBB418:
+ 1420               	.LBB419:
+ 1421               	.LBB420:
  287:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chvt.h ****     chVTDoResetI(vtp);
- 1013               		.loc 3 287 0
- 1014 0014 8091 0000 		lds r24,vt
- 1015 0018 9091 0000 		lds r25,vt+1
- 1016 001c 892B      		or r24,r25
- 1017 001e 01F0      		breq .L81
+ 1422               		.loc 3 287 0
+ 1423 0014 8091 0000 		lds r24,vt
+ 1424 0018 9091 0000 		lds r25,vt+1
+ 1425 001c 892B      		or r24,r25
+ 1426 001e 01F0      		breq .L111
  288:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chvt.h ****   }
- 1018               		.loc 3 288 0
- 1019 0020 80E0      		ldi r24,lo8(vt)
- 1020 0022 90E0      		ldi r25,hi8(vt)
- 1021 0024 0E94 0000 		call chVTDoResetI
- 1022               	.LVL71:
- 1023               	.L81:
- 1024               	.LBE263:
- 1025               	.LBE262:
- 1026               		.loc 3 335 0
- 1027 0028 20E0      		ldi r18,lo8(vt)
- 1028 002a 30E0      		ldi r19,hi8(vt)
- 1029 002c 40E0      		ldi r20,lo8(gs(AvenidaPrincipalSinalAmarelo))
- 1030 002e 50E0      		ldi r21,hi8(gs(AvenidaPrincipalSinalAmarelo))
- 1031 0030 68E0      		ldi r22,lo8(8)
- 1032 0032 7DE3      		ldi r23,lo8(61)
- 1033 0034 C901      		movw r24,r18
- 1034 0036 0E94 0000 		call chVTDoSetI
- 1035               	.LVL72:
- 1036               	.LBE261:
- 1037               	.LBE260:
- 1038               	.LBB264:
- 1039               	.LBB265:
- 1040               	.LBB266:
- 1041               	.LBB267:
- 1042               		.loc 2 440 0
- 1043               	/* #APP */
- 1044               	 ;  440 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.h
- 1045 003a 7894      		sei
- 1046               	 ;  0 "" 2
- 1047               	/* epilogue start */
- 1048               	/* #NOAPP */
- 1049               	.LBE267:
- 1050               	.LBE266:
- 1051               	.LBE265:
- 1052               	.LBE264:
- 1053               	.LBE256:
- 256:main.c        **** 
- 1054               		.loc 1 256 0
- 1055 003c 0895      		ret
- 1056               	.LVL73:
- 1057               	.L88:
- 1058 003e 0895      		ret
- 1059               	.L78:
- 1060               	.LBB268:
- 1061               	.LBB269:
- 240:main.c        ****       palClearPad(IOPORT4, LED_AMARELO_PRINCIPAL);
- 1062               		.loc 1 240 0
- 1063 0040 289A      		sbi 0x5,0
- 241:main.c        ****       palClearPad(IOPORT4, LED_VERMELHO_PRINCIPAL);
- 1064               		.loc 1 241 0
- 1065 0042 5F98      		cbi 0xb,7
- 242:main.c        ****       chVTSet(&vt, TIME_MS2I(1000), AvenidaPrincipalSinalVerde, (void*)&vt);
- 1066               		.loc 1 242 0
- 1067 0044 5E98      		cbi 0xb,6
- 1068               	.LVL74:
- 1069               	.LBB270:
- 1070               	.LBB271:
- 1071               	.LBB272:
- 1072               	.LBB273:
+ 1427               		.loc 3 288 0
+ 1428 0020 80E0      		ldi r24,lo8(vt)
+ 1429 0022 90E0      		ldi r25,hi8(vt)
+ 1430 0024 0E94 0000 		call chVTDoResetI
+ 1431               	.LVL96:
+ 1432               	.L111:
+ 1433               	.LBE420:
+ 1434               	.LBE419:
+ 1435               		.loc 3 335 0
+ 1436 0028 20E0      		ldi r18,lo8(vt)
+ 1437 002a 30E0      		ldi r19,hi8(vt)
+ 1438 002c 40E0      		ldi r20,lo8(gs(AvenidaPrincipalSinalAmarelo))
+ 1439 002e 50E0      		ldi r21,hi8(gs(AvenidaPrincipalSinalAmarelo))
+ 1440 0030 68E0      		ldi r22,lo8(8)
+ 1441 0032 7DE3      		ldi r23,lo8(61)
+ 1442 0034 C901      		movw r24,r18
+ 1443 0036 0E94 0000 		call chVTDoSetI
+ 1444               	.LVL97:
+ 1445               	.LBE418:
+ 1446               	.LBE417:
+ 1447               	.LBB421:
+ 1448               	.LBB422:
+ 1449               	.LBB423:
+ 1450               	.LBB424:
+ 1451               		.loc 2 440 0
+ 1452               	/* #APP */
+ 1453               	 ;  440 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.h
+ 1454 003a 7894      		sei
+ 1455               	 ;  0 "" 2
+ 1456               	/* epilogue start */
+ 1457               	/* #NOAPP */
+ 1458               	.LBE424:
+ 1459               	.LBE423:
+ 1460               	.LBE422:
+ 1461               	.LBE421:
+ 1462               	.LBE413:
+ 284:main.c        **** 
+ 1463               		.loc 1 284 0
+ 1464 003c 0895      		ret
+ 1465               	.LVL98:
+ 1466               	.L118:
+ 1467 003e 0895      		ret
+ 1468               	.L108:
+ 1469               	.LBB425:
+ 1470               	.LBB426:
+ 268:main.c        ****       palClearPad(IOPORT4, LED_AMARELO_PRINCIPAL);
+ 1471               		.loc 1 268 0
+ 1472 0040 289A      		sbi 0x5,0
+ 269:main.c        ****       palClearPad(IOPORT4, LED_VERMELHO_PRINCIPAL);
+ 1473               		.loc 1 269 0
+ 1474 0042 5F98      		cbi 0xb,7
+ 270:main.c        ****       chVTSet(&vt, TIME_MS2I(1000), AvenidaPrincipalSinalVerde, (void*)&vt);
+ 1475               		.loc 1 270 0
+ 1476 0044 5E98      		cbi 0xb,6
+ 1477               	.LVL99:
+ 1478               	.LBB427:
+ 1479               	.LBB428:
+ 1480               	.LBB429:
+ 1481               	.LBB430:
  430:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.h **** }
- 1073               		.loc 2 430 0
- 1074               	/* #APP */
- 1075               	 ;  430 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.h
- 1076 0046 F894      		cli
- 1077               	 ;  0 "" 2
- 1078               	.LVL75:
- 1079               	/* #NOAPP */
- 1080               	.LBE273:
- 1081               	.LBE272:
- 1082               	.LBE271:
- 1083               	.LBB274:
- 1084               	.LBB275:
- 1085               	.LBB276:
- 1086               	.LBB277:
+ 1482               		.loc 2 430 0
+ 1483               	/* #APP */
+ 1484               	 ;  430 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.h
+ 1485 0046 F894      		cli
+ 1486               	 ;  0 "" 2
+ 1487               	.LVL100:
+ 1488               	/* #NOAPP */
+ 1489               	.LBE430:
+ 1490               	.LBE429:
+ 1491               	.LBE428:
+ 1492               	.LBB431:
+ 1493               	.LBB432:
+ 1494               	.LBB433:
+ 1495               	.LBB434:
  287:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chvt.h ****     chVTDoResetI(vtp);
- 1087               		.loc 3 287 0
- 1088 0048 8091 0000 		lds r24,vt
- 1089 004c 9091 0000 		lds r25,vt+1
- 1090 0050 892B      		or r24,r25
- 1091 0052 01F0      		breq .L80
+ 1496               		.loc 3 287 0
+ 1497 0048 8091 0000 		lds r24,vt
+ 1498 004c 9091 0000 		lds r25,vt+1
+ 1499 0050 892B      		or r24,r25
+ 1500 0052 01F0      		breq .L110
  288:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chvt.h ****   }
- 1092               		.loc 3 288 0
- 1093 0054 80E0      		ldi r24,lo8(vt)
- 1094 0056 90E0      		ldi r25,hi8(vt)
- 1095 0058 0E94 0000 		call chVTDoResetI
- 1096               	.LVL76:
- 1097               	.L80:
- 1098               	.LBE277:
- 1099               	.LBE276:
- 1100               		.loc 3 335 0
- 1101 005c 20E0      		ldi r18,lo8(vt)
- 1102 005e 30E0      		ldi r19,hi8(vt)
- 1103 0060 40E0      		ldi r20,lo8(gs(AvenidaPrincipalSinalVerde))
- 1104 0062 50E0      		ldi r21,hi8(gs(AvenidaPrincipalSinalVerde))
- 1105 0064 68E0      		ldi r22,lo8(8)
- 1106 0066 7DE3      		ldi r23,lo8(61)
- 1107 0068 C901      		movw r24,r18
- 1108 006a 0E94 0000 		call chVTDoSetI
- 1109               	.LVL77:
- 1110               	.LBE275:
- 1111               	.LBE274:
- 1112               	.LBB278:
- 1113               	.LBB279:
- 1114               	.LBB280:
- 1115               	.LBB281:
- 1116               		.loc 2 440 0
- 1117               	/* #APP */
- 1118               	 ;  440 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.h
- 1119 006e 7894      		sei
- 1120               	 ;  0 "" 2
- 1121               	/* #NOAPP */
- 1122 0070 0895      		ret
- 1123               	.LBE281:
- 1124               	.LBE280:
- 1125               	.LBE279:
- 1126               	.LBE278:
- 1127               	.LBE270:
- 1128               	.LBE269:
- 1129               	.LBE268:
- 1130               		.cfi_endproc
- 1131               	.LFE248:
- 1133               		.section	.rodata.ProcessEvent.str1.1,"aMS",@progbits,1
- 1134               	.LC2:
- 1135 0000 5072 6F63 		.string	"Process Event"
- 1135      6573 7320 
- 1135      4576 656E 
- 1135      7400 
- 1136               		.section	.text.ProcessEvent,"ax",@progbits
- 1138               	ProcessEvent:
- 1139               	.LFB241:
-  96:main.c        ****   state_funcion_t state_funcion[1] = {PrincipalTimer};
- 1140               		.loc 1 96 0
- 1141               		.cfi_startproc
- 1142               	.LVL78:
- 1143               	/* prologue: function */
- 1144               	/* frame size = 0 */
- 1145               	/* stack size = 0 */
- 1146               	.L__stack_usage = 0
- 1147               	.LBB282:
- 1148               	.LBB283:
- 1149               		.loc 4 168 0
- 1150 0000 E091 0000 		lds r30,ch0+5
- 1151 0004 F091 0000 		lds r31,ch0+5+1
- 1152 0008 80E0      		ldi r24,lo8(.LC2)
- 1153 000a 90E0      		ldi r25,hi8(.LC2)
- 1154               	.LVL79:
- 1155 000c 9687      		std Z+14,r25
- 1156 000e 8587      		std Z+13,r24
- 1157 0010 00C0      		rjmp .L92
- 1158               	.L90:
- 1159               	.LBE283:
- 1160               	.LBE282:
- 113:main.c        ****   }
- 1161               		.loc 1 113 0
- 1162 0012 80E1      		ldi r24,lo8(16)
- 1163 0014 90E0      		ldi r25,0
- 1164 0016 0E94 0000 		call chThdSleep
- 1165               	.LVL80:
- 1166               	.L92:
- 102:main.c        ****     {
- 1167               		.loc 1 102 0
- 1168 001a 8091 0000 		lds r24,STATE
- 1169 001e 8130      		cpi r24,lo8(1)
- 1170 0020 01F4      		brne .L90
- 108:main.c        ****         STATE = IDLE_ST;
- 1171               		.loc 1 108 0
- 1172 0022 0E94 0000 		call PrincipalTimer
- 1173               	.LVL81:
- 109:main.c        ****         break;
- 1174               		.loc 1 109 0
- 1175 0026 1092 0000 		sts STATE,__zero_reg__
- 110:main.c        ****     }
- 1176               		.loc 1 110 0
- 1177 002a 00C0      		rjmp .L90
- 1178               		.cfi_endproc
- 1179               	.LFE241:
- 1181               		.section	.bss.wa_ProcessEvent,"aw",@nobits
- 1184               	wa_ProcessEvent:
- 1185 0000 0000 0000 		.zero	227
- 1185      0000 0000 
- 1185      0000 0000 
- 1185      0000 0000 
- 1185      0000 0000 
- 1186               		.section	.bss.wa_ReadEvent,"aw",@nobits
- 1189               	wa_ReadEvent:
- 1190 0000 0000 0000 		.zero	227
- 1190      0000 0000 
- 1190      0000 0000 
- 1190      0000 0000 
- 1190      0000 0000 
- 1191               		.section	.bss.wa_WriteEvent,"aw",@nobits
- 1194               	wa_WriteEvent:
- 1195 0000 0000 0000 		.zero	227
- 1195      0000 0000 
- 1195      0000 0000 
- 1195      0000 0000 
- 1195      0000 0000 
- 1196               	.global	counter
- 1197               		.section	.bss.counter,"aw",@nobits
- 1200               	counter:
- 1201 0000 0000 0000 		.zero	4
- 1202               	.global	LED_PRINCIPAL
- 1203               		.section	.bss.LED_PRINCIPAL,"aw",@nobits
- 1206               	LED_PRINCIPAL:
- 1207 0000 00        		.zero	1
- 1208               	.global	STATE
- 1209               		.section	.data.STATE,"aw",@progbits
- 1212               	STATE:
- 1213 0000 01        		.byte	1
- 1214               	.global	EVENT
- 1215               		.section	.bss.EVENT,"aw",@nobits
- 1218               	EVENT:
- 1219 0000 00        		.zero	1
- 1220               		.section	.bss.vt,"aw",@nobits
- 1223               	vt:
- 1224 0000 0000 0000 		.zero	12
- 1224      0000 0000 
- 1224      0000 0000 
- 1225               		.section	.bss.qfull,"aw",@nobits
- 1228               	qfull:
- 1229 0000 0000 0000 		.zero	4
- 1230               		.section	.bss.qempty,"aw",@nobits
- 1233               	qempty:
- 1234 0000 0000 0000 		.zero	4
- 1235               		.section	.bss.qmtx,"aw",@nobits
- 1238               	qmtx:
- 1239 0000 0000 0000 		.zero	8
- 1239      0000 0000 
- 1240               		.section	.bss.qsize,"aw",@nobits
- 1243               	qsize:
- 1244 0000 0000      		.zero	2
- 1245               		.section	.bss.wrp,"aw",@nobits
- 1248               	wrp:
- 1249 0000 0000      		.zero	2
- 1250               		.section	.bss.rdp,"aw",@nobits
- 1253               	rdp:
- 1254 0000 0000      		.zero	2
- 1255               		.section	.bss.queue,"aw",@nobits
- 1258               	queue:
- 1259 0000 0000 0000 		.zero	256
- 1259      0000 0000 
- 1259      0000 0000 
- 1259      0000 0000 
- 1259      0000 0000 
- 1260               		.text
- 1261               	.Letext0:
- 1262               		.file 5 "/usr/lib/gcc/avr/7.3.0/include/stddef.h"
- 1263               		.file 6 "/usr/lib/avr/include/stdint.h"
- 1264               		.file 7 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/compile
- 1265               		.file 8 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chearly.h"
- 1266               		.file 9 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chobjects.h"
- 1267               		.file 10 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chrfcu.h"
- 1268               		.file 11 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chdebug.h"
- 1269               		.file 12 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chtime.h"
- 1270               		.file 13 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chlists.h"
- 1271               		.file 14 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chsem.h"
- 1272               		.file 15 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chmtx.h"
- 1273               		.file 16 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chsys.h"
- 1274               		.file 17 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chcond.h"
- 1275               		.file 18 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chevents.h"
- 1276               		.file 19 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/oslib/include/chmemcore
- 1277               		.file 20 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_queues.
- 1278               		.file 21 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
- 1279               		.file 22 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_serial.
- 1280               		.file 23 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
- 1281               		.file 24 "/usr/lib/avr/include/stdio.h"
- 1282               		.file 25 "definitions.h"
- 1283               		.file 26 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chthreads.h"
- 1284               		.file 27 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal.h"
+ 1501               		.loc 3 288 0
+ 1502 0054 80E0      		ldi r24,lo8(vt)
+ 1503 0056 90E0      		ldi r25,hi8(vt)
+ 1504 0058 0E94 0000 		call chVTDoResetI
+ 1505               	.LVL101:
+ 1506               	.L110:
+ 1507               	.LBE434:
+ 1508               	.LBE433:
+ 1509               		.loc 3 335 0
+ 1510 005c 20E0      		ldi r18,lo8(vt)
+ 1511 005e 30E0      		ldi r19,hi8(vt)
+ 1512 0060 40E0      		ldi r20,lo8(gs(AvenidaPrincipalSinalVerde))
+ 1513 0062 50E0      		ldi r21,hi8(gs(AvenidaPrincipalSinalVerde))
+ 1514 0064 68E0      		ldi r22,lo8(8)
+ 1515 0066 7DE3      		ldi r23,lo8(61)
+ 1516 0068 C901      		movw r24,r18
+ 1517 006a 0E94 0000 		call chVTDoSetI
+ 1518               	.LVL102:
+ 1519               	.LBE432:
+ 1520               	.LBE431:
+ 1521               	.LBB435:
+ 1522               	.LBB436:
+ 1523               	.LBB437:
+ 1524               	.LBB438:
+ 1525               		.loc 2 440 0
+ 1526               	/* #APP */
+ 1527               	 ;  440 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.h
+ 1528 006e 7894      		sei
+ 1529               	 ;  0 "" 2
+ 1530               	/* #NOAPP */
+ 1531 0070 0895      		ret
+ 1532               	.LBE438:
+ 1533               	.LBE437:
+ 1534               	.LBE436:
+ 1535               	.LBE435:
+ 1536               	.LBE427:
+ 1537               	.LBE426:
+ 1538               	.LBE425:
+ 1539               		.cfi_endproc
+ 1540               	.LFE248:
+ 1542               		.section	.text.SecundariaTimer,"ax",@progbits
+ 1543               	.global	SecundariaTimer
+ 1545               	SecundariaTimer:
+ 1546               	.LFB251:
+ 353:main.c        ****   switch (LED_SECUNDARIA)
+ 1547               		.loc 1 353 0
+ 1548               		.cfi_startproc
+ 1549               	/* prologue: function */
+ 1550               	/* frame size = 0 */
+ 1551               	/* stack size = 0 */
+ 1552               	.L__stack_usage = 0
+ 354:main.c        ****   {
+ 1553               		.loc 1 354 0
+ 1554 0000 8091 0000 		lds r24,LED_SECUNDARIA
+ 1555 0004 8823      		tst r24
+ 1556 0006 01F0      		breq .L121
+ 1557 0008 8130      		cpi r24,lo8(1)
+ 1558 000a 01F4      		brne .L131
+ 364:main.c        ****       palSetPad(IOPORT4, LED_AMARELO_SECUNDARIA);
+ 1559               		.loc 1 364 0
+ 1560 000c 5D98      		cbi 0xb,5
+ 365:main.c        ****       palClearPad(IOPORT4, LED_VERMELHO_SECUNDARIA);
+ 1561               		.loc 1 365 0
+ 1562 000e 5C9A      		sbi 0xb,4
+ 366:main.c        ****       chVTSet(&vt, TIME_MS2I(1000), AvenidaSecundariaSinalAmarelo, (void*)&vt);
+ 1563               		.loc 1 366 0
+ 1564 0010 5B98      		cbi 0xb,3
+ 1565               	.LVL103:
+ 1566               	.LBB476:
+ 1567               	.LBB477:
+ 1568               	.LBB478:
+ 1569               	.LBB479:
+ 430:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.h **** }
+ 1570               		.loc 2 430 0
+ 1571               	/* #APP */
+ 1572               	 ;  430 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.h
+ 1573 0012 F894      		cli
+ 1574               	 ;  0 "" 2
+ 1575               	.LVL104:
+ 1576               	/* #NOAPP */
+ 1577               	.LBE479:
+ 1578               	.LBE478:
+ 1579               	.LBE477:
+ 1580               	.LBB480:
+ 1581               	.LBB481:
+ 1582               	.LBB482:
+ 1583               	.LBB483:
+ 287:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chvt.h ****     chVTDoResetI(vtp);
+ 1584               		.loc 3 287 0
+ 1585 0014 8091 0000 		lds r24,vt
+ 1586 0018 9091 0000 		lds r25,vt+1
+ 1587 001c 892B      		or r24,r25
+ 1588 001e 01F0      		breq .L124
+ 288:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chvt.h ****   }
+ 1589               		.loc 3 288 0
+ 1590 0020 80E0      		ldi r24,lo8(vt)
+ 1591 0022 90E0      		ldi r25,hi8(vt)
+ 1592 0024 0E94 0000 		call chVTDoResetI
+ 1593               	.LVL105:
+ 1594               	.L124:
+ 1595               	.LBE483:
+ 1596               	.LBE482:
+ 1597               		.loc 3 335 0
+ 1598 0028 20E0      		ldi r18,lo8(vt)
+ 1599 002a 30E0      		ldi r19,hi8(vt)
+ 1600 002c 40E0      		ldi r20,lo8(gs(AvenidaSecundariaSinalAmarelo))
+ 1601 002e 50E0      		ldi r21,hi8(gs(AvenidaSecundariaSinalAmarelo))
+ 1602 0030 68E0      		ldi r22,lo8(8)
+ 1603 0032 7DE3      		ldi r23,lo8(61)
+ 1604 0034 C901      		movw r24,r18
+ 1605 0036 0E94 0000 		call chVTDoSetI
+ 1606               	.LVL106:
+ 1607               	.LBE481:
+ 1608               	.LBE480:
+ 1609               	.LBB484:
+ 1610               	.LBB485:
+ 1611               	.LBB486:
+ 1612               	.LBB487:
+ 1613               		.loc 2 440 0
+ 1614               	/* #APP */
+ 1615               	 ;  440 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.h
+ 1616 003a 7894      		sei
+ 1617               	 ;  0 "" 2
+ 1618               	/* epilogue start */
+ 1619               	/* #NOAPP */
+ 1620               	.LBE487:
+ 1621               	.LBE486:
+ 1622               	.LBE485:
+ 1623               	.LBE484:
+ 1624               	.LBE476:
+ 370:main.c        **** 
+ 1625               		.loc 1 370 0
+ 1626 003c 0895      		ret
+ 1627               	.LVL107:
+ 1628               	.L131:
+ 1629 003e 0895      		ret
+ 1630               	.L121:
+ 1631               	.LBB488:
+ 1632               	.LBB489:
+ 357:main.c        ****       palClearPad(IOPORT4, LED_AMARELO_SECUNDARIA);
+ 1633               		.loc 1 357 0
+ 1634 0040 5D9A      		sbi 0xb,5
+ 358:main.c        ****       palClearPad(IOPORT4, LED_VERMELHO_SECUNDARIA);
+ 1635               		.loc 1 358 0
+ 1636 0042 5C98      		cbi 0xb,4
+ 359:main.c        ****       chVTSet(&vt, TIME_MS2I(1000), AvenidaSecundariaSinalVerde, (void*)&vt);
+ 1637               		.loc 1 359 0
+ 1638 0044 5B98      		cbi 0xb,3
+ 1639               	.LVL108:
+ 1640               	.LBB490:
+ 1641               	.LBB491:
+ 1642               	.LBB492:
+ 1643               	.LBB493:
+ 430:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.h **** }
+ 1644               		.loc 2 430 0
+ 1645               	/* #APP */
+ 1646               	 ;  430 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.h
+ 1647 0046 F894      		cli
+ 1648               	 ;  0 "" 2
+ 1649               	.LVL109:
+ 1650               	/* #NOAPP */
+ 1651               	.LBE493:
+ 1652               	.LBE492:
+ 1653               	.LBE491:
+ 1654               	.LBB494:
+ 1655               	.LBB495:
+ 1656               	.LBB496:
+ 1657               	.LBB497:
+ 287:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chvt.h ****     chVTDoResetI(vtp);
+ 1658               		.loc 3 287 0
+ 1659 0048 8091 0000 		lds r24,vt
+ 1660 004c 9091 0000 		lds r25,vt+1
+ 1661 0050 892B      		or r24,r25
+ 1662 0052 01F0      		breq .L123
+ 288:/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chvt.h ****   }
+ 1663               		.loc 3 288 0
+ 1664 0054 80E0      		ldi r24,lo8(vt)
+ 1665 0056 90E0      		ldi r25,hi8(vt)
+ 1666 0058 0E94 0000 		call chVTDoResetI
+ 1667               	.LVL110:
+ 1668               	.L123:
+ 1669               	.LBE497:
+ 1670               	.LBE496:
+ 1671               		.loc 3 335 0
+ 1672 005c 20E0      		ldi r18,lo8(vt)
+ 1673 005e 30E0      		ldi r19,hi8(vt)
+ 1674 0060 40E0      		ldi r20,lo8(gs(AvenidaSecundariaSinalVerde))
+ 1675 0062 50E0      		ldi r21,hi8(gs(AvenidaSecundariaSinalVerde))
+ 1676 0064 68E0      		ldi r22,lo8(8)
+ 1677 0066 7DE3      		ldi r23,lo8(61)
+ 1678 0068 C901      		movw r24,r18
+ 1679 006a 0E94 0000 		call chVTDoSetI
+ 1680               	.LVL111:
+ 1681               	.LBE495:
+ 1682               	.LBE494:
+ 1683               	.LBB498:
+ 1684               	.LBB499:
+ 1685               	.LBB500:
+ 1686               	.LBB501:
+ 1687               		.loc 2 440 0
+ 1688               	/* #APP */
+ 1689               	 ;  440 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/chcore.h
+ 1690 006e 7894      		sei
+ 1691               	 ;  0 "" 2
+ 1692               	/* #NOAPP */
+ 1693 0070 0895      		ret
+ 1694               	.LBE501:
+ 1695               	.LBE500:
+ 1696               	.LBE499:
+ 1697               	.LBE498:
+ 1698               	.LBE490:
+ 1699               	.LBE489:
+ 1700               	.LBE488:
+ 1701               		.cfi_endproc
+ 1702               	.LFE251:
+ 1704               		.section	.rodata.ProcessEvent.str1.1,"aMS",@progbits,1
+ 1705               	.LC2:
+ 1706 0000 5072 6F63 		.string	"Process Event"
+ 1706      6573 7320 
+ 1706      4576 656E 
+ 1706      7400 
+ 1707               		.section	.text.ProcessEvent,"ax",@progbits
+ 1709               	ProcessEvent:
+ 1710               	.LFB241:
+ 109:main.c        ****   state_funcion_t state_funcion[] = {PrincipalTimer, SecundariaTimer};
+ 1711               		.loc 1 109 0
+ 1712               		.cfi_startproc
+ 1713               	.LVL112:
+ 1714               	/* prologue: function */
+ 1715               	/* frame size = 0 */
+ 1716               	/* stack size = 0 */
+ 1717               	.L__stack_usage = 0
+ 1718               	.LBB502:
+ 1719               	.LBB503:
+ 1720               		.loc 4 168 0
+ 1721 0000 E091 0000 		lds r30,ch0+5
+ 1722 0004 F091 0000 		lds r31,ch0+5+1
+ 1723 0008 80E0      		ldi r24,lo8(.LC2)
+ 1724 000a 90E0      		ldi r25,hi8(.LC2)
+ 1725               	.LVL113:
+ 1726 000c 9687      		std Z+14,r25
+ 1727 000e 8587      		std Z+13,r24
+ 1728 0010 00C0      		rjmp .L136
+ 1729               	.L137:
+ 1730               	.LBE503:
+ 1731               	.LBE502:
+ 115:main.c        ****     {
+ 1732               		.loc 1 115 0
+ 1733 0012 8230      		cpi r24,lo8(2)
+ 1734 0014 01F4      		brne .L133
+ 126:main.c        ****         STATE = IDLE_ST;
+ 1735               		.loc 1 126 0
+ 1736 0016 0E94 0000 		call SecundariaTimer
+ 1737               	.LVL114:
+ 127:main.c        ****         break;
+ 1738               		.loc 1 127 0
+ 1739 001a 1092 0000 		sts STATE,__zero_reg__
+ 1740               	.L133:
+ 131:main.c        ****   }
+ 1741               		.loc 1 131 0
+ 1742 001e 80E1      		ldi r24,lo8(16)
+ 1743 0020 90E0      		ldi r25,0
+ 1744 0022 0E94 0000 		call chThdSleep
+ 1745               	.LVL115:
+ 1746               	.L136:
+ 115:main.c        ****     {
+ 1747               		.loc 1 115 0
+ 1748 0026 8091 0000 		lds r24,STATE
+ 1749 002a 8130      		cpi r24,lo8(1)
+ 1750 002c 01F4      		brne .L137
+ 121:main.c        ****         STATE = IDLE_ST;
+ 1751               		.loc 1 121 0
+ 1752 002e 0E94 0000 		call PrincipalTimer
+ 1753               	.LVL116:
+ 122:main.c        ****         break;
+ 1754               		.loc 1 122 0
+ 1755 0032 1092 0000 		sts STATE,__zero_reg__
+ 123:main.c        ****       
+ 1756               		.loc 1 123 0
+ 1757 0036 00C0      		rjmp .L133
+ 1758               		.cfi_endproc
+ 1759               	.LFE241:
+ 1761               		.section	.bss.wa_ProcessEvent,"aw",@nobits
+ 1764               	wa_ProcessEvent:
+ 1765 0000 0000 0000 		.zero	227
+ 1765      0000 0000 
+ 1765      0000 0000 
+ 1765      0000 0000 
+ 1765      0000 0000 
+ 1766               		.section	.bss.wa_ReadEvent,"aw",@nobits
+ 1769               	wa_ReadEvent:
+ 1770 0000 0000 0000 		.zero	227
+ 1770      0000 0000 
+ 1770      0000 0000 
+ 1770      0000 0000 
+ 1770      0000 0000 
+ 1771               		.section	.bss.wa_WriteEvent,"aw",@nobits
+ 1774               	wa_WriteEvent:
+ 1775 0000 0000 0000 		.zero	227
+ 1775      0000 0000 
+ 1775      0000 0000 
+ 1775      0000 0000 
+ 1775      0000 0000 
+ 1776               	.global	amb_pri
+ 1777               		.section	.bss.amb_pri,"aw",@nobits
+ 1780               	amb_pri:
+ 1781 0000 00        		.zero	1
+ 1782               	.global	amb_sec
+ 1783               		.section	.bss.amb_sec,"aw",@nobits
+ 1786               	amb_sec:
+ 1787 0000 00        		.zero	1
+ 1788               	.global	counter
+ 1789               		.section	.bss.counter,"aw",@nobits
+ 1792               	counter:
+ 1793 0000 0000 0000 		.zero	4
+ 1794               	.global	LED_SECUNDARIA
+ 1795               		.section	.data.LED_SECUNDARIA,"aw",@progbits
+ 1798               	LED_SECUNDARIA:
+ 1799 0000 02        		.byte	2
+ 1800               	.global	LED_PRINCIPAL
+ 1801               		.section	.bss.LED_PRINCIPAL,"aw",@nobits
+ 1804               	LED_PRINCIPAL:
+ 1805 0000 00        		.zero	1
+ 1806               	.global	STATE
+ 1807               		.section	.data.STATE,"aw",@progbits
+ 1810               	STATE:
+ 1811 0000 01        		.byte	1
+ 1812               	.global	BACKUP_EVENT
+ 1813               		.section	.bss.BACKUP_EVENT,"aw",@nobits
+ 1816               	BACKUP_EVENT:
+ 1817 0000 00        		.zero	1
+ 1818               	.global	EVENT
+ 1819               		.section	.bss.EVENT,"aw",@nobits
+ 1822               	EVENT:
+ 1823 0000 00        		.zero	1
+ 1824               		.section	.bss.vt,"aw",@nobits
+ 1827               	vt:
+ 1828 0000 0000 0000 		.zero	12
+ 1828      0000 0000 
+ 1828      0000 0000 
+ 1829               		.section	.bss.qfull,"aw",@nobits
+ 1832               	qfull:
+ 1833 0000 0000 0000 		.zero	4
+ 1834               		.section	.bss.qempty,"aw",@nobits
+ 1837               	qempty:
+ 1838 0000 0000 0000 		.zero	4
+ 1839               		.section	.bss.qmtx,"aw",@nobits
+ 1842               	qmtx:
+ 1843 0000 0000 0000 		.zero	8
+ 1843      0000 0000 
+ 1844               		.section	.bss.qsize,"aw",@nobits
+ 1847               	qsize:
+ 1848 0000 0000      		.zero	2
+ 1849               		.section	.bss.wrp,"aw",@nobits
+ 1852               	wrp:
+ 1853 0000 0000      		.zero	2
+ 1854               		.section	.bss.rdp,"aw",@nobits
+ 1857               	rdp:
+ 1858 0000 0000      		.zero	2
+ 1859               		.section	.bss.queue,"aw",@nobits
+ 1862               	queue:
+ 1863 0000 0000 0000 		.zero	256
+ 1863      0000 0000 
+ 1863      0000 0000 
+ 1863      0000 0000 
+ 1863      0000 0000 
+ 1864               		.text
+ 1865               	.Letext0:
+ 1866               		.file 5 "/usr/lib/gcc/avr/7.3.0/include/stddef.h"
+ 1867               		.file 6 "/usr/lib/avr/include/stdint.h"
+ 1868               		.file 7 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/common/ports/AVR/compile
+ 1869               		.file 8 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chearly.h"
+ 1870               		.file 9 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chobjects.h"
+ 1871               		.file 10 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chrfcu.h"
+ 1872               		.file 11 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chdebug.h"
+ 1873               		.file 12 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chtime.h"
+ 1874               		.file 13 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chlists.h"
+ 1875               		.file 14 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chsem.h"
+ 1876               		.file 15 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chmtx.h"
+ 1877               		.file 16 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chsys.h"
+ 1878               		.file 17 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chcond.h"
+ 1879               		.file 18 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chevents.h"
+ 1880               		.file 19 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/oslib/include/chmemcore
+ 1881               		.file 20 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_queues.
+ 1882               		.file 21 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
+ 1883               		.file 22 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal_serial.
+ 1884               		.file 23 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
+ 1885               		.file 24 "/usr/lib/avr/include/stdio.h"
+ 1886               		.file 25 "definitions.h"
+ 1887               		.file 26 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/include/hal.h"
+ 1888               		.file 27 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chthreads.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 main.c
-     /tmp/ccEnSe1X.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccEnSe1X.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccEnSe1X.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccEnSe1X.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccEnSe1X.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccEnSe1X.s:12     .text.AvenidaPrincipalSinalAmarelo:0000000000000000 AvenidaPrincipalSinalAmarelo
-     /tmp/ccEnSe1X.s:1200   .bss.counter:0000000000000000 counter
-     /tmp/ccEnSe1X.s:154    .text.AvenidaPrincipalSinalVerde:0000000000000000 AvenidaPrincipalSinalVerde
-     /tmp/ccEnSe1X.s:1218   .bss.EVENT:0000000000000000 EVENT
-     /tmp/ccEnSe1X.s:1212   .data.STATE:0000000000000000 STATE
-     /tmp/ccEnSe1X.s:1206   .bss.LED_PRINCIPAL:0000000000000000 LED_PRINCIPAL
-     /tmp/ccEnSe1X.s:393    .text.InitBuffer:0000000000000000 InitBuffer
-     /tmp/ccEnSe1X.s:1238   .bss.qmtx:0000000000000000 qmtx
-     /tmp/ccEnSe1X.s:1233   .bss.qempty:0000000000000000 qempty
-     /tmp/ccEnSe1X.s:1228   .bss.qfull:0000000000000000 qfull
-     /tmp/ccEnSe1X.s:1258   .bss.queue:0000000000000000 queue
-     /tmp/ccEnSe1X.s:1248   .bss.wrp:0000000000000000 wrp
-     /tmp/ccEnSe1X.s:1253   .bss.rdp:0000000000000000 rdp
-     /tmp/ccEnSe1X.s:1243   .bss.qsize:0000000000000000 qsize
-     /tmp/ccEnSe1X.s:435    .text.startup.main:0000000000000000 main
-     /tmp/ccEnSe1X.s:1223   .bss.vt:0000000000000000 vt
-     /tmp/ccEnSe1X.s:693    .text.Write_Save_Event:0000000000000000 Write_Save_Event
-     /tmp/ccEnSe1X.s:1194   .bss.wa_WriteEvent:0000000000000000 wa_WriteEvent
-     /tmp/ccEnSe1X.s:874    .text.Read_Collect_Event:0000000000000000 Read_Collect_Event
-     /tmp/ccEnSe1X.s:1189   .bss.wa_ReadEvent:0000000000000000 wa_ReadEvent
-     /tmp/ccEnSe1X.s:1138   .text.ProcessEvent:0000000000000000 ProcessEvent
-     /tmp/ccEnSe1X.s:1184   .bss.wa_ProcessEvent:0000000000000000 wa_ProcessEvent
-     /tmp/ccEnSe1X.s:591    .text.PushBUffer:0000000000000000 PushBUffer
-     /tmp/ccEnSe1X.s:777    .text.PopBUffer:0000000000000000 PopBUffer
-     /tmp/ccEnSe1X.s:919    .text.IsBUfferEmpty:0000000000000000 IsBUfferEmpty
-     /tmp/ccEnSe1X.s:946    .text.IsBufferFull:0000000000000000 IsBufferFull
-     /tmp/ccEnSe1X.s:974    .text.PrincipalTimer:0000000000000000 PrincipalTimer
+     /tmp/ccu5pxuF.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccu5pxuF.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccu5pxuF.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccu5pxuF.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccu5pxuF.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccu5pxuF.s:12     .text.AvenidaSecundariaSinalAmarelo:0000000000000000 AvenidaSecundariaSinalAmarelo
+     /tmp/ccu5pxuF.s:1792   .bss.counter:0000000000000000 counter
+     /tmp/ccu5pxuF.s:1810   .data.STATE:0000000000000000 STATE
+     /tmp/ccu5pxuF.s:1804   .bss.LED_PRINCIPAL:0000000000000000 LED_PRINCIPAL
+     /tmp/ccu5pxuF.s:159    .text.AvenidaPrincipalSinalAmarelo:0000000000000000 AvenidaPrincipalSinalAmarelo
+     /tmp/ccu5pxuF.s:1798   .data.LED_SECUNDARIA:0000000000000000 LED_SECUNDARIA
+     /tmp/ccu5pxuF.s:303    .text.AvenidaSecundariaSinalVerde:0000000000000000 AvenidaSecundariaSinalVerde
+     /tmp/ccu5pxuF.s:1786   .bss.amb_sec:0000000000000000 amb_sec
+     /tmp/ccu5pxuF.s:1822   .bss.EVENT:0000000000000000 EVENT
+     /tmp/ccu5pxuF.s:526    .text.AvenidaPrincipalSinalVerde:0000000000000000 AvenidaPrincipalSinalVerde
+     /tmp/ccu5pxuF.s:1780   .bss.amb_pri:0000000000000000 amb_pri
+     /tmp/ccu5pxuF.s:754    .text.InitBuffer:0000000000000000 InitBuffer
+     /tmp/ccu5pxuF.s:1842   .bss.qmtx:0000000000000000 qmtx
+     /tmp/ccu5pxuF.s:1837   .bss.qempty:0000000000000000 qempty
+     /tmp/ccu5pxuF.s:1832   .bss.qfull:0000000000000000 qfull
+     /tmp/ccu5pxuF.s:1862   .bss.queue:0000000000000000 queue
+     /tmp/ccu5pxuF.s:1852   .bss.wrp:0000000000000000 wrp
+     /tmp/ccu5pxuF.s:1857   .bss.rdp:0000000000000000 rdp
+     /tmp/ccu5pxuF.s:1847   .bss.qsize:0000000000000000 qsize
+     /tmp/ccu5pxuF.s:796    .text.startup.main:0000000000000000 main
+     /tmp/ccu5pxuF.s:1827   .bss.vt:0000000000000000 vt
+     /tmp/ccu5pxuF.s:1081   .text.Write_Save_Event:0000000000000000 Write_Save_Event
+     /tmp/ccu5pxuF.s:1774   .bss.wa_WriteEvent:0000000000000000 wa_WriteEvent
+     /tmp/ccu5pxuF.s:1262   .text.Read_Collect_Event:0000000000000000 Read_Collect_Event
+     /tmp/ccu5pxuF.s:1769   .bss.wa_ReadEvent:0000000000000000 wa_ReadEvent
+     /tmp/ccu5pxuF.s:1709   .text.ProcessEvent:0000000000000000 ProcessEvent
+     /tmp/ccu5pxuF.s:1764   .bss.wa_ProcessEvent:0000000000000000 wa_ProcessEvent
+     /tmp/ccu5pxuF.s:979    .text.PushBUffer:0000000000000000 PushBUffer
+     /tmp/ccu5pxuF.s:1165   .text.PopBUffer:0000000000000000 PopBUffer
+     /tmp/ccu5pxuF.s:1816   .bss.BACKUP_EVENT:0000000000000000 BACKUP_EVENT
+     /tmp/ccu5pxuF.s:1328   .text.IsBUfferEmpty:0000000000000000 IsBUfferEmpty
+     /tmp/ccu5pxuF.s:1355   .text.IsBufferFull:0000000000000000 IsBufferFull
+     /tmp/ccu5pxuF.s:1383   .text.PrincipalTimer:0000000000000000 PrincipalTimer
+     /tmp/ccu5pxuF.s:1545   .text.SecundariaTimer:0000000000000000 SecundariaTimer
 
 UNDEFINED SYMBOLS
 chVTDoResetI
 chVTDoSetI
-chThdSleep
 chMtxObjectInit
 chCondObjectInit
 halInit
@@ -2685,6 +3480,7 @@ SD1
 sdStart
 _pal_lld_setgroupmode
 chThdCreateStatic
+chThdSleep
 chMtxLock
 chCondWait
 chCondSignal

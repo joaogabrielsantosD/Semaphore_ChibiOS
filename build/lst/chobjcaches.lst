@@ -2138,16 +2138,16 @@
  1004               		.file 17 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/oslib/include/chobjcach
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 chobjcaches.c
-     /tmp/ccxowqxm.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccxowqxm.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccxowqxm.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccxowqxm.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccxowqxm.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccxowqxm.s:13     .text.chCacheObjectInit:0000000000000000 chCacheObjectInit
-     /tmp/ccxowqxm.s:287    .text.chCacheGetObject:0000000000000000 chCacheGetObject
-     /tmp/ccxowqxm.s:718    .text.chCacheReleaseObjectI:0000000000000000 chCacheReleaseObjectI
-     /tmp/ccxowqxm.s:892    .text.chCacheReadObject:0000000000000000 chCacheReadObject
-     /tmp/ccxowqxm.s:941    .text.chCacheWriteObject:0000000000000000 chCacheWriteObject
+     /tmp/cchmhY4j.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/cchmhY4j.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/cchmhY4j.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/cchmhY4j.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/cchmhY4j.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/cchmhY4j.s:13     .text.chCacheObjectInit:0000000000000000 chCacheObjectInit
+     /tmp/cchmhY4j.s:287    .text.chCacheGetObject:0000000000000000 chCacheGetObject
+     /tmp/cchmhY4j.s:718    .text.chCacheReleaseObjectI:0000000000000000 chCacheReleaseObjectI
+     /tmp/cchmhY4j.s:892    .text.chCacheReadObject:0000000000000000 chCacheReadObject
+     /tmp/cchmhY4j.s:941    .text.chCacheWriteObject:0000000000000000 chCacheWriteObject
 
 UNDEFINED SYMBOLS
 chSemObjectInit

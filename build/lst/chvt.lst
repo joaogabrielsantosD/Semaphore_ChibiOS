@@ -2655,18 +2655,18 @@
  792               		.file 16 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/oslib/include/chmemcore
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 chvt.c
-     /tmp/cc14NBeH.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/cc14NBeH.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/cc14NBeH.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/cc14NBeH.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/cc14NBeH.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/cc14NBeH.s:13     .text.chVTDoSetI:0000000000000000 chVTDoSetI
-     /tmp/cc14NBeH.s:139    .text.chVTDoSetContinuousI:0000000000000000 chVTDoSetContinuousI
-     /tmp/cc14NBeH.s:263    .text.chVTDoResetI:0000000000000000 chVTDoResetI
-     /tmp/cc14NBeH.s:335    .text.chVTGetRemainingIntervalI:0000000000000000 chVTGetRemainingIntervalI
-     /tmp/cc14NBeH.s:396    .text.chVTDoTickI:0000000000000000 chVTDoTickI
-     /tmp/cc14NBeH.s:587    .text.chVTGetTimeStampI:0000000000000000 chVTGetTimeStampI
-     /tmp/cc14NBeH.s:737    .text.chVTResetTimeStampI:0000000000000000 chVTResetTimeStampI
+     /tmp/ccnulo2i.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccnulo2i.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccnulo2i.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccnulo2i.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccnulo2i.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccnulo2i.s:13     .text.chVTDoSetI:0000000000000000 chVTDoSetI
+     /tmp/ccnulo2i.s:139    .text.chVTDoSetContinuousI:0000000000000000 chVTDoSetContinuousI
+     /tmp/ccnulo2i.s:263    .text.chVTDoResetI:0000000000000000 chVTDoResetI
+     /tmp/ccnulo2i.s:335    .text.chVTGetRemainingIntervalI:0000000000000000 chVTGetRemainingIntervalI
+     /tmp/ccnulo2i.s:396    .text.chVTDoTickI:0000000000000000 chVTDoTickI
+     /tmp/ccnulo2i.s:587    .text.chVTGetTimeStampI:0000000000000000 chVTGetTimeStampI
+     /tmp/ccnulo2i.s:737    .text.chVTResetTimeStampI:0000000000000000 chVTResetTimeStampI
 
 UNDEFINED SYMBOLS
 ch0

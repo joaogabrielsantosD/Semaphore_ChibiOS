@@ -1868,13 +1868,13 @@
  280               		.file 17 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/oslib/include/chmemcore
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 chinstances.c
-     /tmp/ccwV7DpJ.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccwV7DpJ.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccwV7DpJ.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccwV7DpJ.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccwV7DpJ.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccwV7DpJ.s:12     .text.__idle_thread:0000000000000000 __idle_thread
-     /tmp/ccwV7DpJ.s:33     .text.chInstanceObjectInit:0000000000000000 chInstanceObjectInit
+     /tmp/ccp5ASsZ.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccp5ASsZ.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccp5ASsZ.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccp5ASsZ.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccp5ASsZ.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccp5ASsZ.s:12     .text.__idle_thread:0000000000000000 __idle_thread
+     /tmp/ccp5ASsZ.s:33     .text.chInstanceObjectInit:0000000000000000 chInstanceObjectInit
 
 UNDEFINED SYMBOLS
 ch_system
