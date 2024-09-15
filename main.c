@@ -289,7 +289,6 @@ static void AvenidaPrincipalSinalVerde(void *arg)
 
   if (amb_pri == 0x00)
   { 
-    palTogglePad(IOPORT2, PORTB_LED1);
     counter++;
 
     if (counter >= 10 && (EVENT == PEDESTRE || EVENT == CARRO_SECUNDARIA))
