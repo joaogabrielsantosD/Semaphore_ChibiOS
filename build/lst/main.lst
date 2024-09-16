@@ -470,7 +470,7 @@
  457:main.c        ****       LED_PRINCIPAL = VERDE;
  458:main.c        ****     }
  459:main.c        **** 
- 460:main.c        ****     else if (((ped_sec >> 2) & ~0XFE) == 1)
+ 460:main.c        ****     else if (((ped_sec >> 2) & ~0xFE) == 1)
  461:main.c        ****     {
  462:main.c        ****       ped_sec = 0;
  463:main.c        ****       STATE = PRINCIPAL;
@@ -1734,7 +1734,7 @@
  411 0036 1092 0000 		sts counter+2,__zero_reg__
  412 003a 1092 0000 		sts counter+3,__zero_reg__
  529:main.c        **** 
- 530:main.c        ****     if (((ped_sec >> 1) & ~0XFE) == 1)
+ 530:main.c        ****     if (((ped_sec >> 1) & ~0xFE) == 1)
  413               		.loc 1 530 0
  414 003e 8091 0000 		lds r24,ped_sec
  415 0042 81FD      		sbrc r24,1
@@ -1745,7 +1745,7 @@
  534:main.c        ****       LED_PRINCIPAL = VERDE;
  535:main.c        ****     }
  536:main.c        **** 
- 537:main.c        ****     else if (((ped_sec >> 2) & ~0XFE) == 1)
+ 537:main.c        ****     else if (((ped_sec >> 2) & ~0xFE) == 1)
  417               		.loc 1 537 0
  418 0046 82FD      		sbrc r24,2
  419 0048 00C0      		rjmp .L49
@@ -4181,50 +4181,50 @@
  2455               		.file 27 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chthreads.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 main.c
-     /tmp/cc3Uicbb.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/cc3Uicbb.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/cc3Uicbb.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/cc3Uicbb.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/cc3Uicbb.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/cc3Uicbb.s:12     .text.Via_Pedestre_Sinal_Verde:0000000000000000 Via_Pedestre_Sinal_Verde
-     /tmp/cc3Uicbb.s:2353   .bss.counter:0000000000000000 counter
-     /tmp/cc3Uicbb.s:2377   .data.STATE:0000000000000000 STATE
-     /tmp/cc3Uicbb.s:2359   .data.LED_PEDESTRE:0000000000000000 LED_PEDESTRE
-     /tmp/cc3Uicbb.s:154    .text.Avenida_Secundaria_Sinal_Verde:0000000000000000 Avenida_Secundaria_Sinal_Verde
-     /tmp/cc3Uicbb.s:2347   .bss.amb_sec:0000000000000000 amb_sec
-     /tmp/cc3Uicbb.s:2341   .bss.amb_pri:0000000000000000 amb_pri
-     /tmp/cc3Uicbb.s:2365   .data.LED_SECUNDARIA:0000000000000000 LED_SECUNDARIA
-     /tmp/cc3Uicbb.s:370    .text.Via_Pedestre_Sinal_Amarelo:0000000000000000 Via_Pedestre_Sinal_Amarelo
-     /tmp/cc3Uicbb.s:2335   .bss.ped_sec:0000000000000000 ped_sec
-     /tmp/cc3Uicbb.s:2371   .bss.LED_PRINCIPAL:0000000000000000 LED_PRINCIPAL
-     /tmp/cc3Uicbb.s:2389   .bss.EVENT:0000000000000000 EVENT
-     /tmp/cc3Uicbb.s:545    .text.Avenida_Secundaria_Sinal_Amarelo:0000000000000000 Avenida_Secundaria_Sinal_Amarelo
-     /tmp/cc3Uicbb.s:718    .text.Avenida_Principal_Sinal_Verde:0000000000000000 Avenida_Principal_Sinal_Verde
-     /tmp/cc3Uicbb.s:940    .text.Avenida_Principal_Sinal_Amarelo:0000000000000000 Avenida_Principal_Sinal_Amarelo
-     /tmp/cc3Uicbb.s:2383   .bss.BACKUP_EVENT:0000000000000000 BACKUP_EVENT
-     /tmp/cc3Uicbb.s:1115   .text.InitBuffer:0000000000000000 InitBuffer
-     /tmp/cc3Uicbb.s:2409   .bss.qmtx:0000000000000000 qmtx
-     /tmp/cc3Uicbb.s:2404   .bss.qempty:0000000000000000 qempty
-     /tmp/cc3Uicbb.s:2399   .bss.qfull:0000000000000000 qfull
-     /tmp/cc3Uicbb.s:2429   .bss.queue:0000000000000000 queue
-     /tmp/cc3Uicbb.s:2419   .bss.wrp:0000000000000000 wrp
-     /tmp/cc3Uicbb.s:2424   .bss.rdp:0000000000000000 rdp
-     /tmp/cc3Uicbb.s:2414   .bss.qsize:0000000000000000 qsize
-     /tmp/cc3Uicbb.s:1157   .text.startup.main:0000000000000000 main
-     /tmp/cc3Uicbb.s:2394   .bss.vt:0000000000000000 vt
-     /tmp/cc3Uicbb.s:1462   .text.Write_Save_Event:0000000000000000 Write_Save_Event
-     /tmp/cc3Uicbb.s:2329   .bss.wa_WriteEvent:0000000000000000 wa_WriteEvent
-     /tmp/cc3Uicbb.s:1643   .text.Read_Collect_Event:0000000000000000 Read_Collect_Event
-     /tmp/cc3Uicbb.s:2324   .bss.wa_ReadEvent:0000000000000000 wa_ReadEvent
-     /tmp/cc3Uicbb.s:2254   .text.ProcessEvent:0000000000000000 ProcessEvent
-     /tmp/cc3Uicbb.s:2319   .bss.wa_ProcessEvent:0000000000000000 wa_ProcessEvent
-     /tmp/cc3Uicbb.s:1360   .text.PushBUffer:0000000000000000 PushBUffer
-     /tmp/cc3Uicbb.s:1546   .text.PopBUffer:0000000000000000 PopBUffer
-     /tmp/cc3Uicbb.s:1715   .text.IsBUfferEmpty:0000000000000000 IsBUfferEmpty
-     /tmp/cc3Uicbb.s:1742   .text.IsBufferFull:0000000000000000 IsBufferFull
-     /tmp/cc3Uicbb.s:1770   .text.PrincipalTimer:0000000000000000 PrincipalTimer
-     /tmp/cc3Uicbb.s:1932   .text.SecundariaTimer:0000000000000000 SecundariaTimer
-     /tmp/cc3Uicbb.s:2094   .text.PedestreTimer:0000000000000000 PedestreTimer
+     /tmp/ccKJ8dw8.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccKJ8dw8.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccKJ8dw8.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccKJ8dw8.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccKJ8dw8.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccKJ8dw8.s:12     .text.Via_Pedestre_Sinal_Verde:0000000000000000 Via_Pedestre_Sinal_Verde
+     /tmp/ccKJ8dw8.s:2353   .bss.counter:0000000000000000 counter
+     /tmp/ccKJ8dw8.s:2377   .data.STATE:0000000000000000 STATE
+     /tmp/ccKJ8dw8.s:2359   .data.LED_PEDESTRE:0000000000000000 LED_PEDESTRE
+     /tmp/ccKJ8dw8.s:154    .text.Avenida_Secundaria_Sinal_Verde:0000000000000000 Avenida_Secundaria_Sinal_Verde
+     /tmp/ccKJ8dw8.s:2347   .bss.amb_sec:0000000000000000 amb_sec
+     /tmp/ccKJ8dw8.s:2341   .bss.amb_pri:0000000000000000 amb_pri
+     /tmp/ccKJ8dw8.s:2365   .data.LED_SECUNDARIA:0000000000000000 LED_SECUNDARIA
+     /tmp/ccKJ8dw8.s:370    .text.Via_Pedestre_Sinal_Amarelo:0000000000000000 Via_Pedestre_Sinal_Amarelo
+     /tmp/ccKJ8dw8.s:2335   .bss.ped_sec:0000000000000000 ped_sec
+     /tmp/ccKJ8dw8.s:2371   .bss.LED_PRINCIPAL:0000000000000000 LED_PRINCIPAL
+     /tmp/ccKJ8dw8.s:2389   .bss.EVENT:0000000000000000 EVENT
+     /tmp/ccKJ8dw8.s:545    .text.Avenida_Secundaria_Sinal_Amarelo:0000000000000000 Avenida_Secundaria_Sinal_Amarelo
+     /tmp/ccKJ8dw8.s:718    .text.Avenida_Principal_Sinal_Verde:0000000000000000 Avenida_Principal_Sinal_Verde
+     /tmp/ccKJ8dw8.s:940    .text.Avenida_Principal_Sinal_Amarelo:0000000000000000 Avenida_Principal_Sinal_Amarelo
+     /tmp/ccKJ8dw8.s:2383   .bss.BACKUP_EVENT:0000000000000000 BACKUP_EVENT
+     /tmp/ccKJ8dw8.s:1115   .text.InitBuffer:0000000000000000 InitBuffer
+     /tmp/ccKJ8dw8.s:2409   .bss.qmtx:0000000000000000 qmtx
+     /tmp/ccKJ8dw8.s:2404   .bss.qempty:0000000000000000 qempty
+     /tmp/ccKJ8dw8.s:2399   .bss.qfull:0000000000000000 qfull
+     /tmp/ccKJ8dw8.s:2429   .bss.queue:0000000000000000 queue
+     /tmp/ccKJ8dw8.s:2419   .bss.wrp:0000000000000000 wrp
+     /tmp/ccKJ8dw8.s:2424   .bss.rdp:0000000000000000 rdp
+     /tmp/ccKJ8dw8.s:2414   .bss.qsize:0000000000000000 qsize
+     /tmp/ccKJ8dw8.s:1157   .text.startup.main:0000000000000000 main
+     /tmp/ccKJ8dw8.s:2394   .bss.vt:0000000000000000 vt
+     /tmp/ccKJ8dw8.s:1462   .text.Write_Save_Event:0000000000000000 Write_Save_Event
+     /tmp/ccKJ8dw8.s:2329   .bss.wa_WriteEvent:0000000000000000 wa_WriteEvent
+     /tmp/ccKJ8dw8.s:1643   .text.Read_Collect_Event:0000000000000000 Read_Collect_Event
+     /tmp/ccKJ8dw8.s:2324   .bss.wa_ReadEvent:0000000000000000 wa_ReadEvent
+     /tmp/ccKJ8dw8.s:2254   .text.ProcessEvent:0000000000000000 ProcessEvent
+     /tmp/ccKJ8dw8.s:2319   .bss.wa_ProcessEvent:0000000000000000 wa_ProcessEvent
+     /tmp/ccKJ8dw8.s:1360   .text.PushBUffer:0000000000000000 PushBUffer
+     /tmp/ccKJ8dw8.s:1546   .text.PopBUffer:0000000000000000 PopBUffer
+     /tmp/ccKJ8dw8.s:1715   .text.IsBUfferEmpty:0000000000000000 IsBUfferEmpty
+     /tmp/ccKJ8dw8.s:1742   .text.IsBufferFull:0000000000000000 IsBufferFull
+     /tmp/ccKJ8dw8.s:1770   .text.PrincipalTimer:0000000000000000 PrincipalTimer
+     /tmp/ccKJ8dw8.s:1932   .text.SecundariaTimer:0000000000000000 SecundariaTimer
+     /tmp/ccKJ8dw8.s:2094   .text.PedestreTimer:0000000000000000 PedestreTimer
 
 UNDEFINED SYMBOLS
 chVTDoResetI

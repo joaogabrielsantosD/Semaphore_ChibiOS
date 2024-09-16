@@ -24,10 +24,10 @@
   24               		.file 14 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/oslib/include/chmemcore
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 chdebug.c
-     /tmp/ccmC37Jj.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccmC37Jj.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccmC37Jj.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccmC37Jj.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccmC37Jj.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccEfvqtP.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccEfvqtP.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccEfvqtP.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccEfvqtP.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccEfvqtP.s:6      *ABS*:0000000000000001 __zero_reg__
 
 NO UNDEFINED SYMBOLS

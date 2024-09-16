@@ -1637,17 +1637,17 @@
  655               		.file 24 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chthreads.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 hal_flash.c
-     /tmp/ccWKx0IP.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccWKx0IP.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccWKx0IP.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccWKx0IP.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccWKx0IP.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccWKx0IP.s:13     .text.flashWaitErase:0000000000000000 flashWaitErase
-     /tmp/ccWKx0IP.s:140    .text.flashGetSectorOffset:0000000000000000 flashGetSectorOffset
-     /tmp/ccWKx0IP.s:230    .text.flashGetSectorSize:0000000000000000 flashGetSectorSize
-     /tmp/ccWKx0IP.s:318    .text.flashGetOffsetSector:0000000000000000 flashGetOffsetSector
-     /tmp/ccWKx0IP.s:503    .text.flashGetOffsetAddress:0000000000000000 flashGetOffsetAddress
-     /tmp/ccWKx0IP.s:565    .text.flashGetAddressOffset:0000000000000000 flashGetAddressOffset
+     /tmp/ccjK1WpR.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccjK1WpR.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccjK1WpR.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccjK1WpR.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccjK1WpR.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccjK1WpR.s:13     .text.flashWaitErase:0000000000000000 flashWaitErase
+     /tmp/ccjK1WpR.s:140    .text.flashGetSectorOffset:0000000000000000 flashGetSectorOffset
+     /tmp/ccjK1WpR.s:230    .text.flashGetSectorSize:0000000000000000 flashGetSectorSize
+     /tmp/ccjK1WpR.s:318    .text.flashGetOffsetSector:0000000000000000 flashGetOffsetSector
+     /tmp/ccjK1WpR.s:503    .text.flashGetOffsetAddress:0000000000000000 flashGetOffsetAddress
+     /tmp/ccjK1WpR.s:565    .text.flashGetAddressOffset:0000000000000000 flashGetAddressOffset
 
 UNDEFINED SYMBOLS
 __muluhisi3

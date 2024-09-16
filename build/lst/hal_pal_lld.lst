@@ -457,16 +457,16 @@
  227               		.file 22 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 hal_pal_lld.c
-     /tmp/cccSR1Yr.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/cccSR1Yr.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/cccSR1Yr.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/cccSR1Yr.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/cccSR1Yr.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/cccSR1Yr.s:13     .text._pal_lld_init:0000000000000000 _pal_lld_init
-     /tmp/cccSR1Yr.s:52     .text._pal_lld_setgroupmode:0000000000000000 _pal_lld_setgroupmode
-     /tmp/cccSR1Yr.s:129    .text._pal_lld_enablepadevent:0000000000000000 _pal_lld_enablepadevent
-     /tmp/cccSR1Yr.s:147    .text._pal_lld_setlineid:0000000000000000 _pal_lld_setlineid
-     /tmp/cccSR1Yr.s:171    .text._pal_lld_getportfromline:0000000000000000 _pal_lld_getportfromline
-     /tmp/cccSR1Yr.s:190    .text._pal_lld_getpadfromline:0000000000000000 _pal_lld_getpadfromline
+     /tmp/cckHzF2u.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/cckHzF2u.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/cckHzF2u.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/cckHzF2u.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/cckHzF2u.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/cckHzF2u.s:13     .text._pal_lld_init:0000000000000000 _pal_lld_init
+     /tmp/cckHzF2u.s:52     .text._pal_lld_setgroupmode:0000000000000000 _pal_lld_setgroupmode
+     /tmp/cckHzF2u.s:129    .text._pal_lld_enablepadevent:0000000000000000 _pal_lld_enablepadevent
+     /tmp/cckHzF2u.s:147    .text._pal_lld_setlineid:0000000000000000 _pal_lld_setlineid
+     /tmp/cckHzF2u.s:171    .text._pal_lld_getportfromline:0000000000000000 _pal_lld_getportfromline
+     /tmp/cckHzF2u.s:190    .text._pal_lld_getpadfromline:0000000000000000 _pal_lld_getpadfromline
 
 NO UNDEFINED SYMBOLS
