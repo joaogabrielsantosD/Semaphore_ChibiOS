@@ -19,6 +19,9 @@
 #define LED_AMARELO_SECUNDARIA  4 // PD4
 #define LED_VERMELHO_SECUNDARIA 3 // PD3
 
+#define LED_VERMELHO_PEDESTRE   0 // PC0
+#define LED_VERDE_PEDESTRE      1 // PC1
+
 /* Events */
 #define PEDESTRE              EVENT_1
 #define CARRO_SECUNDARIA      EVENT_2
