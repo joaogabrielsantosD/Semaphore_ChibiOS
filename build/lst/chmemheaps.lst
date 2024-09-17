@@ -1304,17 +1304,17 @@
  880               		.file 17 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/oslib/include/chmemheap
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 chmemheaps.c
-     /tmp/ccSoVo1k.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccSoVo1k.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccSoVo1k.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccSoVo1k.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccSoVo1k.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccSoVo1k.s:13     .text.__heap_init:0000000000000000 __heap_init
-     /tmp/ccSoVo1k.s:861    .bss.default_heap:0000000000000000 default_heap
-     /tmp/ccSoVo1k.s:46     .text.chHeapObjectInit:0000000000000000 chHeapObjectInit
-     /tmp/ccSoVo1k.s:107    .text.chHeapAllocAligned:0000000000000000 chHeapAllocAligned
-     /tmp/ccSoVo1k.s:515    .text.chHeapFree:0000000000000000 chHeapFree
-     /tmp/ccSoVo1k.s:701    .text.chHeapStatus:0000000000000000 chHeapStatus
+     /tmp/ccPK0L8b.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccPK0L8b.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccPK0L8b.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccPK0L8b.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccPK0L8b.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccPK0L8b.s:13     .text.__heap_init:0000000000000000 __heap_init
+     /tmp/ccPK0L8b.s:861    .bss.default_heap:0000000000000000 default_heap
+     /tmp/ccPK0L8b.s:46     .text.chHeapObjectInit:0000000000000000 chHeapObjectInit
+     /tmp/ccPK0L8b.s:107    .text.chHeapAllocAligned:0000000000000000 chHeapAllocAligned
+     /tmp/ccPK0L8b.s:515    .text.chHeapFree:0000000000000000 chHeapFree
+     /tmp/ccPK0L8b.s:701    .text.chHeapStatus:0000000000000000 chHeapStatus
 
 UNDEFINED SYMBOLS
 chCoreAllocFromTop

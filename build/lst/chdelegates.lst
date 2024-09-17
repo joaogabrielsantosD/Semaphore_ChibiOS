@@ -1343,19 +1343,19 @@
  545               		.file 18 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/oslib/include/chdelegat
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 chdelegates.c
-     /tmp/ccbnANXW.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccbnANXW.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccbnANXW.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccbnANXW.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccbnANXW.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccbnANXW.s:13     .text.__ch_delegate_fn0:0000000000000000 __ch_delegate_fn0
-     /tmp/ccbnANXW.s:45     .text.__ch_delegate_fn1:0000000000000000 __ch_delegate_fn1
-     /tmp/ccbnANXW.s:96     .text.__ch_delegate_fn2:0000000000000000 __ch_delegate_fn2
-     /tmp/ccbnANXW.s:154    .text.__ch_delegate_fn3:0000000000000000 __ch_delegate_fn3
-     /tmp/ccbnANXW.s:217    .text.__ch_delegate_fn4:0000000000000000 __ch_delegate_fn4
-     /tmp/ccbnANXW.s:285    .text.chDelegateCallVeneer:0000000000000000 chDelegateCallVeneer
-     /tmp/ccbnANXW.s:351    .text.chDelegateDispatch:0000000000000000 chDelegateDispatch
-     /tmp/ccbnANXW.s:435    .text.chDelegateDispatchTimeout:0000000000000000 chDelegateDispatchTimeout
+     /tmp/ccbi2wpa.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccbi2wpa.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccbi2wpa.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccbi2wpa.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccbi2wpa.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccbi2wpa.s:13     .text.__ch_delegate_fn0:0000000000000000 __ch_delegate_fn0
+     /tmp/ccbi2wpa.s:45     .text.__ch_delegate_fn1:0000000000000000 __ch_delegate_fn1
+     /tmp/ccbi2wpa.s:96     .text.__ch_delegate_fn2:0000000000000000 __ch_delegate_fn2
+     /tmp/ccbi2wpa.s:154    .text.__ch_delegate_fn3:0000000000000000 __ch_delegate_fn3
+     /tmp/ccbi2wpa.s:217    .text.__ch_delegate_fn4:0000000000000000 __ch_delegate_fn4
+     /tmp/ccbi2wpa.s:285    .text.chDelegateCallVeneer:0000000000000000 chDelegateCallVeneer
+     /tmp/ccbi2wpa.s:351    .text.chDelegateDispatch:0000000000000000 chDelegateDispatch
+     /tmp/ccbi2wpa.s:435    .text.chDelegateDispatchTimeout:0000000000000000 chDelegateDispatchTimeout
 
 UNDEFINED SYMBOLS
 chMsgSend

@@ -100,11 +100,11 @@
   49               		.file 21 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/hal/ports/AVR/MEGA/LLD/
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 hal_lld.c
-     /tmp/ccSPIQ6Y.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccSPIQ6Y.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccSPIQ6Y.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccSPIQ6Y.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccSPIQ6Y.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccSPIQ6Y.s:13     .text.hal_lld_init:0000000000000000 hal_lld_init
+     /tmp/cckWON6W.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/cckWON6W.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/cckWON6W.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/cckWON6W.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/cckWON6W.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/cckWON6W.s:13     .text.hal_lld_init:0000000000000000 hal_lld_init
 
 NO UNDEFINED SYMBOLS

@@ -876,13 +876,13 @@
  283               		.file 15 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/oslib/include/chmemcore
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 chcore.c
-     /tmp/cca9eX0V.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/cca9eX0V.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/cca9eX0V.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/cca9eX0V.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/cca9eX0V.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/cca9eX0V.s:13     .text._port_switch:0000000000000000 _port_switch
-     /tmp/cca9eX0V.s:221    .text._port_thread_start:0000000000000000 _port_thread_start
+     /tmp/ccvHuaug.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccvHuaug.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccvHuaug.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccvHuaug.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccvHuaug.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccvHuaug.s:13     .text._port_switch:0000000000000000 _port_switch
+     /tmp/ccvHuaug.s:221    .text._port_thread_start:0000000000000000 _port_thread_start
                             *COM*:0000000000000001 __avr_in_isr
 
 UNDEFINED SYMBOLS

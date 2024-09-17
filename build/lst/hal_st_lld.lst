@@ -1082,13 +1082,13 @@
  176               		.file 23 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/rt/include/chschd.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 hal_st_lld.c
-     /tmp/ccIJj3EV.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccIJj3EV.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccIJj3EV.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccIJj3EV.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccIJj3EV.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccIJj3EV.s:13     .text.__vector_14:0000000000000000 __vector_14
-     /tmp/ccIJj3EV.s:126    .text.st_lld_init:0000000000000000 st_lld_init
+     /tmp/ccWRehC6.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccWRehC6.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccWRehC6.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccWRehC6.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccWRehC6.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccWRehC6.s:13     .text.__vector_14:0000000000000000 __vector_14
+     /tmp/ccWRehC6.s:126    .text.st_lld_init:0000000000000000 st_lld_init
 
 UNDEFINED SYMBOLS
 __avr_in_isr
