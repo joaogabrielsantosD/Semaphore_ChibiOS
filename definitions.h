@@ -43,6 +43,4 @@ typedef enum
     VERMELHO
 } state_LED_t;
 
-typedef void (*state_funcion_t)(void);
-
 #endif
