@@ -32,7 +32,7 @@ uint8_t EVENT = 0, BACKUP_EVENT = 0;
 state_via_t STATE = PRINCIPAL;
 state_LED_t LED_PRINCIPAL = VERDE, LED_SECUNDARIA = VERMELHO, LED_PEDESTRE = VERMELHO;
 uint32_t counter = 0;
-uint8_t amb_sec = 0x00, amb_pri = 0x00, ped_sec = 0x00;
+uint8_t amb_sec = 0x00, amb_pri = 0x00, ped_sec = 0x00, flag = 0x00;
 
 /*
   * Global Functions
@@ -400,6 +400,7 @@ static void Avenida_Principal_Sinal_Amarelo(void *arg)
       if (BACKUP_EVENT == PEDESTRE)
       {
         ped_sec |= (1 << 2);
+        flag |= 1;
         STATE = _PEDESTRE;
         LED_PEDESTRE = VERDE;
       }
@@ -536,8 +537,9 @@ void Via_Pedestre_Sinal_Amarelo(void *arg)
 
     else if (((ped_sec >> 2) & ~0xFE) == 1)
     {
-      if (EVENT == CARRO_SECUNDARIA)
+      if (EVENT == CARRO_SECUNDARIA || flag == 1)
       {
+        flag = 0;
         STATE = SECUNDARIA;
         LED_SECUNDARIA = VERDE;
       }
