@@ -2584,20 +2584,20 @@
  839               		.file 18 "/home/joao/Documentos/UFPE/Embarcados/ChibiOS/ChibiOS_21.11.3/os/oslib/include/chmemcore
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 chcond.c
-     /tmp/ccR8hDHj.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccR8hDHj.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccR8hDHj.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccR8hDHj.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccR8hDHj.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccR8hDHj.s:13     .text.chCondObjectInit:0000000000000000 chCondObjectInit
-     /tmp/ccR8hDHj.s:45     .text.chCondSignal:0000000000000000 chCondSignal
-     /tmp/ccR8hDHj.s:137    .text.chCondSignalI:0000000000000000 chCondSignalI
-     /tmp/ccR8hDHj.s:211    .text.chCondBroadcast:0000000000000000 chCondBroadcast
-     /tmp/ccR8hDHj.s:336    .text.chCondBroadcastI:0000000000000000 chCondBroadcastI
-     /tmp/ccR8hDHj.s:428    .text.chCondWaitS:0000000000000000 chCondWaitS
-     /tmp/ccR8hDHj.s:575    .text.chCondWait:0000000000000000 chCondWait
-     /tmp/ccR8hDHj.s:622    .text.chCondWaitTimeoutS:0000000000000000 chCondWaitTimeoutS
-     /tmp/ccR8hDHj.s:782    .text.chCondWaitTimeout:0000000000000000 chCondWaitTimeout
+     /tmp/ccrXC1rf.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccrXC1rf.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccrXC1rf.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccrXC1rf.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccrXC1rf.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccrXC1rf.s:13     .text.chCondObjectInit:0000000000000000 chCondObjectInit
+     /tmp/ccrXC1rf.s:45     .text.chCondSignal:0000000000000000 chCondSignal
+     /tmp/ccrXC1rf.s:137    .text.chCondSignalI:0000000000000000 chCondSignalI
+     /tmp/ccrXC1rf.s:211    .text.chCondBroadcast:0000000000000000 chCondBroadcast
+     /tmp/ccrXC1rf.s:336    .text.chCondBroadcastI:0000000000000000 chCondBroadcastI
+     /tmp/ccrXC1rf.s:428    .text.chCondWaitS:0000000000000000 chCondWaitS
+     /tmp/ccrXC1rf.s:575    .text.chCondWait:0000000000000000 chCondWait
+     /tmp/ccrXC1rf.s:622    .text.chCondWaitTimeoutS:0000000000000000 chCondWaitTimeoutS
+     /tmp/ccrXC1rf.s:782    .text.chCondWaitTimeout:0000000000000000 chCondWaitTimeout
 
 UNDEFINED SYMBOLS
 chSchWakeupS
